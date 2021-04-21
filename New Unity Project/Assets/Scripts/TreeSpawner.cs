@@ -9,6 +9,7 @@ public class TreeSpawner : MonoBehaviour
     public GameObject tree;
     
     private System.Random random = new System.Random();
+    
     // Start is called before the first frame update
     void Start() {
         for (int i = 0; i < TREE_AMOUNT; i++) {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
+  m_IndirectSpecularColor: {r: 0.4482491, g: 0.49827605, b: 0.5755831, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -524,7 +524,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef812d9243676c9458a3484dd52f5fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TREE_AMOUNT: 200
+  TREE_AMOUNT: 3500
+  SPAWN_RADIUS: 50
+  MIN_DISTANCE: 5
+  MAX_TRIES: 20
   tree: {fileID: 8824822929891920063, guid: f6ff0f59fcd68a34d8d908d2ef5910a0, type: 3}
 --- !u!4 &1097084203
 Transform:

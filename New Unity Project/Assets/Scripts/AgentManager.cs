@@ -30,7 +30,7 @@ public class AgentManager : MonoBehaviour
             newAgent.transform.position = new Vector3((float) Math.Cos(angle * i) * SPAWN_RADIUS,0.5f,
                 (float) Math.Sin(angle * i) * SPAWN_RADIUS);
 
-            newAgent.transform.Find("Head").GetComponent<MeshRenderer>().material = headMaterials[i % 3];
+            newAgent.transform.Find("Head").GetComponent<MeshRenderer>().material = headMaterials[rnd.Next(0, 3)];
             newAgent.transform.Find("Body").GetComponent<MeshRenderer>().material = bodyMaterials[i];
         }
     }

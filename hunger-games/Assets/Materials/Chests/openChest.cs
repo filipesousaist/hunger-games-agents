@@ -25,6 +25,7 @@ public class openChest : MonoBehaviour
     IEnumerator stopOpening()
     {
         yield return new WaitForSeconds(1.1f);
-        GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);   
+        GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
+        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
     }
 }

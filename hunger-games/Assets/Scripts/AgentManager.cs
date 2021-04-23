@@ -27,7 +27,7 @@ public class AgentManager : MonoBehaviour
         foreach (int i in indexes) {
             GameObject newAgent = Instantiate(agent);
 
-            newAgent.transform.position = new Vector3((float) Math.Cos(angle * i) * SPAWN_RADIUS,0.5f,
+            newAgent.transform.position = new Vector3((float) Math.Cos(angle * i) * SPAWN_RADIUS, 0.5f,
                 (float) Math.Sin(angle * i) * SPAWN_RADIUS);
 
             newAgent.transform.Find("Head").GetComponent<MeshRenderer>().material = headMaterials[rnd.Next(0, 3)];

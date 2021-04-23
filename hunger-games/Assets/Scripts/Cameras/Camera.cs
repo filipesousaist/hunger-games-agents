@@ -9,20 +9,10 @@ public class Camera : MonoBehaviour
     public float ROTATE_SPEED;
 
     public bool canRotateVertical;
-    private Camera camera;
-    
-    // Start is called before the first frame update
-    void Start() {
-        camera = GetComponent<Camera>();
-    }
 
     // Update is called once per frame
     void Update()
-    {
-        float x = gameObject.transform.position.x;
-        float z = gameObject.transform.position.z;
-        float rotation = transform.rotation.y;
-        
+    {    
         // Movement
         if (Input.GetKey(KeyCode.W)) {
             transform.Translate(0, 0, SPEED * Time.deltaTime);

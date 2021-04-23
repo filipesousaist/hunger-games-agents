@@ -3,7 +3,6 @@
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
 /hunger-games/[Ll]ibrary/
-/hunger-games/Library*
 /hunger-games/[Tt]emp/
 /hunger-games/[Oo]bj/
 /hunger-games/[Bb]uild/

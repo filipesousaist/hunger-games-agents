@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class openChest : MonoBehaviour
 {
+    bool rotating=false;
+    private bool closed = true;
+
+    private float angularVelocity = -100;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,19 +17,26 @@ public class openChest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (rotating && closed)
+        {
+            transform.Rotate(0, angularVelocity * Time.deltaTime, 0);
+        } 
+        else if (rotating && !closed)
+        {
+            transform.Rotate(0, - angularVelocity * Time.deltaTime, 0);
+        }
     }
 
     void OnMouseDown()
     {
-        GetComponent<Rigidbody>().angularVelocity = new Vector3(0.8f, 0, 0);
+        rotating = true;
         StartCoroutine(stopOpening());
     }
 
     IEnumerator stopOpening()
     {
         yield return new WaitForSeconds(1.1f);
-        GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        rotating = false;
+        closed = !closed;
     }
 }

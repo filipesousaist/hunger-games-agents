@@ -7,20 +7,21 @@ public class NatureSpawner : MonoBehaviour
     
     private enum NatureObject
     {
-        TREE, HEALTHY_BUSH, POISONOUS_BUSH
+        ROCK, TREE, HEALTHY_BUSH, POISONOUS_BUSH
     }
 
+    public int ROCK_AMOUNT;
     public int TREE_AMOUNT;
     public int BUSH_AMOUNT;
-
     public float HEALTHY_BUSH_RATIO;
     
-    public int SPAWN_RADIUS;
-
-    public int MIN_DISTANCE;
+    public float MIN_TREE_DISTANCE;
+    public float SPAWN_RADIUS;
 
     public int MAX_TRIES;
-    
+
+    // Prefabs
+    public GameObject rock;
     public GameObject tree;
     public GameObject healthyBush;
     public GameObject poisonousBush;
@@ -34,7 +35,7 @@ public class NatureSpawner : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        AMOUNT = TREE_AMOUNT + BUSH_AMOUNT;
+        AMOUNT = ROCK_AMOUNT + TREE_AMOUNT + BUSH_AMOUNT;
         HEALTHY_BUSH_AMOUNT = Mathf.RoundToInt(BUSH_AMOUNT * HEALTHY_BUSH_RATIO);
         POISONOUS_BUSH_AMOUNT = BUSH_AMOUNT - HEALTHY_BUSH_AMOUNT;
 
@@ -59,7 +60,7 @@ public class NatureSpawner : MonoBehaviour
                     newPosition = new Vector3(random.Next(-245, 245), 0f, random.Next(-245, 245));
                 while ((newPosition - centerPosition).magnitude < SPAWN_RADIUS);
 
-                if (Collides(newPosition, positions))
+                if (Collides(objects[i], objects, newPosition, positions))
                     tries--;
                 else
                 {
@@ -71,11 +72,24 @@ public class NatureSpawner : MonoBehaviour
         }
     }
 
-    private bool Collides(Vector3 newPosition, List<Vector3> positions)
+    private bool Collides(NatureObject obj, List<NatureObject> objects, Vector3 newPosition, List<Vector3> positions)
     {
-        foreach (Vector3 position in positions)
-            if ((position - newPosition).magnitude < MIN_DISTANCE)
+        float newMinDistance = obj switch
+        {
+            NatureObject.TREE => MIN_TREE_DISTANCE,
+            _ => 1
+        };
+
+        for (int i = 0; i < positions.Count; i ++)
+        {
+            float minDistance = objects[i] switch
+            {
+                NatureObject.TREE => MIN_TREE_DISTANCE,
+                _ => 1
+            };
+            if ((positions[i] - newPosition).magnitude < minDistance + newMinDistance)
                 return true;
+        }
         return false;
     }
 
@@ -83,6 +97,7 @@ public class NatureSpawner : MonoBehaviour
     {
         GameObject prefab = obj switch
         {
+            NatureObject.ROCK =>            rock,
             NatureObject.TREE =>            tree,
             NatureObject.HEALTHY_BUSH =>    healthyBush,
             _ =>                            poisonousBush
@@ -95,6 +110,7 @@ public class NatureSpawner : MonoBehaviour
         List<NatureObject> objects = new List<NatureObject>();
         Dictionary<NatureObject, int> amounts = new Dictionary<NatureObject, int>()
         {
+            { NatureObject.ROCK, ROCK_AMOUNT },
             { NatureObject.TREE, TREE_AMOUNT },
             { NatureObject.HEALTHY_BUSH, HEALTHY_BUSH_AMOUNT },
             { NatureObject.POISONOUS_BUSH, POISONOUS_BUSH_AMOUNT }

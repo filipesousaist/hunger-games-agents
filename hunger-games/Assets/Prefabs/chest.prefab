@@ -366,6 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34164e27e18dd4a58bf1c7d56560e2f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chest: {fileID: 2830913277609566594}
 --- !u!65 &1647842747054137904
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -483,6 +484,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 11629995922195966}
+  - component: {fileID: 2830913277609566594}
   m_Layer: 0
   m_Name: Chest
   m_TagString: Untagged
@@ -511,6 +513,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2830913277609566594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4095034405830328745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b418dfede15b21b429ccb4becfcde5f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DISPLAY_WEAPON_SPEED: 1
+  DISPLAY_WEAPON_HEIGHT: 1.3
 --- !u!1 &5137400630503124142
 GameObject:
   m_ObjectHideFlags: 0

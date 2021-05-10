@@ -23,4 +23,11 @@ public static class Utils
 
         return seq;
     }
+
+    // Clamps a number between a and b (mod b-a)
+
+    public static float ClampMod(float n, float a, float b)
+    {
+        return (n - a) % (b - a) + a;
+    }
 }

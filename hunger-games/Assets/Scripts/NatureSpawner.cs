@@ -74,19 +74,12 @@ public class NatureSpawner : MonoBehaviour
 
     private bool Collides(NatureObject obj, List<NatureObject> objects, Vector3 newPosition, List<Vector3> positions)
     {
-        float newMinDistance = obj switch
-        {
-            NatureObject.TREE => MIN_TREE_DISTANCE,
-            _ => 1
-        };
+        float newMinDistance = (obj == NatureObject.TREE) ? MIN_TREE_DISTANCE : 1;
 
         for (int i = 0; i < positions.Count; i ++)
         {
-            float minDistance = objects[i] switch
-            {
-                NatureObject.TREE => MIN_TREE_DISTANCE,
-                _ => 1
-            };
+            float minDistance = (objects[i] == NatureObject.TREE) ? MIN_TREE_DISTANCE : 1;
+
             if ((positions[i] - newPosition).magnitude < minDistance + newMinDistance)
                 return true;
         }

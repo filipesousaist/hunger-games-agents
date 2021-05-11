@@ -1,34 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
-    public UnityEngine.Camera floorCamera;
-    public UnityEngine.Camera flexibleCamera;
-    public UnityEngine.Camera highViewCamera;
-    // Start is called before the first frame update
+    public Camera floorCamera;
+    public Camera flexibleCamera;
+    public Camera highViewCamera;
 
-    int cameraIndex = 0;
+    public Text nameText;
+    public Text architectureText;
+
+    private int cameraIndex = -1;
+    private Camera[] cameras;
 
     private AgentController agentController;
 
     private void Awake()
     {
         agentController = FindObjectOfType<AgentController>();
+        cameras = new Camera[] { floorCamera, flexibleCamera, highViewCamera };
+    }
+
+    private void Start()
+    {
+        SwitchToNextCamera();
+        UpdateCameraInfo();
     }
 
     // Update is called once per frame
-    void Update() {
+    private void Update() {
 
-        if (Input.GetKeyDown(KeyCode.Tab)) {
-            cameraIndex = (cameraIndex + 1) % 3;
+        if (Input.GetKeyDown(KeyCode.Tab))
+            SwitchToNextCamera();
+    }
 
-            floorCamera.gameObject.SetActive(cameraIndex == 0);
-            flexibleCamera.gameObject.SetActive(cameraIndex == 1);
-            highViewCamera.gameObject.SetActive(cameraIndex == 2);
-            agentController.DisableAllCameras();
-        }
+    private void SwitchToNextCamera()
+    {
+        cameraIndex = (cameraIndex + 1) % 3;
+
+        for (int i = 0; i < cameras.Length; i++)
+            cameras[i].gameObject.SetActive(i == cameraIndex);
+
+        UpdateCameraInfo();
+
+        agentController.DisableAllCameras();
+    }
+
+    public void UpdateCameraInfo()
+    {
+        nameText.text = cameras[cameraIndex].name;
+        architectureText.text = "";
     }
 
     public void DisableAll()
@@ -36,6 +57,5 @@ public class CameraManager : MonoBehaviour
         floorCamera.gameObject.SetActive(false);
         flexibleCamera.gameObject.SetActive(false);
         highViewCamera.gameObject.SetActive(false);
-        
     }
 }

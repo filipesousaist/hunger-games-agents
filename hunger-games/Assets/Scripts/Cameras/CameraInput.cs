@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Camera : MonoBehaviour
+public class CameraInput : MonoBehaviour
 {
     public float SPEED;
     public float ROTATE_SPEED;

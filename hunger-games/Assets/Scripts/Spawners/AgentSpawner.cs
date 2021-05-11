@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AgentSpawner : MonoBehaviour
@@ -11,7 +9,8 @@ public class AgentSpawner : MonoBehaviour
     
     // Prefabs
 
-    public GameObject agent;
+    public GameObject controllableAgent;
+    public GameObject simpleAgent;
 
     public Material[] headMaterials;
 
@@ -26,9 +25,11 @@ public class AgentSpawner : MonoBehaviour
         int[] indexes = Utils.ShuffledArray(AGENT_AMOUNT);
 
         foreach (int i in indexes) {
-            GameObject newAgent = Instantiate(agent);
+            GameObject prefab = (i == 0) ? controllableAgent : simpleAgent;
+            Agent newAgent = Instantiate(prefab).GetComponent<Agent>();
 
-            newAgent.name = "Agent " + (i + 1) + " (" + bodyMaterials[i].name + ")";
+            newAgent.index = i + 1;
+            newAgent.name = "Agent " + newAgent.index;
 
             newAgent.transform.position = new Vector3(
                 (float) Math.Cos(angleRad * i) * SPAWN_RADIUS,
@@ -39,11 +40,5 @@ public class AgentSpawner : MonoBehaviour
             newAgent.transform.Find("Head").GetComponent<MeshRenderer>().material = headMaterials[rnd.Next(0, 3)];
             newAgent.transform.Find("Body").GetComponent<MeshRenderer>().material = bodyMaterials[i];
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

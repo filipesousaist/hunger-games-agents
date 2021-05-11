@@ -16,6 +16,6 @@ public class SimpleDecider : Decider
 
     public override string GetArchitectureName()
     {
-        return "Controllable";
+        return "Simple";
     }
 }

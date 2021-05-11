@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions: 
-  DECISION_TIME: 0.01
+  DECISION_TIME: 0.03
 --- !u!1 &1218025264
 GameObject:
   m_ObjectHideFlags: 0

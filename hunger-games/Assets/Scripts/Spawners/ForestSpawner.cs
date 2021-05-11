@@ -2,30 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NatureSpawner : MonoBehaviour
-{
-    
-    private enum NatureObject
+public class ForestSpawner : MonoBehaviour
+{   
+    private enum ForestObject
     {
-        ROCK, TREE, HEALTHY_BUSH, POISONOUS_BUSH
+        CHEST, ROCK, TREE, HEALTHY_BUSH, POISONOUS_BUSH
     }
 
+    public int CHEST_AMOUNT;
     public int ROCK_AMOUNT;
     public int TREE_AMOUNT;
     public int BUSH_AMOUNT;
     public float HEALTHY_BUSH_RATIO;
-    
+
+    public float MIN_CHEST_DISTANCE;
     public float MIN_TREE_DISTANCE;
+    public float MIN_DEFAULT_DISTANCE;
+
     public float SPAWN_RADIUS;
 
     public int MAX_TRIES;
 
     // Prefabs
+    public GameObject chest;
     public GameObject rock;
     public GameObject tree;
     public GameObject healthyBush;
     public GameObject poisonousBush;
-
+   
     private int AMOUNT;
     private int HEALTHY_BUSH_AMOUNT;
     private int POISONOUS_BUSH_AMOUNT;
@@ -46,7 +50,7 @@ public class NatureSpawner : MonoBehaviour
     {
         Vector3 centerPosition = Vector3.zero;
         List<Vector3> positions = new List<Vector3>();
-        List<NatureObject> objects = GetShuffledObjects();
+        List<ForestObject> objects = GetShuffledObjects();
 
         for (int i = 0; i < AMOUNT; i++)
         {
@@ -72,13 +76,18 @@ public class NatureSpawner : MonoBehaviour
         }
     }
 
-    private bool Collides(NatureObject obj, List<NatureObject> objects, Vector3 newPosition, List<Vector3> positions)
+    private bool Collides(ForestObject obj, List<ForestObject> objects, Vector3 newPosition, List<Vector3> positions)
     {
-        float newMinDistance = (obj == NatureObject.TREE) ? MIN_TREE_DISTANCE : 1;
+        float newMinDistance = obj switch
+        {
+            ForestObject.CHEST => MIN_CHEST_DISTANCE,
+            ForestObject.TREE => MIN_TREE_DISTANCE,
+            _ => MIN_DEFAULT_DISTANCE
+        };  
 
         for (int i = 0; i < positions.Count; i ++)
         {
-            float minDistance = (objects[i] == NatureObject.TREE) ? MIN_TREE_DISTANCE : 1;
+            float minDistance = (objects[i] == ForestObject.TREE) ? MIN_TREE_DISTANCE : 0.5f;
 
             if ((positions[i] - newPosition).magnitude < minDistance + newMinDistance)
                 return true;
@@ -86,33 +95,37 @@ public class NatureSpawner : MonoBehaviour
         return false;
     }
 
-    private void CreateObject(NatureObject obj, Vector3 position)
+    private void CreateObject(ForestObject obj, Vector3 position)
     {
         GameObject prefab = obj switch
         {
-            NatureObject.ROCK =>            rock,
-            NatureObject.TREE =>            tree,
-            NatureObject.HEALTHY_BUSH =>    healthyBush,
+            ForestObject.CHEST =>           chest,
+            ForestObject.ROCK =>            rock,
+            ForestObject.TREE =>            tree,
+            ForestObject.HEALTHY_BUSH =>    healthyBush,
             _ =>                            poisonousBush
         };
-        Instantiate(prefab, position, Quaternion.identity);
+
+        Quaternion rotation = Quaternion.Euler(0, random.Next(4) * 90, 0);
+        Instantiate(prefab, position, rotation);
     }
 
-    private List<NatureObject> GetShuffledObjects()
+    private List<ForestObject> GetShuffledObjects()
     {
-        List<NatureObject> objects = new List<NatureObject>();
-        Dictionary<NatureObject, int> amounts = new Dictionary<NatureObject, int>()
+        List<ForestObject> objects = new List<ForestObject>();
+        Dictionary<ForestObject, int> amounts = new Dictionary<ForestObject, int>()
         {
-            { NatureObject.ROCK, ROCK_AMOUNT },
-            { NatureObject.TREE, TREE_AMOUNT },
-            { NatureObject.HEALTHY_BUSH, HEALTHY_BUSH_AMOUNT },
-            { NatureObject.POISONOUS_BUSH, POISONOUS_BUSH_AMOUNT }
+            { ForestObject.CHEST, CHEST_AMOUNT },
+            { ForestObject.ROCK, ROCK_AMOUNT },
+            { ForestObject.TREE, TREE_AMOUNT },
+            { ForestObject.HEALTHY_BUSH, HEALTHY_BUSH_AMOUNT },
+            { ForestObject.POISONOUS_BUSH, POISONOUS_BUSH_AMOUNT }
         };
 
         foreach (int n in Utils.ShuffledArray(AMOUNT))
         {
             int current = 0;
-            foreach (NatureObject obj in amounts.Keys)
+            foreach (ForestObject obj in amounts.Keys)
             {
                 current += amounts[obj];
                 if (n < current)

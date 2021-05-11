@@ -142,8 +142,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &75648738
-BoxCollider:
+--- !u!64 &75648738
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -152,9 +152,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &75648739
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -500,6 +501,7 @@ GameObject:
   - component: {fileID: 819680917}
   - component: {fileID: 819680916}
   - component: {fileID: 819680915}
+  - component: {fileID: 819680914}
   m_Layer: 0
   m_Name: Agent Spawn
   m_TagString: Untagged
@@ -507,6 +509,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!64 &819680914
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819680913}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &819680915
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -730,6 +746,7 @@ GameObject:
   - component: {fileID: 1097084202}
   - component: {fileID: 1097084205}
   - component: {fileID: 1097084206}
+  - component: {fileID: 1097084204}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -749,13 +766,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef812d9243676c9458a3484dd52f5fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CHEST_AMOUNT: 30
   ROCK_AMOUNT: 1200
   TREE_AMOUNT: 1800
   BUSH_AMOUNT: 100
   HEALTHY_BUSH_RATIO: 0.8
+  MIN_CHEST_DISTANCE: 1
   MIN_TREE_DISTANCE: 2.5
+  MIN_DEFAULT_DISTANCE: 0.5
   SPAWN_RADIUS: 50
   MAX_TRIES: 20
+  chest: {fileID: 4095034405830328745, guid: 9aaa3acdd2ace4510b806d8eb20ffb54, type: 3}
   rock: {fileID: 2446834411737309455, guid: 51da8ab0cd033434fa07d96053052274, type: 3}
   tree: {fileID: 5541572842809286804, guid: 6e6c1fd56da1ea443a8f6fc1ad789725, type: 3}
   healthyBush: {fileID: 3969561061648846559, guid: e7c6e699038a06e468d649a3632adcc8, type: 3}
@@ -774,6 +795,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1097084204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097084201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f43164d085a3c114997de3a8f0a4c5d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1097084205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,7 +820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AGENT_AMOUNT: 8
-  SPAWN_RADIUS: 15
+  SPAWN_RADIUS: 25
   agent: {fileID: 5273391439425887440, guid: 7a5b46eaa37830b45afb52a0b4c72ccb, type: 3}
   headMaterials:
   - {fileID: 2100000, guid: 436950409a51f284f93dedf5176acba1, type: 2}
@@ -817,8 +850,6 @@ MonoBehaviour:
   CHEST_AMOUNT: 4
   SPAWN_RADIUS: 5
   chest: {fileID: 4095034405830328745, guid: 9aaa3acdd2ace4510b806d8eb20ffb54, type: 3}
-  sword: {fileID: 6882281863892944613, guid: f1fb44e7a53bb45cdbe9f1b7e918fc75, type: 3}
-  bow: {fileID: 4049146905337257210, guid: 697efd05e1f2b41c18f386acba9613a1, type: 3}
 --- !u!1 &1218025264
 GameObject:
   m_ObjectHideFlags: 0

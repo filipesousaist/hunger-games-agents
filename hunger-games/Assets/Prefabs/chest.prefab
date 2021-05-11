@@ -527,6 +527,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DISPLAY_WEAPON_SPEED: 1
   DISPLAY_WEAPON_HEIGHT: 1.3
+  sword: {fileID: 6882281863892944613, guid: f1fb44e7a53bb45cdbe9f1b7e918fc75, type: 3}
+  bow: {fileID: 4049146905337257210, guid: 697efd05e1f2b41c18f386acba9613a1, type: 3}
 --- !u!1 &5137400630503124142
 GameObject:
   m_ObjectHideFlags: 0

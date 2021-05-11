@@ -8,23 +8,34 @@ public class CameraManager : MonoBehaviour
     public UnityEngine.Camera flexibleCamera;
     public UnityEngine.Camera highViewCamera;
     // Start is called before the first frame update
-    void Start() {
+
+    int cameraIndex = 0;
+
+    private AgentController agentController;
+
+    private void Awake()
+    {
+        agentController = FindObjectOfType<AgentController>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            floorCamera.gameObject.SetActive(true);
-            flexibleCamera.gameObject.SetActive(false);
-            highViewCamera.gameObject.SetActive(false);
-        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            flexibleCamera.gameObject.SetActive(true);
-            floorCamera.gameObject.SetActive(false);
-            highViewCamera.gameObject.SetActive(false);
-        } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            highViewCamera.gameObject.SetActive(true);
-            floorCamera.gameObject.SetActive(false);
-            flexibleCamera.gameObject.SetActive(false);
+
+        if (Input.GetKeyDown(KeyCode.Tab)) {
+            cameraIndex = (cameraIndex + 1) % 3;
+
+            floorCamera.gameObject.SetActive(cameraIndex == 0);
+            flexibleCamera.gameObject.SetActive(cameraIndex == 1);
+            highViewCamera.gameObject.SetActive(cameraIndex == 2);
+            agentController.DisableAllCameras();
         }
+    }
+
+    public void DisableAll()
+    {
+        floorCamera.gameObject.SetActive(false);
+        flexibleCamera.gameObject.SetActive(false);
+        highViewCamera.gameObject.SetActive(false);
+        
     }
 }

@@ -14,40 +14,6 @@ public class OpenChest : MonoBehaviour
     private Coroutine openCo;
     private Coroutine closeCo;
 
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        if (rotating)
-        {
-            int direction = closed ? 1 : -1;
-            transform.parent.Rotate(0, 0, direction * ANGULAR_VELOCITY * Time.deltaTime);
-
-            CheckRotationLimits();
-        }
-        */
-
-    }
-
-
-    void CheckRotationLimits()
-    {
-        float rotZ = Utils.ClampMod(transform.parent.rotation.eulerAngles.z, -180, 180);
-        
-        if (closed && rotZ >= 90)
-        {
-            //rotating = false;
-            closed = false;
-            transform.parent.Rotate(0, 0, 90 - rotZ);
-        }
-        else if (!closed && rotZ <= 0)
-        {
-            //rotating = false;
-            closed = true;
-            transform.parent.Rotate(0, 0, -rotZ);
-        }
-    }
-
     void OnMouseDown()
     {
         if (closed)

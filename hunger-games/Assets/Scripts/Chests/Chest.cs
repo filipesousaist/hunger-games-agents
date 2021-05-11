@@ -6,11 +6,25 @@ public class Chest : MonoBehaviour
     public float DISPLAY_WEAPON_SPEED;
     public float DISPLAY_WEAPON_HEIGHT;
 
+    public GameObject sword;
+    public GameObject bow;
+
     private Weapon currentWeapon;
     private float weaponOriginalHeight;
 
     private Coroutine displayWeaponCo;
     private Coroutine hideWeaponCo;
+
+    private readonly System.Random random = new System.Random();
+
+    private void Start()
+    {
+        GameObject prefab = random.Next(2) == 0 ? sword : bow;
+        GameObject newWeapon = Instantiate(prefab, transform.position + Vector3.up * 0.3f, Quaternion.Euler(new Vector3(0, -45, 90)));
+        newWeapon.transform.Rotate(new Vector3(0, 0, 45), Space.Self);
+
+        SetWeapon(newWeapon.GetComponent<Weapon>());
+    }
 
 
     public void SetWeapon(Weapon weapon)

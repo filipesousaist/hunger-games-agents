@@ -28,6 +28,8 @@ public class AgentSpawner : MonoBehaviour
         foreach (int i in indexes) {
             GameObject newAgent = Instantiate(agent);
 
+            newAgent.name = "Agent " + (i + 1) + " (" + bodyMaterials[i].name + ")";
+
             newAgent.transform.position = new Vector3(
                 (float) Math.Cos(angleRad * i) * SPAWN_RADIUS,
                 0,

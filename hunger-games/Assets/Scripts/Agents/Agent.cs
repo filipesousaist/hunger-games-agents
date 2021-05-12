@@ -15,14 +15,27 @@ public class Agent : MonoBehaviour
     [ReadOnly] public int index;
 
     public int BASE_ATTACK;
+    public int MAX_ATTACK;
     public int MAX_ENERGY;
 
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
     private Weapon weapon;
 
-    private bool training;
-    private int trainTime;
+    private bool training = false;
+    private int trainTimer; // Epochs
+    private float trainAnimationTimer;
+
+    public int TRAIN_DURATION; // Epochs
+    public int TRAIN_ATTACK_GAIN;
+    public int TRAIN_ENERGY_LOSS;
+
+    public float TRAIN_JUMP_HEIGHT;
+    public float TRAIN_NUM_JUMPS; // Number of jumps during train
+
+    private float TRAIN_JUMP_DURATION; // s
+    private float TRAIN_JUMP_INITIAL_SPEED;
+    private float TRAIN_GRAVITY_ACC;
 
     public Vector3 SWORD_POSITION;
     public Vector3 SWORD_ROTATION;
@@ -54,6 +67,11 @@ public class Agent : MonoBehaviour
     {
         WALK_SPEED = WALK_DISTANCE / environment.DECISION_TIME;
         ROTATE_SPEED = ROTATE_ANGLE / environment.DECISION_TIME;
+
+        TRAIN_JUMP_DURATION = TRAIN_DURATION * environment.DECISION_TIME / TRAIN_NUM_JUMPS;
+        TRAIN_JUMP_INITIAL_SPEED = 4 * TRAIN_JUMP_HEIGHT / TRAIN_JUMP_DURATION;
+        TRAIN_GRAVITY_ACC = TRAIN_JUMP_INITIAL_SPEED / TRAIN_JUMP_DURATION;
+
         attack = BASE_ATTACK;
         energy = MAX_ENERGY;
         weapon = null;
@@ -62,26 +80,52 @@ public class Agent : MonoBehaviour
         agentController.AddAgent(this);
     }
 
+    void Update()
+    {
+        if (training)
+        {
+            trainAnimationTimer += Time.deltaTime;
+
+            float t = trainAnimationTimer % TRAIN_JUMP_DURATION;
+            float y = TRAIN_JUMP_INITIAL_SPEED * t - TRAIN_GRAVITY_ACC * t * t;
+
+            transform.position += transform.up * (y - transform.position.y);
+        }
+    }
+
     // TODO: Sensors
 
     // Actions
     public void BeforeAction()
     {
-        myRigidbody.velocity = Vector3.zero;
-        myRigidbody.angularVelocity = Vector3.zero;
+
+        if (training)
+        {
+            trainTimer ++;
+            if (trainTimer == TRAIN_DURATION)
+                FinishTraining();
+        }
+        else
+        {
+            myRigidbody.velocity = Vector3.zero;
+            myRigidbody.angularVelocity = Vector3.zero;
+        }
     }
 
     public void ExecuteAction(Action action)
     {
-        switch (action)
-        {
-            case Action.IDLE: Idle(); break;
-            case Action.WALK: Walk(); break;
-            case Action.ROTATE_LEFT: RotateLeft(); break;
-            case Action.ROTATE_RIGHT: RotateRight(); break;
-            case Action.USE_CHEST: UseChest(); break;
-            case Action.EAT_BERRIES: EatBerries(); break;
-        }
+        if (!training)
+            switch (action)
+            {
+                case Action.IDLE:           Idle();         break;
+                case Action.WALK:           Walk();         break;
+                case Action.ROTATE_LEFT:    RotateLeft();   break;
+                case Action.ROTATE_RIGHT:   RotateRight();  break;
+                case Action.USE_CHEST:      UseChest();     break;
+                case Action.EAT_BERRIES:    EatBerries();   break;
+                case Action.ATTACK:         Attack();       break;
+                case Action.TRAIN:          Train();        break;
+            }
     }
 
     protected void ChooseAction(Action action)
@@ -127,7 +171,7 @@ public class Agent : MonoBehaviour
 
     private void Train()
     {
-
+        training = true;
     }
 
     public IEnumerator Decide()
@@ -136,7 +180,6 @@ public class Agent : MonoBehaviour
         yield return null;
     }
 
-    // Method to control agents
     public void SetControllable(bool controllable)
     { 
         decider.SetControllable(controllable);
@@ -174,5 +217,35 @@ public class Agent : MonoBehaviour
     public void UpdateInfo()
     {
         agentController.UpdateInfo();
+    }
+
+    private void FinishTraining()
+    {
+        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, MAX_ATTACK);
+        LoseEnergy(TRAIN_ENERGY_LOSS);
+
+        training = false;
+        trainTimer = 0;
+        trainAnimationTimer = 0;
+    }
+
+    private void Die()
+    {
+        Debug.Log(name + " died!");
+    }
+
+    public void LoseEnergy(int amount)
+    {
+        energy = Mathf.Max(energy - amount, 0);
+        if (energy == 0)
+            Die();
+
+        UpdateInfo();
+    }
+
+    public void GainEnergy(int amount)
+    {
+        energy = Mathf.Min(energy + amount, MAX_ENERGY);
+        UpdateInfo();
     }
 }

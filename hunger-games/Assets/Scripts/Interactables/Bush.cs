@@ -36,8 +36,6 @@ public abstract class Bush : Interactable
         {
             EatBerries(agent);
             ChangeBushType();
-
-            agent.UpdateInfo();
         }
     }
 

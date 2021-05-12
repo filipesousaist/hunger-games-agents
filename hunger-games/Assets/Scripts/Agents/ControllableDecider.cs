@@ -12,6 +12,10 @@ public class ControllableDecider : Decider
                 return Agent.Action.EAT_BERRIES;
             else if (Input.GetKey(KeyCode.R))
                 return Agent.Action.USE_CHEST;
+            else if (Input.GetKey(KeyCode.T))
+                return Agent.Action.TRAIN;
+            else if (Input.GetKey(KeyCode.Space))
+                return Agent.Action.ATTACK;
             else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
                 return Agent.Action.ROTATE_LEFT;
             else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))

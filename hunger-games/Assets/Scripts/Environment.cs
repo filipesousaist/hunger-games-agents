@@ -54,6 +54,11 @@ public class Environment : MonoBehaviour
         agents[agent.index - 1] = agent;
     }
 
+    public IEnumerable<Agent> GetAllAgents()
+    {
+        return agents;
+    }
+
     private bool AllAgentsSpawned()
     {
         foreach (Agent agent in agents)

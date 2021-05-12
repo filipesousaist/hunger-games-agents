@@ -142,6 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   otherPrefab: {fileID: 3320823807344000795, guid: 91be94a4455b087459f96408f8bddf81, type: 3}
   hasBerries: 0
+  GROW_TIME: 120
   ENERGY_LOSS: 0
 --- !u!1 &6575859779689839611
 GameObject:

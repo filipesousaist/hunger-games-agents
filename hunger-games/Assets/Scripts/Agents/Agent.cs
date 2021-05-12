@@ -5,7 +5,7 @@ public class Agent : MonoBehaviour
 {
     public enum Action
     {
-        IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT, USE_CHEST, EAT_BERRIES
+        IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT, USE_CHEST, EAT_BERRIES, ATTACK, TRAIN
     }
 
     public Camera cam;
@@ -20,6 +20,9 @@ public class Agent : MonoBehaviour
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
     private Weapon weapon;
+
+    private bool training;
+    private int trainTime;
 
     public Vector3 SWORD_POSITION;
     public Vector3 SWORD_ROTATION;
@@ -115,6 +118,16 @@ public class Agent : MonoBehaviour
         Bush bush = interactionCollider.GetNearestBush(transform.position);
         if (bush != null && bush.hasBerries)
             bush.Interact(this);
+    }
+
+    private void Attack()
+    {
+
+    }
+
+    private void Train()
+    {
+
     }
 
     public IEnumerator Decide()

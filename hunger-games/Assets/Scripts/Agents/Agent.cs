@@ -5,10 +5,12 @@ public class Agent : MonoBehaviour
 {
     public enum Action
     {
-        IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT
+        IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT, USE_CHEST, EAT_BERRIES
     }
 
-    public UnityEngine.Camera cam;
+    public Camera cam;
+
+    public AgentInteractionCollider interactionCollider;
 
     [ReadOnly] public int index;
 
@@ -17,6 +19,7 @@ public class Agent : MonoBehaviour
 
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
+    private Weapon weapon;
 
     public float WALK_DISTANCE;
     public float ROTATE_ANGLE;
@@ -45,6 +48,7 @@ public class Agent : MonoBehaviour
         ROTATE_SPEED = ROTATE_ANGLE / environment.DECISION_TIME;
         attack = BASE_ATTACK;
         energy = MAX_ENERGY;
+        weapon = null;
 
         environment.AddAgent(this);
         agentController.AddAgent(this);
@@ -67,6 +71,8 @@ public class Agent : MonoBehaviour
             case Action.WALK: Walk(); break;
             case Action.ROTATE_LEFT: RotateLeft(); break;
             case Action.ROTATE_RIGHT: RotateRight(); break;
+            case Action.USE_CHEST: UseChest(); break;
+            case Action.EAT_BERRIES: EatBerries(); break;
         }
     }
 
@@ -92,6 +98,20 @@ public class Agent : MonoBehaviour
         myRigidbody.angularVelocity = transform.up * ROTATE_SPEED;
     }
 
+    private void UseChest()
+    {
+        Chest chest = interactionCollider.GetNearestChest(transform.position);
+        if (chest != null)
+            chest.Interact(this);
+    }
+
+    private void EatBerries()
+    {
+        Bush bush = interactionCollider.GetNearestBush(transform.position);
+        if (bush != null && bush.hasBerries)
+            bush.Interact(this);
+    }
+
     public IEnumerator Decide()
     {
         ChooseAction(decider.Decide());
@@ -107,5 +127,22 @@ public class Agent : MonoBehaviour
     public string GetArchitectureName()
     {
         return decider.GetArchitectureName();
+    }
+
+    public void EquipWeapon(Weapon newWeapon)
+    {
+        weapon = newWeapon;
+    }
+
+    public Weapon UnequipWeapon()
+    {
+        Weapon oldWeapon = weapon;
+        weapon = null;
+        return oldWeapon;
+    }
+
+    public void UpdateInfo()
+    {
+        agentController.UpdateInfo();
     }
 }

@@ -7,6 +7,8 @@ public class AgentController : MonoBehaviour
 
     public Text nameText;
     public Text architectureText;
+    public Text energyText;
+    public Text attackText;
 
     private int agentIndex = 0;
     private Agent agent = null;
@@ -58,7 +60,7 @@ public class AgentController : MonoBehaviour
             agent = agents[agentIndex];
 
             ToggleAgentControl(true);
-            UpdateAgentInfo();
+            UpdateInfo();
         }
     }
 
@@ -69,10 +71,17 @@ public class AgentController : MonoBehaviour
                 a.cam.gameObject.SetActive(false);
     }
 
-    public void UpdateAgentInfo()
+    public void UpdateInfo()
     {
         nameText.text = agent.name;
         architectureText.text = agent.GetArchitectureName() + " agent";
+        energyText.text = "Energy: " + agent.energy;
+        attackText.text = "Attack: " + agent.attack;
+    }
+
+    public void RemoveInfo()
+    {
+        nameText.text = architectureText.text = energyText.text = attackText.text = "";
     }
 
     public void ToggleAgentControl(bool isControllable)

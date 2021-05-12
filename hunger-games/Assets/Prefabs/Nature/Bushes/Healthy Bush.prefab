@@ -104,8 +104,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2910853979005246856}
+  - component: {fileID: 6567785013187853925}
   m_Layer: 0
-  m_Name: Bush
+  m_Name: Healthy Bush
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,7 +120,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4263517449767692563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 72, y: 0, z: 26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 311049905007882248}
@@ -127,6 +128,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6567785013187853925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263517449767692563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22925154df7c7a74bb3dc600523376a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  otherPrefab: {fileID: 3969561061648846559, guid: e7c6e699038a06e468d649a3632adcc8, type: 3}
+  hasBerries: 0
+  ENERGY_GAIN: 0
 --- !u!1 &6575859779689839611
 GameObject:
   m_ObjectHideFlags: 0

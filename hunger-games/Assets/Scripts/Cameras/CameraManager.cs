@@ -8,7 +8,6 @@ public class CameraManager : MonoBehaviour
     public Camera highViewCamera;
 
     public Text nameText;
-    public Text architectureText;
 
     private int cameraIndex = -1;
     private Camera[] cameras;
@@ -49,7 +48,7 @@ public class CameraManager : MonoBehaviour
     public void UpdateCameraInfo()
     {
         nameText.text = cameras[cameraIndex].name;
-        architectureText.text = "";
+        agentController.RemoveInfo();
     }
 
     public void DisableAll()

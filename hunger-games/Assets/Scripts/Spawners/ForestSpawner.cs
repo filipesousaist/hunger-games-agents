@@ -39,7 +39,7 @@ public class ForestSpawner : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        AMOUNT = ROCK_AMOUNT + TREE_AMOUNT + BUSH_AMOUNT;
+        AMOUNT = CHEST_AMOUNT + ROCK_AMOUNT + TREE_AMOUNT + BUSH_AMOUNT;
         HEALTHY_BUSH_AMOUNT = Mathf.RoundToInt(BUSH_AMOUNT * HEALTHY_BUSH_RATIO);
         POISONOUS_BUSH_AMOUNT = BUSH_AMOUNT - HEALTHY_BUSH_AMOUNT;
 

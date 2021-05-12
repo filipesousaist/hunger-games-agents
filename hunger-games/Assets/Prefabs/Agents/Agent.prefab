@@ -418,6 +418,10 @@ MonoBehaviour:
   MAX_ENERGY: 10
   attack: 0
   energy: 0
+  SWORD_POSITION: {x: 0.25, y: 1.5, z: 0.6}
+  SWORD_ROTATION: {x: 45, y: 0, z: 0}
+  BOW_POSITION: {x: 0.4, y: 1.5, z: 0.6}
+  BOW_ROTATION: {x: 180, y: 0, z: 0}
   WALK_DISTANCE: 0.4
   ROTATE_ANGLE: 15
 --- !u!1 &8935592185032343749

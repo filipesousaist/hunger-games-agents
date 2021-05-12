@@ -9,8 +9,9 @@ public class Chest : Interactable
         OPEN, CLOSED, OPENING, CLOSING
     }
 
-    public float DISPLAY_WEAPON_SPEED;
-    public float DISPLAY_WEAPON_HEIGHT;
+    public float WEAPON_MOVE_SPEED;
+    public float SHOW_WEAPON_HEIGHT;
+    public float HIDE_WEAPON_HEIGHT;
 
     public float ANGULAR_VELOCITY;
 
@@ -20,7 +21,6 @@ public class Chest : Interactable
     public GameObject bow;
 
     private Weapon currentWeapon;
-    private float weaponOriginalHeight;
 
     private Coroutine openCo;
     private Coroutine closeCo;
@@ -31,8 +31,6 @@ public class Chest : Interactable
 
     private List<AgentInteractionCollider> interactionColliders;
 
-    private readonly System.Random random = new System.Random();
-
     private void Awake()
     {
         interactionColliders = new List<AgentInteractionCollider>();
@@ -41,18 +39,27 @@ public class Chest : Interactable
     private void Start()
     {
         state = State.CLOSED;
-        GameObject prefab = random.Next(10) < 5 ? sword : bow;
-        GameObject newWeapon = Instantiate(prefab, transform.position + Vector3.up * 0.3f, Quaternion.Euler(new Vector3(0, -45, 90)));
-        newWeapon.transform.Rotate(new Vector3(0, 0, 45), Space.Self);
+        GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
 
-        SetWeapon(newWeapon.GetComponent<Weapon>());
+        GameObject newWeapon = Instantiate(prefab);
+        SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
     }
 
 
-    public void SetWeapon(Weapon weapon)
+    public void SetWeapon(Weapon weapon, float height)
     {
         currentWeapon = weapon;
-        weaponOriginalHeight = weapon.transform.position.y;
+        if (currentWeapon != null)
+        {
+            currentWeapon.transform.parent = transform;
+            SetWeaponPosition(height);
+        }
+    }
+
+    private void SetWeaponPosition(float height)
+    {
+        currentWeapon.transform.localPosition = Vector3.up * (height - transform.position.y);
+        currentWeapon.transform.localRotation = Quaternion.Euler(new Vector3(0, -45, 135));
     }
 
     public void Open()
@@ -109,9 +116,9 @@ public class Chest : Interactable
             StopCoroutine(hideWeaponCo);
 
         Transform weaponTransform = currentWeapon.transform;
-        while (weaponTransform.position.y < DISPLAY_WEAPON_HEIGHT)
+        while (weaponTransform.position.y < SHOW_WEAPON_HEIGHT)
         {
-            float distance = Mathf.Min(DISPLAY_WEAPON_SPEED * Time.deltaTime, DISPLAY_WEAPON_HEIGHT - weaponTransform.position.y);
+            float distance = Mathf.Min(WEAPON_MOVE_SPEED * Time.deltaTime, SHOW_WEAPON_HEIGHT - weaponTransform.position.y);
             weaponTransform.position += Vector3.up * distance;
             yield return null;
         }
@@ -123,9 +130,9 @@ public class Chest : Interactable
             StopCoroutine(displayWeaponCo);
 
         Transform weaponTransform = currentWeapon.transform;
-        while (weaponTransform.position.y > weaponOriginalHeight)
+        while (weaponTransform.position.y > HIDE_WEAPON_HEIGHT)
         {
-            float distance = Mathf.Min(DISPLAY_WEAPON_SPEED * Time.deltaTime, weaponTransform.position.y - weaponOriginalHeight);
+            float distance = Mathf.Min(WEAPON_MOVE_SPEED * Time.deltaTime, weaponTransform.position.y - HIDE_WEAPON_HEIGHT);
             weaponTransform.position += Vector3.down * distance;
             yield return null;
         }
@@ -160,6 +167,6 @@ public class Chest : Interactable
     {
         Weapon agentWeapon = agent.UnequipWeapon();
         agent.EquipWeapon(currentWeapon);
-        currentWeapon = agentWeapon;
+        SetWeapon(agentWeapon, SHOW_WEAPON_HEIGHT);
     }
 }

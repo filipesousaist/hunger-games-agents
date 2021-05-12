@@ -456,8 +456,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b418dfede15b21b429ccb4becfcde5f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DISPLAY_WEAPON_SPEED: 1
-  DISPLAY_WEAPON_HEIGHT: 1.3
+  WEAPON_MOVE_SPEED: 1
+  SHOW_WEAPON_HEIGHT: 1.3
+  HIDE_WEAPON_HEIGHT: 0.3
   ANGULAR_VELOCITY: 90
   lid: {fileID: 5314748780943461255}
   sword: {fileID: 6882281863892944613, guid: f1fb44e7a53bb45cdbe9f1b7e918fc75, type: 3}

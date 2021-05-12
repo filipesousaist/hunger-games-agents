@@ -43,12 +43,13 @@ public class CameraManager : MonoBehaviour
         UpdateCameraInfo();
 
         agentController.DisableAllCameras();
+        agentController.ToggleAgentControl(false);
     }
 
     public void UpdateCameraInfo()
     {
-        nameText.text = cameras[cameraIndex].name;
         agentController.RemoveInfo();
+        nameText.text = cameras[cameraIndex].name;
     }
 
     public void DisableAll()

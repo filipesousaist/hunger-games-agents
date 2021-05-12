@@ -18,7 +18,6 @@ public class ControllableDecider : Decider
                 return Agent.Action.ROTATE_RIGHT;
             else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
                 return Agent.Action.WALK;
-            
         }
         return Agent.Action.IDLE;
     }

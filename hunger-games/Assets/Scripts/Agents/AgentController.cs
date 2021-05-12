@@ -14,6 +14,11 @@ public class AgentController : MonoBehaviour
     private Agent agent = null;
     private Agent[] agents;
 
+    private bool firstPerson = true;
+
+    public Vector3 FIRST_PERSON_CAM_POS;
+    public Vector3 THIRD_PERSON_CAM_POS;
+
     private int NUM_AGENTS;
 
     // Start is called before the first frame update
@@ -31,6 +36,12 @@ public class AgentController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            firstPerson = !firstPerson;
+            SetCameraView();
+        }
+
         bool clicked = true;
         if (Input.GetKeyDown(KeyCode.Alpha1))
             agentIndex = 0;
@@ -58,6 +69,7 @@ public class AgentController : MonoBehaviour
                 ToggleAgentControl(false);
 
             agent = agents[agentIndex];
+            SetCameraView();
 
             ToggleAgentControl(true);
             UpdateInfo();
@@ -86,7 +98,22 @@ public class AgentController : MonoBehaviour
 
     public void ToggleAgentControl(bool isControllable)
     {
-        agent.cam.gameObject.SetActive(isControllable);
-        agent.SetControllable(isControllable);
+        if (agent != null)
+        {
+            agent.cam.gameObject.SetActive(isControllable);
+            agent.SetControllable(isControllable);
+        }
+    }
+
+    public void SetCameraView()
+    {
+        if (agent != null)
+        {
+            Transform cam = agent.cam.transform;
+            if (firstPerson)
+                cam.localPosition = FIRST_PERSON_CAM_POS;
+            else
+                cam.localPosition = THIRD_PERSON_CAM_POS;
+            }
     }
 }

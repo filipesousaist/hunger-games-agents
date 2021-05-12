@@ -21,6 +21,11 @@ public class Agent : MonoBehaviour
     [ReadOnly] public int energy;
     private Weapon weapon;
 
+    public Vector3 SWORD_POSITION;
+    public Vector3 SWORD_ROTATION;
+    public Vector3 BOW_POSITION;
+    public Vector3 BOW_ROTATION;
+
     public float WALK_DISTANCE;
     public float ROTATE_ANGLE;
 
@@ -129,9 +134,21 @@ public class Agent : MonoBehaviour
         return decider.GetArchitectureName();
     }
 
+    private void ResetWeaponPosition()
+    {
+        weapon.transform.localPosition = weapon.type == Weapon.Type.SWORD ? SWORD_POSITION : BOW_POSITION;
+        weapon.transform.localRotation = Quaternion.Euler(
+            weapon.type == Weapon.Type.SWORD ? SWORD_ROTATION : BOW_ROTATION);
+    }
+
     public void EquipWeapon(Weapon newWeapon)
     {
         weapon = newWeapon;
+        if (weapon != null)
+        {
+            weapon.transform.parent = transform;
+            ResetWeaponPosition();
+        }
     }
 
     public Weapon UnequipWeapon()

@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public enum WeaponType
+    public enum Type
     {
         SWORD, BOW
     }
 
-    public WeaponType type;
+    public Type type;
     private int attack;
 }

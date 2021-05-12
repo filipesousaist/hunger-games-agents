@@ -1117,6 +1117,8 @@ MonoBehaviour:
   architectureText: {fileID: 326070941}
   energyText: {fileID: 301858849}
   attackText: {fileID: 216679793}
+  FIRST_PERSON_CAM_POS: {x: 0, y: 1.5, z: 0}
+  THIRD_PERSON_CAM_POS: {x: 0, y: 4, z: -8}
 --- !u!114 &1097084205
 MonoBehaviour:
   m_ObjectHideFlags: 0

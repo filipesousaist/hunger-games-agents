@@ -34,8 +34,6 @@ public class ForestSpawner : MonoBehaviour
     private int HEALTHY_BUSH_AMOUNT;
     private int POISONOUS_BUSH_AMOUNT;
 
-    private readonly System.Random random = new System.Random();
-
     // Start is called before the first frame update
     private void Start()
     {
@@ -61,7 +59,7 @@ public class ForestSpawner : MonoBehaviour
             {
                 Vector3 newPosition;
                 do
-                    newPosition = new Vector3(random.Next(-245, 245), 0f, random.Next(-245, 245));
+                    newPosition = new Vector3(Random.Range(-247, 248), 0f, Random.Range(-247, 248));
                 while ((newPosition - centerPosition).magnitude < SPAWN_RADIUS);
 
                 if (Collides(objects[i], objects, newPosition, positions))
@@ -106,7 +104,7 @@ public class ForestSpawner : MonoBehaviour
             _ =>                            poisonousBush
         };
 
-        Quaternion rotation = Quaternion.Euler(0, random.Next(4) * 90, 0);
+        Quaternion rotation = Quaternion.Euler(0, Random.Range(0, 4) * 90, 0);
         Instantiate(prefab, position, rotation);
     }
 

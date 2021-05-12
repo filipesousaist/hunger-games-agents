@@ -424,6 +424,8 @@ MonoBehaviour:
   TRAIN_ENERGY_LOSS: 2
   TRAIN_JUMP_HEIGHT: 0.8
   TRAIN_NUM_JUMPS: 5
+  ropePrefab: {fileID: 4435243925886159975, guid: 7037779a29b764631a4f48b19a654bf8, type: 3}
+  ROPE_OFFSET_Y: 1.5
   SWORD_POSITION: {x: 0.25, y: 1.5, z: 0.6}
   SWORD_ROTATION: {x: 45, y: 0, z: 0}
   BOW_POSITION: {x: 0.4, y: 1.5, z: 0.6}

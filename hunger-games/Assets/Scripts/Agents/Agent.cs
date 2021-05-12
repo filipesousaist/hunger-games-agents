@@ -33,9 +33,15 @@ public class Agent : MonoBehaviour
     public float TRAIN_JUMP_HEIGHT;
     public float TRAIN_NUM_JUMPS; // Number of jumps during train
 
+    public GameObject ropePrefab;
+    private GameObject rope;
+
     private float TRAIN_JUMP_DURATION; // s
     private float TRAIN_JUMP_INITIAL_SPEED;
     private float TRAIN_GRAVITY_ACC;
+
+    private float ROPE_ANGULAR_FREQ;
+    public float ROPE_OFFSET_Y;
 
     public Vector3 SWORD_POSITION;
     public Vector3 SWORD_ROTATION;
@@ -72,6 +78,8 @@ public class Agent : MonoBehaviour
         TRAIN_JUMP_INITIAL_SPEED = 4 * TRAIN_JUMP_HEIGHT / TRAIN_JUMP_DURATION;
         TRAIN_GRAVITY_ACC = TRAIN_JUMP_INITIAL_SPEED / TRAIN_JUMP_DURATION;
 
+        ROPE_ANGULAR_FREQ = 360 / TRAIN_JUMP_DURATION;
+
         attack = BASE_ATTACK;
         energy = MAX_ENERGY;
         weapon = null;
@@ -90,6 +98,8 @@ public class Agent : MonoBehaviour
             float y = TRAIN_JUMP_INITIAL_SPEED * t - TRAIN_GRAVITY_ACC * t * t;
 
             transform.position += transform.up * (y - transform.position.y);
+
+            rope.transform.Rotate(new Vector3(0, 0, ROPE_ANGULAR_FREQ * Time.deltaTime), Space.Self);
         }
     }
 
@@ -172,6 +182,8 @@ public class Agent : MonoBehaviour
     private void Train()
     {
         training = true;
+
+        CreateRope();
     }
 
     public IEnumerator Decide()
@@ -219,6 +231,14 @@ public class Agent : MonoBehaviour
         agentController.UpdateInfo();
     }
 
+    private void CreateRope()
+    {
+        rope = Instantiate(ropePrefab);
+        rope.transform.parent = transform;
+        rope.transform.localPosition = transform.up * ROPE_OFFSET_Y;
+        rope.transform.localRotation = Quaternion.Euler(new Vector3(0, 90, 0));
+    }
+
     private void FinishTraining()
     {
         attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, MAX_ATTACK);
@@ -227,6 +247,8 @@ public class Agent : MonoBehaviour
         training = false;
         trainTimer = 0;
         trainAnimationTimer = 0;
+
+        Destroy(rope.gameObject);
     }
 
     private void Die()

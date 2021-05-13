@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
+    public AgentController agentController;
+    public UIManager uIManager;
+
     public Camera floorCamera;
     public Camera flexibleCamera;
     public Camera highViewCamera;
@@ -12,11 +15,8 @@ public class CameraManager : MonoBehaviour
     private int cameraIndex = -1;
     private Camera[] cameras;
 
-    private AgentController agentController;
-
     private void Awake()
     {
-        agentController = FindObjectOfType<AgentController>();
         cameras = new Camera[] { floorCamera, flexibleCamera, highViewCamera };
     }
 
@@ -31,6 +31,12 @@ public class CameraManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab))
             SwitchToNextCamera();
+    }
+
+    public void EnableCamera()
+    {
+        cameras[cameraIndex].gameObject.SetActive(true);
+        UpdateCameraInfo();
     }
 
     private void SwitchToNextCamera()
@@ -48,7 +54,7 @@ public class CameraManager : MonoBehaviour
 
     public void UpdateCameraInfo()
     {
-        agentController.RemoveInfo();
+        uIManager.RemoveAgentInfo();
         nameText.text = cameras[cameraIndex].name;
     }
 

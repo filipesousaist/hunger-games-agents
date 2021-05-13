@@ -1,9 +1,11 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Environment : MonoBehaviour
 {
+    public CameraManager cameraManager;
+    public AgentController agentController;
+
     [ReadOnly] public Agent.Action[] actions;
 
     private Agent[] agents;
@@ -37,6 +39,7 @@ public class Environment : MonoBehaviour
             {
                 FinishDeciding(); // Finish decision epoch
                 ExecuteActions();
+                CheckAgentsEnergy(); // Check if any agent has died
                 StartDeciding(); // Action for next epoch
 
                 decisionTimer -= DECISION_TIME;
@@ -52,6 +55,16 @@ public class Environment : MonoBehaviour
     public void AddAgent(Agent agent)
     {
         agents[agent.index - 1] = agent;
+    }
+
+    public void RemoveAgent(int index)
+    {
+        agents[index - 1] = null;
+    }
+
+    public Agent GetAgent(int index)
+    {
+        return agents[index];
     }
 
     public IEnumerable<Agent> GetAllAgents()
@@ -75,7 +88,8 @@ public class Environment : MonoBehaviour
 
         // Start deciding
         for (int i = 0; i < NUM_AGENTS; i ++)
-            decisionCoroutines[i] = StartCoroutine(agents[i].Decide());
+            if (agents[i] != null)
+                decisionCoroutines[i] = StartCoroutine(agents[i].Decide());
     }
 
     private void FinishDeciding()
@@ -88,9 +102,29 @@ public class Environment : MonoBehaviour
     private void ExecuteActions()
     {
         for (int i = 0; i < NUM_AGENTS; i ++)
-        {
-            agents[i].BeforeAction();
-            agents[i].ExecuteAction(actions[i]);
-        }
+            if (agents[i] != null)
+            {
+                agents[i].BeforeAction();
+                agents[i].ExecuteAction(actions[i]);
+            }
+    }
+
+    private void CheckAgentsEnergy()
+    {
+        for (int i = 0; i < NUM_AGENTS; i++)
+            if (agents[i] != null && agents[i].energy == 0)
+                DestroyAgent(i);
+    }
+
+    private void DestroyAgent(int index)
+    {
+        Agent agent = agents[index];
+        agents[index] = null;
+
+        agent.DropChest();
+        Destroy(agent.gameObject);
+
+        cameraManager.EnableCamera();
+        agentController.Disable();
     }
 }

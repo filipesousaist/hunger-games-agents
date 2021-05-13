@@ -25,7 +25,7 @@ public class AgentSpawner : MonoBehaviour
         int[] indexes = Utils.ShuffledArray(AGENT_AMOUNT);
 
         foreach (int i in indexes) {
-            GameObject prefab = (i == 0) ? controllableAgent : simpleAgent;
+            GameObject prefab = (i <= 1) ? controllableAgent : simpleAgent;
             Agent newAgent = Instantiate(prefab).GetComponent<Agent>();
 
             newAgent.index = i + 1;
@@ -39,6 +39,7 @@ public class AgentSpawner : MonoBehaviour
 
             newAgent.transform.Find("Head").GetComponent<MeshRenderer>().material = headMaterials[rnd.Next(0, 3)];
             newAgent.transform.Find("Body").GetComponent<MeshRenderer>().material = bodyMaterials[i];
+            newAgent.bodyMaterial = bodyMaterials[i];
         }
     }
 }

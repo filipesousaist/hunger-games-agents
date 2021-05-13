@@ -8,5 +8,10 @@ public class Weapon : MonoBehaviour
     }
 
     public Type type;
-    private int attack;
+    [ReadOnly] public int attack;
+
+    private void Start()
+    {
+        attack = (type == Type.SWORD) ? Random.Range(2, 5) : Random.Range(1, 4);
+    }
 }

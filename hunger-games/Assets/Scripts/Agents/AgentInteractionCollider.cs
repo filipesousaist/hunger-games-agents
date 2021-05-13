@@ -19,7 +19,6 @@ public class AgentInteractionCollider : MonoBehaviour
         Chest chest = other.GetComponentInParent<Chest>();
         if (chest != null)
         {
-            Debug.Log("Chest entered");
             chest.AddInteractionCollider(this);
             if (!collidingChests.Contains(chest))
                 collidingChests.Add(chest);
@@ -50,7 +49,6 @@ public class AgentInteractionCollider : MonoBehaviour
         Chest chest = other.GetComponentInParent<Chest>();
         if (chest != null)
         {
-            Debug.Log("Chest exited");
             collidingChests.Remove(chest);
             chest.RemoveInteractionCollider(this);
         }
@@ -105,5 +103,11 @@ public class AgentInteractionCollider : MonoBehaviour
     public void RemoveBush(Bush bush)
     {
         collidingBushes.Remove(bush);
+    }
+
+    public void OnDestroy()
+    {
+        foreach (Chest chest in collidingChests)
+            chest.RemoveInteractionCollider(this);
     }
 }

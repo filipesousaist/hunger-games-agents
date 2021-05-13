@@ -7,7 +7,13 @@ public class UIManager : MonoBehaviour
     public Text architectureText;
     public Text energyText;
     public Text attackText;
-    public Text hideUIText;
+    public Text toggleUIText;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+            ToggleUI();
+    }
 
     public void UpdateAgentInfo(Agent agent)
     {
@@ -19,5 +25,15 @@ public class UIManager : MonoBehaviour
     public void RemoveAgentInfo()
     {
         nameText.text = architectureText.text = energyText.text = attackText.text = "";
+    }
+
+    public void ToggleUI()
+    {
+        bool newValue = !nameText.gameObject.activeSelf;
+        nameText.gameObject.SetActive(newValue);
+        architectureText.gameObject.SetActive(newValue);
+        energyText.gameObject.SetActive(newValue);
+        attackText.gameObject.SetActive(newValue);
+        toggleUIText.gameObject.SetActive(newValue);
     }
 }

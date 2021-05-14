@@ -266,7 +266,8 @@ public class Agent : MonoBehaviour
 
     private void Punch()
     {
-
+        foreach (Agent agent in meleeCollider.GetCollidingAgents())
+            agent.LoseEnergy(attack);
     }
 
     public void GainEnergy(int amount)

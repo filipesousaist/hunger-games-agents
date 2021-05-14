@@ -122,9 +122,13 @@ public class Environment : MonoBehaviour
         agents[index] = null;
 
         agent.DropChest();
-        Destroy(agent.gameObject);
 
-        cameraManager.EnableCamera();
-        agentController.Disable();
+        if (agentController.IsActiveAgent(agent))
+        {
+            cameraManager.EnableCamera();
+            agentController.Disable();
+        }
+
+        Destroy(agent.gameObject);
     }
 }

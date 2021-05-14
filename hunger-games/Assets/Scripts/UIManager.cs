@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     public Text attackText;
     public Text toggleUIText;
 
+    public AgentController agentController;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F3))
@@ -17,10 +19,13 @@ public class UIManager : MonoBehaviour
 
     public void UpdateAgentInfo(Agent agent)
     {
-        nameText.text = agent.name;
-        architectureText.text = agent.GetArchitectureName() + " agent";
-        energyText.text = "Energy: " + agent.energy;
-        attackText.text = "Attack: " + agent.attack;
+        if (agent != null)
+        {
+            nameText.text = agent.name;
+            architectureText.text = agent.GetArchitectureName() + " agent";
+            energyText.text = "Energy: " + agent.energy;
+            attackText.text = "Attack: " + agent.attack;
+        }
     }
     public void RemoveAgentInfo()
     {

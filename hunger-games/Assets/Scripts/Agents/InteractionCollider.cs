@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AgentInteractionCollider : MonoBehaviour
+public class InteractionCollider : MonoBehaviour
 {
     public Agent agent;
 

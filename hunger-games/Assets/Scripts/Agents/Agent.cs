@@ -10,7 +10,8 @@ public class Agent : MonoBehaviour
 
     public Camera cam;
 
-    public AgentInteractionCollider interactionCollider;
+    public InteractionCollider interactionCollider;
+    public MeleeCollider meleeCollider;
 
     [ReadOnly] public int index;
 
@@ -47,11 +48,6 @@ public class Agent : MonoBehaviour
 
     [ReadOnly] public Material bodyMaterial; 
 
-    public Vector3 SWORD_POSITION;
-    public Vector3 SWORD_ROTATION;
-    public Vector3 BOW_POSITION;
-    public Vector3 BOW_ROTATION;
-
     public float WALK_DISTANCE;
     public float ROTATE_ANGLE;
 
@@ -62,6 +58,7 @@ public class Agent : MonoBehaviour
     private Decider decider;
 
     private Environment environment;
+    private AgentController agentController;
     private UIManager uIManager;
 
     private void Awake()
@@ -69,6 +66,7 @@ public class Agent : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody>();
         decider = GetComponent<Decider>();
         environment = FindObjectOfType<Environment>();
+        agentController = FindObjectOfType<AgentController>();
         uIManager = FindObjectOfType<UIManager>();
     }
 
@@ -179,7 +177,10 @@ public class Agent : MonoBehaviour
 
     private void Attack()
     {
-
+        if (weapon != null)
+            weapon.Attack(this);
+        else
+            Punch();
     }
 
     private void Train()
@@ -200,6 +201,12 @@ public class Agent : MonoBehaviour
         decider.SetControllable(controllable);
     }
 
+    private void UpdateInfoIfActive()
+    {
+        if (agentController.IsActiveAgent(this))
+            uIManager.UpdateAgentInfo(this);
+    }
+
     public string GetArchitectureName()
     {
         return decider.GetArchitectureName();
@@ -207,9 +214,8 @@ public class Agent : MonoBehaviour
 
     private void ResetWeaponPosition()
     {
-        weapon.transform.localPosition = weapon.type == Weapon.Type.SWORD ? SWORD_POSITION : BOW_POSITION;
-        weapon.transform.localRotation = Quaternion.Euler(
-            weapon.type == Weapon.Type.SWORD ? SWORD_ROTATION : BOW_ROTATION);
+        weapon.transform.localPosition = weapon.POSITION_IN_AGENT;
+        weapon.transform.localRotation = Quaternion.Euler(weapon.ROTATION_IN_AGENT);
     }
 
     public void EquipWeapon(Weapon newWeapon)
@@ -218,7 +224,7 @@ public class Agent : MonoBehaviour
         if (weapon != null)
         {
             attack += weapon.attack;
-            uIManager.UpdateAgentInfo(this);
+            UpdateInfoIfActive();
 
             weapon.transform.parent = transform;
             ResetWeaponPosition();
@@ -230,7 +236,7 @@ public class Agent : MonoBehaviour
         if (weapon != null)
         {
             attack -= weapon.attack;
-            uIManager.UpdateAgentInfo(this);
+            UpdateInfoIfActive();
         }
 
         Weapon oldWeapon = weapon;
@@ -258,25 +264,27 @@ public class Agent : MonoBehaviour
         Destroy(rope.gameObject);
     }
 
+    private void Punch()
+    {
+
+    }
+
     public void GainEnergy(int amount)
     {
         energy = Mathf.Min(energy + amount, MAX_ENERGY);
-        uIManager.UpdateAgentInfo(this);
+        UpdateInfoIfActive();
     }
 
     public void LoseEnergy(int amount)
     {
         energy = Mathf.Max(energy - amount, 0);
-
-        uIManager.UpdateAgentInfo(this);
+        UpdateInfoIfActive();
     }
 
     public void DropChest()
     {
         Chest newChest = Instantiate(chestPrefab).GetComponent<Chest>();
-        newChest.RemoveWeapon();
         newChest.ChangeWeapon(this, true);
-
         newChest.SetMaterial(bodyMaterial);
 
         newChest.transform.position = new Vector3(

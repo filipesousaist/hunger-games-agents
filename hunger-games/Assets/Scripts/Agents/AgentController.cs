@@ -104,4 +104,9 @@ public class AgentController : MonoBehaviour
                 cam.localPosition = THIRD_PERSON_CAM_POS;
             }
     }
+
+    public bool IsActiveAgent(Agent otherAgent)
+    {
+        return otherAgent == agent;
+    }
 }

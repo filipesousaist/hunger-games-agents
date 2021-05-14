@@ -15,6 +15,8 @@ public class Chest : Interactable
 
     public float ANGULAR_VELOCITY;
 
+    public bool SPAWN_WEAPON;
+
     public Transform lid;
 
     public MeshRenderer[] renderers;
@@ -31,15 +33,17 @@ public class Chest : Interactable
 
     [ReadOnly] public State state; 
 
-    private List<AgentInteractionCollider> interactionColliders;
+    private List<InteractionCollider> interactionColliders;
 
     private void Awake()
     {
-        interactionColliders = new List<AgentInteractionCollider>();
-
-        GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
-        GameObject newWeapon = Instantiate(prefab);
-        SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
+        interactionColliders = new List<InteractionCollider>();
+        if (SPAWN_WEAPON)
+        {
+            GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
+            GameObject newWeapon = Instantiate(prefab);
+            SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
+        }
     }
 
     private void Start()
@@ -153,13 +157,13 @@ public class Chest : Interactable
         }
     }
 
-    public void AddInteractionCollider(AgentInteractionCollider interactionCollider)
+    public void AddInteractionCollider(InteractionCollider interactionCollider)
     {
         if (!interactionColliders.Contains(interactionCollider))
             interactionColliders.Add(interactionCollider);
     }
 
-    public void RemoveInteractionCollider(AgentInteractionCollider interactionCollider)
+    public void RemoveInteractionCollider(InteractionCollider interactionCollider)
     {
         interactionColliders.Remove(interactionCollider);
         if (interactionColliders.Count == 0 && (state == State.OPEN || state == State.OPENING))

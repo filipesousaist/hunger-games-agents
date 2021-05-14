@@ -416,7 +416,7 @@ MonoBehaviour:
   index: 0
   BASE_ATTACK: 2
   MAX_ATTACK: 8
-  MAX_ENERGY: 10
+  MAX_ENERGY: 2
   attack: 0
   energy: 0
   TRAIN_DURATION: 100
@@ -424,8 +424,9 @@ MonoBehaviour:
   TRAIN_ENERGY_LOSS: 2
   TRAIN_JUMP_HEIGHT: 0.8
   TRAIN_NUM_JUMPS: 5
-  ropePrefab: {fileID: 4435243925886159975, guid: 7037779a29b764631a4f48b19a654bf8, type: 3}
   ROPE_OFFSET_Y: 1.5
+  ropePrefab: {fileID: 4435243925886159975, guid: 7037779a29b764631a4f48b19a654bf8, type: 3}
+  chestPrefab: {fileID: 4095034405830328745, guid: 9aaa3acdd2ace4510b806d8eb20ffb54, type: 3}
   SWORD_POSITION: {x: 0.25, y: 1.5, z: 0.6}
   SWORD_ROTATION: {x: 45, y: 0, z: 0}
   BOW_POSITION: {x: 0.4, y: 1.5, z: 0.6}

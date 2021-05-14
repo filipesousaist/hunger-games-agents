@@ -17,6 +17,8 @@ public class Chest : Interactable
 
     public Transform lid;
 
+    public MeshRenderer[] renderers;
+
     public GameObject sword;
     public GameObject bow;
 
@@ -34,17 +36,16 @@ public class Chest : Interactable
     private void Awake()
     {
         interactionColliders = new List<AgentInteractionCollider>();
+
+        GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
+        GameObject newWeapon = Instantiate(prefab);
+        SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
     }
 
     private void Start()
     {
         state = State.CLOSED;
-        GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
-
-        GameObject newWeapon = Instantiate(prefab);
-        SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
     }
-
 
     public void SetWeapon(Weapon weapon, float height)
     {
@@ -115,6 +116,8 @@ public class Chest : Interactable
         if (hideWeaponCo != null)
             StopCoroutine(hideWeaponCo);
 
+        Debug.Log(currentWeapon);
+
         Transform weaponTransform = currentWeapon.transform;
         while (weaponTransform.position.y < SHOW_WEAPON_HEIGHT)
         {
@@ -146,7 +149,7 @@ public class Chest : Interactable
             case State.CLOSED:
                 Open(); break;
             case State.OPEN:
-                ChangeWeapon(agent); break;
+                ChangeWeapon(agent, false); break;
         }
     }
 
@@ -163,10 +166,24 @@ public class Chest : Interactable
             Close();
     }
 
-    public void ChangeWeapon(Agent agent)
+    public void ChangeWeapon(Agent agent, bool hide)
     {
         Weapon agentWeapon = agent.UnequipWeapon();
         agent.EquipWeapon(currentWeapon);
-        SetWeapon(agentWeapon, SHOW_WEAPON_HEIGHT);
+        SetWeapon(agentWeapon, hide ? HIDE_WEAPON_HEIGHT : SHOW_WEAPON_HEIGHT);
+
+        Debug.Log(currentWeapon);
+    }
+
+    public void RemoveWeapon()
+    {
+        Destroy(currentWeapon);
+        currentWeapon = null;
+    }
+
+    public void SetMaterial(Material material)
+    {
+        foreach (MeshRenderer renderer in renderers)
+            renderer.material = material;
     }
 }

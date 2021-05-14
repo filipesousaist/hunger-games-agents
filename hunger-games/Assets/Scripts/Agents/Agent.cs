@@ -33,15 +33,19 @@ public class Agent : MonoBehaviour
     public float TRAIN_JUMP_HEIGHT;
     public float TRAIN_NUM_JUMPS; // Number of jumps during train
 
+    private float ROPE_ANGULAR_FREQ;
+    public float ROPE_OFFSET_Y;
+
     public GameObject ropePrefab;
     private GameObject rope;
 
-    private float TRAIN_JUMP_DURATION; // s
+    private float TRAIN_JUMP_DURATION; // Seconds
     private float TRAIN_JUMP_INITIAL_SPEED;
     private float TRAIN_GRAVITY_ACC;
 
-    private float ROPE_ANGULAR_FREQ;
-    public float ROPE_OFFSET_Y;
+    public GameObject chestPrefab;
+
+    [ReadOnly] public Material bodyMaterial; 
 
     public Vector3 SWORD_POSITION;
     public Vector3 SWORD_ROTATION;
@@ -58,14 +62,14 @@ public class Agent : MonoBehaviour
     private Decider decider;
 
     private Environment environment;
-    private AgentController agentController;
+    private UIManager uIManager;
 
     private void Awake()
     {
         myRigidbody = GetComponent<Rigidbody>();
         decider = GetComponent<Decider>();
         environment = FindObjectOfType<Environment>();
-        agentController = FindObjectOfType<AgentController>();
+        uIManager = FindObjectOfType<UIManager>();
     }
 
     // Start is called before the first frame update
@@ -85,7 +89,6 @@ public class Agent : MonoBehaviour
         weapon = null;
 
         environment.AddAgent(this);
-        agentController.AddAgent(this);
     }
 
     void Update()
@@ -214,6 +217,9 @@ public class Agent : MonoBehaviour
         weapon = newWeapon;
         if (weapon != null)
         {
+            attack += weapon.attack;
+            uIManager.UpdateAgentInfo(this);
+
             weapon.transform.parent = transform;
             ResetWeaponPosition();
         }
@@ -221,14 +227,15 @@ public class Agent : MonoBehaviour
 
     public Weapon UnequipWeapon()
     {
+        if (weapon != null)
+        {
+            attack -= weapon.attack;
+            uIManager.UpdateAgentInfo(this);
+        }
+
         Weapon oldWeapon = weapon;
         weapon = null;
         return oldWeapon;
-    }
-
-    public void UpdateInfo()
-    {
-        agentController.UpdateInfo();
     }
 
     private void CreateRope()
@@ -251,23 +258,36 @@ public class Agent : MonoBehaviour
         Destroy(rope.gameObject);
     }
 
-    private void Die()
+    public void GainEnergy(int amount)
     {
-        Debug.Log(name + " died!");
+        energy = Mathf.Min(energy + amount, MAX_ENERGY);
+        uIManager.UpdateAgentInfo(this);
     }
 
     public void LoseEnergy(int amount)
     {
         energy = Mathf.Max(energy - amount, 0);
-        if (energy == 0)
-            Die();
 
-        UpdateInfo();
+        uIManager.UpdateAgentInfo(this);
     }
 
-    public void GainEnergy(int amount)
+    public void DropChest()
     {
-        energy = Mathf.Min(energy + amount, MAX_ENERGY);
-        UpdateInfo();
+        Chest newChest = Instantiate(chestPrefab).GetComponent<Chest>();
+        newChest.RemoveWeapon();
+        newChest.ChangeWeapon(this, true);
+
+        newChest.SetMaterial(bodyMaterial);
+
+        newChest.transform.position = new Vector3(
+            Mathf.RoundToInt(transform.position.x),
+            0,
+            Mathf.RoundToInt(transform.position.z)
+        );
+        newChest.transform.rotation = Quaternion.Euler(
+            0,
+            Mathf.RoundToInt(transform.rotation.eulerAngles.y / 90) * 90,
+            0
+        );
     }
 }

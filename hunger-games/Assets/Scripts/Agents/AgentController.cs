@@ -3,7 +3,9 @@ using UnityEngine.UI;
 
 public class AgentController : MonoBehaviour
 {
+    public UIManager uIManager;
     public CameraManager cameraManager;
+    public Environment environment;
 
     public Text nameText;
     public Text architectureText;
@@ -12,26 +14,11 @@ public class AgentController : MonoBehaviour
 
     private int agentIndex = 0;
     private Agent agent = null;
-    private Agent[] agents;
 
-    private bool firstPerson = true;
+    private bool firstPerson = false;
 
     public Vector3 FIRST_PERSON_CAM_POS;
     public Vector3 THIRD_PERSON_CAM_POS;
-
-    private int NUM_AGENTS;
-
-    // Start is called before the first frame update
-    void Awake()
-    {
-        NUM_AGENTS = FindObjectOfType<AgentSpawner>().AGENT_AMOUNT;
-        agents = new Agent[NUM_AGENTS];
-    }
-
-    public void AddAgent(Agent agent)
-    {
-        agents[agent.index - 1] = agent;
-    }
 
     // Update is called once per frame
     void Update()
@@ -44,56 +31,57 @@ public class AgentController : MonoBehaviour
 
         bool clicked = true;
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            agentIndex = 0;
+            SetAgentIndex(0);
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            agentIndex = 1;
+            SetAgentIndex(1);
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-            agentIndex = 2;
+            SetAgentIndex(2);
         else if (Input.GetKeyDown(KeyCode.Alpha4))
-            agentIndex = 3;
+            SetAgentIndex(3);
         else if (Input.GetKeyDown(KeyCode.Alpha5))
-            agentIndex = 4;
+            SetAgentIndex(4);
         else if (Input.GetKeyDown(KeyCode.Alpha6))
-            agentIndex = 5;
+            SetAgentIndex(5);
         else if (Input.GetKeyDown(KeyCode.Alpha7))
-            agentIndex = 6;
+            SetAgentIndex(6);
         else if (Input.GetKeyDown(KeyCode.Alpha8))
-            agentIndex = 7;
+            SetAgentIndex(7);
         else
             clicked = false;
 
         if (clicked)
         {
-            cameraManager.DisableAll();
             if (agent != null)
                 ToggleAgentControl(false);
 
-            agent = agents[agentIndex];
-            SetCameraView();
+            agent = environment.GetAgent(agentIndex);
+            if (agent != null)
+            {
+                cameraManager.DisableAll();
+                SetCameraView();
 
-            ToggleAgentControl(true);
-            UpdateInfo();
+                ToggleAgentControl(true);
+                uIManager.UpdateAgentInfo(agent);
+            }
         }
+    }
+
+    private void SetAgentIndex(int index)
+    {
+        if (environment.GetAgent(index) != null)
+            agentIndex = index;
+    }
+
+    public void Disable()
+    {
+        agent = null;
     }
 
     public void DisableAllCameras()
     {
-        foreach (Agent a in agents)
+        foreach (Agent a in environment.GetAllAgents())
             if (a != null)
                 a.cam.gameObject.SetActive(false);
-    }
-
-    public void UpdateInfo()
-    {
-        nameText.text = agent.name;
-        architectureText.text = agent.GetArchitectureName() + " agent";
-        energyText.text = "Energy: " + agent.energy;
-        attackText.text = "Attack: " + agent.attack;
-    }
-
-    public void RemoveInfo()
-    {
-        nameText.text = architectureText.text = energyText.text = attackText.text = "";
     }
 
     public void ToggleAgentControl(bool isControllable)

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
+  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1115,6 +1115,7 @@ GameObject:
   - component: {fileID: 1097084205}
   - component: {fileID: 1097084204}
   - component: {fileID: 1097084207}
+  - component: {fileID: 1097084208}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -1244,6 +1245,24 @@ MonoBehaviour:
   agentController: {fileID: 1097084204}
   actions: 
   DECISION_TIME: 0.03
+--- !u!114 &1097084208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097084201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6777d31ca5dd44669a52aeea5e14dd41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RADIUS_HAZARD_SPAWN: 50
+  DURATION: 10
+  fire: {fileID: 5124794901485178347, guid: c711b17d37ef545e4a1319128c87208c, type: 3}
+  fog: {fileID: 5233200580312417191, guid: 68858a445069c4ac2b56eb332358633d, type: 3}
+  rain: {fileID: 9074841265640801627, guid: dd1d2d57ddabd4246a574a208ac6c0e3, type: 3}
+  radiation: {fileID: 4696859284088416167, guid: fecd56c32f65c4782a9b74ce384058ec, type: 3}
 --- !u!1 &1218025264
 GameObject:
   m_ObjectHideFlags: 0

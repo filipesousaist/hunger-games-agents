@@ -82,14 +82,13 @@ public class Environment : MonoBehaviour
 
     private void StartDeciding()
     {
-        // Reset actions vector
-        for (int i = 0; i < NUM_AGENTS; i ++)
-            actions[i] = Agent.Action.IDLE;
-
-        // Start deciding
         for (int i = 0; i < NUM_AGENTS; i ++)
             if (agents[i] != null)
-                decisionCoroutines[i] = StartCoroutine(agents[i].Decide());
+            {
+                Agent.Perception perception = agents[i].See();
+                actions[i] = Agent.Action.IDLE;
+                decisionCoroutines[i] = StartCoroutine(agents[i].Decide(perception));
+            }   
     }
 
     private void FinishDeciding()

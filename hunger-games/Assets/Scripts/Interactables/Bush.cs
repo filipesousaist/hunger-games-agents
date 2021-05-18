@@ -1,7 +1,18 @@
 using UnityEngine;
 
-public abstract class Bush : Interactable
+public abstract class Bush : Entity, IInteractable
 {
+    public class BushData : Data
+    {
+        public bool hasBerries;
+        public bool poisonous;
+
+        public BushData()
+        {
+            type = Type.BUSH;
+        }
+    }
+
     public GameObject otherPrefab;
     public bool hasBerries;
 
@@ -30,7 +41,7 @@ public abstract class Bush : Interactable
         }
     }
 
-    public override void Interact(Agent agent)
+    public void Interact(Agent agent)
     {
         if (hasBerries)
         {
@@ -50,4 +61,16 @@ public abstract class Bush : Interactable
     }
 
     protected abstract void EatBerries(Agent agent);
+
+    protected abstract bool IsPoisonous();
+
+    public override Data GetData()
+    {
+        return new BushData()
+        {
+            position = transform.position,
+            hasBerries = hasBerries,
+            poisonous = IsPoisonous()
+        };
+    }
 }

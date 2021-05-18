@@ -11,4 +11,9 @@ public class Bow : Weapon
     {
         throw new System.NotImplementedException();
     }
+
+    public  override Type GetType()
+    {
+        return Type.BOW;
+    }
 }

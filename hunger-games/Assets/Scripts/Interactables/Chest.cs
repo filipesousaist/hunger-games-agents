@@ -2,11 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chest : Interactable
+public class Chest : Entity, IInteractable
 {
     public enum State
     {
         OPEN, CLOSED, OPENING, CLOSING
+    }
+    public class ChestData : Data
+    {
+        public State state;
+        public Weapon.Type weaponType;
+        public int weaponAttack;
+
+        public ChestData()
+        {
+            type = Type.CHEST;
+        }
     }
 
     public float WEAPON_MOVE_SPEED;
@@ -24,7 +35,7 @@ public class Chest : Interactable
     public GameObject sword;
     public GameObject bow;
 
-    private Weapon currentWeapon;
+    private Weapon weapon;
 
     private Coroutine openCo;
     private Coroutine closeCo;
@@ -51,33 +62,33 @@ public class Chest : Interactable
         state = State.CLOSED;
     }
 
-    public void SetWeapon(Weapon weapon, float height)
+    public void SetWeapon(Weapon newWeapon, float height)
     {
-        currentWeapon = weapon;
-        if (currentWeapon != null)
+        weapon = newWeapon;
+        if (weapon != null)
         {
-            currentWeapon.transform.parent = transform;
+            weapon.transform.parent = transform;
             SetWeaponPosition(height);
         }
     }
 
     private void SetWeaponPosition(float height)
     {
-        currentWeapon.transform.localPosition = Vector3.up * (height - transform.position.y);
-        currentWeapon.transform.localRotation = Quaternion.Euler(new Vector3(0, -45, 135));
+        weapon.transform.localPosition = Vector3.up * (height - transform.position.y);
+        weapon.transform.localRotation = Quaternion.Euler(new Vector3(0, -45, 135));
     }
 
     public void Open()
     {
         openCo = StartCoroutine(OpenCo());
-        if (currentWeapon != null)
+        if (weapon != null)
             displayWeaponCo = StartCoroutine(DisplayWeaponCo());
     }
 
     public void Close()
     {
         closeCo = StartCoroutine(CloseCo());
-        if (currentWeapon != null)
+        if (weapon != null)
             hideWeaponCo = StartCoroutine(HideWeaponCo());
     }
 
@@ -120,9 +131,9 @@ public class Chest : Interactable
         if (hideWeaponCo != null)
             StopCoroutine(hideWeaponCo);
 
-        Debug.Log(currentWeapon);
+        Debug.Log(weapon);
 
-        Transform weaponTransform = currentWeapon.transform;
+        Transform weaponTransform = weapon.transform;
         while (weaponTransform.position.y < SHOW_WEAPON_HEIGHT)
         {
             float distance = Mathf.Min(WEAPON_MOVE_SPEED * Time.deltaTime, SHOW_WEAPON_HEIGHT - weaponTransform.position.y);
@@ -136,7 +147,7 @@ public class Chest : Interactable
         if (displayWeaponCo != null)
             StopCoroutine(displayWeaponCo);
 
-        Transform weaponTransform = currentWeapon.transform;
+        Transform weaponTransform = weapon.transform;
         while (weaponTransform.position.y > HIDE_WEAPON_HEIGHT)
         {
             float distance = Mathf.Min(WEAPON_MOVE_SPEED * Time.deltaTime, weaponTransform.position.y - HIDE_WEAPON_HEIGHT);
@@ -145,7 +156,7 @@ public class Chest : Interactable
         }
     }
 
-    public override void Interact(Agent agent)
+    public void Interact(Agent agent)
     {
         switch (state)
         {
@@ -173,21 +184,32 @@ public class Chest : Interactable
     public void ChangeWeapon(Agent agent, bool hide)
     {
         Weapon agentWeapon = agent.UnequipWeapon();
-        agent.EquipWeapon(currentWeapon);
+        agent.EquipWeapon(weapon);
         SetWeapon(agentWeapon, hide ? HIDE_WEAPON_HEIGHT : SHOW_WEAPON_HEIGHT);
 
-        Debug.Log(currentWeapon);
+        Debug.Log(weapon);
     }
 
     public void RemoveWeapon()
     {
-        Destroy(currentWeapon);
-        currentWeapon = null;
+        Destroy(weapon);
+        weapon = null;
     }
 
     public void SetMaterial(Material material)
     {
         foreach (MeshRenderer renderer in renderers)
             renderer.material = material;
+    }
+
+    public override Data GetData()
+    {
+        return new ChestData()
+        {
+            position = transform.position,
+            state = state,
+            weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
+            weaponAttack = weapon != null ? weapon.attack : 0
+        };
     }
 }

@@ -41,7 +41,7 @@ public class ControllableDecider : Decider
             }
     }
 
-    public override Agent.Action Decide()
+    public override Agent.Action Decide(Agent.Perception perception)
     {
         KeyCode keyCode = lastKeyPressed;
         lastKeyPressed = KeyCode.None;

@@ -1,15 +1,41 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Agent : MonoBehaviour
+public class Agent : Entity
 {
     public enum Action
     {
         IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT, USE_CHEST, EAT_BERRIES, ATTACK, TRAIN
     }
 
+    public struct Perception
+    {
+        // Agent's own data
+        public AgentData myData;
+        public IEnumerable<Data> visionData;
+        public Chest.ChestData nearestChestData;
+        public Bush.BushData nearestBushData;
+    }
+
+    public class AgentData : Data
+    {
+        public int index;
+        public float rotation; // Degrees (rotation.y)
+        public int energy;
+        public int attack;
+        public Weapon.Type weaponType;
+        public int weaponAttack;
+
+        public AgentData()
+        {
+            type = Type.AGENT;
+        }
+    }
+
     public Camera cam;
 
+    public VisionCollider visionCollider;
     public InteractionCollider interactionCollider;
     public MeleeCollider meleeCollider;
 
@@ -106,10 +132,23 @@ public class Agent : MonoBehaviour
 
     // TODO: Sensors
 
+    public Perception See()
+    {
+        Chest nearestChest = interactionCollider.GetNearestChest(transform.position);
+        Bush nearestBush = interactionCollider.GetNearestBush(transform.position);
+
+        return new Perception()
+        {
+            myData = (AgentData) GetData(),
+            visionData = visionCollider.GetCollidingEntitiesData(),
+            nearestChestData = nearestChest != null ? (Chest.ChestData) nearestChest.GetData() : null,
+            nearestBushData = nearestBush != null ? (Bush.BushData) nearestBush.GetData() : null
+        };
+    }
+
     // Actions
     public void BeforeAction()
     {
-
         if (training)
         {
             trainTimer ++;
@@ -190,9 +229,9 @@ public class Agent : MonoBehaviour
         CreateRope();
     }
 
-    public IEnumerator Decide()
+    public IEnumerator Decide(Perception perception)
     {
-        ChooseAction(decider.Decide());
+        ChooseAction(decider.Decide(perception));
         yield return null;
     }
 
@@ -298,5 +337,19 @@ public class Agent : MonoBehaviour
             Mathf.RoundToInt(transform.rotation.eulerAngles.y / 90) * 90,
             0
         );
+    }
+
+    public override Data GetData()
+    {
+        return new AgentData()
+        {
+            position = transform.position,
+            index = index,
+            rotation = transform.rotation.eulerAngles.y,
+            energy = energy,
+            attack = attack,
+            weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
+            weaponAttack = weapon != null ? weapon.attack : 0
+        };
     }
 }

@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class MeleeCollider : MonoBehaviour
 {
-    public Agent agent;
-
     private List<Agent> collidingAgents;
 
     private void Awake()

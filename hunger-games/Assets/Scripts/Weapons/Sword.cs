@@ -12,7 +12,7 @@ public class Sword : Weapon
     public Vector3 SWING_END_POSITION;
     public Vector3 SWING_END_ROTATION;
 
-    public float SWING_DURATION;
+    public float SWING_DURATION; // Epochs
 
     private Vector3 SWING_POSITION_DIFFERENCE;
     private Vector3 SWING_ROTATION_DIFFERENCE;
@@ -50,5 +50,10 @@ public class Sword : Weapon
 
         transform.localPosition = POSITION_IN_AGENT;
         transform.localEulerAngles = ROTATION_IN_AGENT;
+    }
+
+    public override Type GetType()
+    {
+        return Type.SWORD;
     }
 }

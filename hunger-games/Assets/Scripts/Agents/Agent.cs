@@ -74,8 +74,8 @@ public class Agent : Entity
 
     [ReadOnly] public Material bodyMaterial; 
 
-    public float WALK_DISTANCE;
-    public float ROTATE_ANGLE;
+    public float WALK_DISTANCE; // Distance to walk in one epoch
+    public float ROTATE_ANGLE; // Angle to rotate in one epoch
 
     private float WALK_SPEED;
     private float ROTATE_SPEED;

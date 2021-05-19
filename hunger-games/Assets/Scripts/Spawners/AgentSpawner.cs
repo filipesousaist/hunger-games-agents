@@ -25,7 +25,7 @@ public class AgentSpawner : MonoBehaviour
         int[] indexes = Utils.ShuffledArray(AGENT_AMOUNT);
 
         foreach (int i in indexes) {
-            GameObject prefab = (i <= 2) ? controllableAgent : simpleAgent;
+            GameObject prefab = (i <= 8) ? controllableAgent : simpleAgent;
             Agent newAgent = Instantiate(prefab).GetComponent<Agent>();
 
             newAgent.index = i + 1;

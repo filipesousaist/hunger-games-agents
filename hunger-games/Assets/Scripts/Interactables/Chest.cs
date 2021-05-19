@@ -51,7 +51,7 @@ public class Chest : Entity, IInteractable
         interactionColliders = new List<InteractionCollider>();
         if (SPAWN_WEAPON)
         {
-            GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
+            GameObject prefab = Random.Range(0, 2) == 0 ? bow : bow;
             GameObject newWeapon = Instantiate(prefab);
             SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
         }

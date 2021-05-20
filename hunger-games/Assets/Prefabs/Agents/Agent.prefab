@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2396392916868855945}
   m_Layer: 8
   m_Name: Melee Collider
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2159,6 +2159,7 @@ MonoBehaviour:
   MAX_ENERGY: 2
   attack: 0
   energy: 0
+  ATTACK_WAIT_TIME: 30
   TRAIN_DURATION: 100
   TRAIN_ATTACK_GAIN: 1
   TRAIN_ENERGY_LOSS: 2
@@ -2186,7 +2187,7 @@ GameObject:
   - component: {fileID: 6910208461091688374}
   m_Layer: 8
   m_Name: Vision Collider
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2512,7 +2513,7 @@ GameObject:
   - component: {fileID: 4898740630418156930}
   m_Layer: 8
   m_Name: Interaction Collider
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

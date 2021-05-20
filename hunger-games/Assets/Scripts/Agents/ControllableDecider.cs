@@ -41,18 +41,23 @@ public class ControllableDecider : Decider
             }
     }
 
-    public override Agent.Action Decide(Agent.Perception perception)
+    public override void Decide(Agent.Perception perception)
     {
         KeyCode keyCode = lastKeyPressed;
         lastKeyPressed = KeyCode.None;
         if (isControllable && keyCode != KeyCode.None)
         {
             if (keysToHold.ContainsKey(keyCode))
-                return keysToHold[keyCode];
+            {
+                nextAction = keysToHold[keyCode];
+                return;
+            }
             if (keysToPress.ContainsKey(keyCode))
-                return keysToPress[keyCode];
+            {
+                nextAction = keysToPress[keyCode];
+                return;
+            }
         }
-        return Agent.Action.IDLE;
     }
 
     public override void SetControllable(bool controllable)

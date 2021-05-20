@@ -6,27 +6,20 @@ public class Environment : MonoBehaviour
     public CameraManager cameraManager;
     public AgentController agentController;
 
-    [ReadOnly] public Agent.Action[] actions;
-
     private Agent[] agents;
+    private int[] randomIndexes;
 
     private Coroutine[] decisionCoroutines;
-
-    public float DECISION_TIME;
 
     private float decisionTimer = 0;
 
     private bool hasStarted = false;
 
-    private int NUM_AGENTS;
-
-
     private void Awake()
     {
-        NUM_AGENTS = FindObjectOfType<AgentSpawner>().AGENT_AMOUNT;
-        actions = new Agent.Action[NUM_AGENTS];
-        agents = new Agent[NUM_AGENTS];
-        decisionCoroutines = new Coroutine[NUM_AGENTS];
+        agents = new Agent[Const.NUM_AGENTS];
+        decisionCoroutines = new Coroutine[Const.NUM_AGENTS];
+        randomIndexes = Utils.ShuffledArray(Const.NUM_AGENTS);
     }
 
     // Update is called once per frame
@@ -35,14 +28,16 @@ public class Environment : MonoBehaviour
         if (hasStarted)
         {
             decisionTimer += Time.deltaTime;
-            if (decisionTimer >= DECISION_TIME)
+            if (decisionTimer >= Const.DECISION_TIME)
             {
                 FinishDeciding(); // Finish decision epoch
                 ExecuteActions();
                 CheckAgentsEnergy(); // Check if any agent has died
                 StartDeciding(); // Action for next epoch
 
-                decisionTimer -= DECISION_TIME;
+                randomIndexes = Utils.ShuffledArray(Const.NUM_AGENTS);
+
+                decisionTimer -= Const.DECISION_TIME;
             }
         }
         else if (AllAgentsSpawned()) // Finished spawning agents
@@ -82,37 +77,37 @@ public class Environment : MonoBehaviour
 
     private void StartDeciding()
     {
-        for (int i = 0; i < NUM_AGENTS; i ++)
-            if (agents[i] != null)
+        foreach (int r in randomIndexes)
+            if (agents[r] != null)
             {
-                Agent.Perception perception = agents[i].See();
-                actions[i] = Agent.Action.IDLE;
-                decisionCoroutines[i] = StartCoroutine(agents[i].Decide(perception));
-            }   
+                Agent.Perception perception = agents[r].See();
+                agents[r].ClearAction();
+                decisionCoroutines[r] = StartCoroutine(agents[r].Decide(perception));
+            }
     }
 
     private void FinishDeciding()
     {
-        for (int i = 0; i < NUM_AGENTS; i ++)
-            if (decisionCoroutines[i] != null)
-                StopCoroutine(decisionCoroutines[i]);
+        foreach (int r in randomIndexes)
+            if (decisionCoroutines[r] != null)
+                StopCoroutine(decisionCoroutines[r]);
     }
 
     private void ExecuteActions()
     {
-        for (int i = 0; i < NUM_AGENTS; i ++)
-            if (agents[i] != null)
+        foreach (int r in randomIndexes)
+            if (agents[r] != null)
             {
-                agents[i].BeforeAction();
-                agents[i].ExecuteAction(actions[i]);
+                agents[r].BeforeAction();
+                agents[r].ExecuteAction();
             }
     }
 
     private void CheckAgentsEnergy()
     {
-        for (int i = 0; i < NUM_AGENTS; i++)
-            if (agents[i] != null && agents[i].energy == 0)
-                DestroyAgent(i);
+        foreach (int r in randomIndexes)
+            if (agents[r] != null && agents[r].energy == 0)
+                DestroyAgent(r);
     }
 
     private void DestroyAgent(int index)

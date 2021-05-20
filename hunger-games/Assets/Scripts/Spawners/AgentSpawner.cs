@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class AgentSpawner : MonoBehaviour
 {
-    public int AGENT_AMOUNT;
-
     public int SPAWN_RADIUS;
     
     // Prefabs
@@ -19,13 +17,13 @@ public class AgentSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         System.Random rnd = new System.Random();
-        float angleDeg = 360 / AGENT_AMOUNT;
-        double angleRad = Math.PI * 2 / AGENT_AMOUNT;
+        float angleDeg = 360 / Const.NUM_AGENTS;
+        double angleRad = Math.PI * 2 / Const.NUM_AGENTS;
 
-        int[] indexes = Utils.ShuffledArray(AGENT_AMOUNT);
+        int[] indexes = Utils.ShuffledArray(Const.NUM_AGENTS);
 
         foreach (int i in indexes) {
-            GameObject prefab = (i <= 8) ? controllableAgent : simpleAgent;
+            GameObject prefab = (i <= 3) ? controllableAgent : simpleAgent;
             Agent newAgent = Instantiate(prefab).GetComponent<Agent>();
 
             newAgent.index = i + 1;

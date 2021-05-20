@@ -2,17 +2,6 @@ using UnityEngine;
 
 public abstract class Bush : Entity, IInteractable
 {
-    public class BushData : Data
-    {
-        public bool hasBerries;
-        public bool poisonous;
-
-        public BushData()
-        {
-            type = Type.BUSH;
-        }
-    }
-
     public GameObject otherPrefab;
     public bool hasBerries;
 
@@ -64,7 +53,7 @@ public abstract class Bush : Entity, IInteractable
 
     protected abstract bool IsPoisonous();
 
-    public override Data GetData()
+    public override EntityData GetData()
     {
         return new BushData()
         {
@@ -72,5 +61,16 @@ public abstract class Bush : Entity, IInteractable
             hasBerries = hasBerries,
             poisonous = IsPoisonous()
         };
+    }
+}
+
+public class BushData : EntityData
+{
+    public bool hasBerries;
+    public bool poisonous;
+
+    public BushData()
+    {
+        type = Entity.Type.BUSH;
     }
 }

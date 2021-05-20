@@ -3,38 +3,28 @@ using UnityEngine;
 public class Arrow : Entity
 {
     private Agent owner;
-    public class ArrowData : Data
-    {
-        public float rotation;
-        public ArrowData()
-        {
-            type = Type.ROCK;
-        }
-    }
 
     public float MOVE_DISTANCE; // Distance to move in one epoch
     private float MOVE_SPEED;
 
-    public float LIFETIME_IN_EPOCHS;
+    public float RANGE;
     private float LIFETIME;
 
     private float timer = 0;
 
     private int damage;
 
-    private Environment environment;
     private Rigidbody myRigidbody;
 
     private void Awake()
     {
-        environment = FindObjectOfType<Environment>();
         myRigidbody = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
-        MOVE_SPEED = MOVE_DISTANCE / environment.DECISION_TIME;
-        LIFETIME = LIFETIME_IN_EPOCHS * environment.DECISION_TIME;
+        MOVE_SPEED = MOVE_DISTANCE / Const.DECISION_TIME;
+        LIFETIME = RANGE / MOVE_SPEED;
     }
 
     private void Update()
@@ -48,6 +38,8 @@ public class Arrow : Entity
 
     private void OnTriggerEnter(Collider collider)
     {
+        if (collider.transform.CompareTag("Collider"))
+            return;
         Agent agent = collider.GetComponentInParent<Agent>();
         if (agent != null)
         {
@@ -55,7 +47,7 @@ public class Arrow : Entity
                 return;
             agent.LoseEnergy(damage);
         }
-        Debug.Log("Arrow has hit " + collider.gameObject.name);
+
         Destroy(gameObject);
     }
 
@@ -69,12 +61,21 @@ public class Arrow : Entity
         this.damage = damage;
     }
 
-    public override Data GetData()
+    public override EntityData GetData()
     {
         return new ArrowData()
         {
             position = transform.position,
             rotation = transform.rotation.eulerAngles.y
         };
+    }
+}
+
+public class ArrowData : EntityData
+{
+    public float rotation;
+    public ArrowData()
+    {
+        type = Entity.Type.ARROW;
     }
 }

@@ -91,8 +91,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8244008446455659658}
+  - component: {fileID: 882174159354894780}
   m_Layer: 9
-  m_Name: Rotation
+  m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -115,6 +116,19 @@ Transform:
   m_Father: {fileID: 2537838850432458975}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!65 &882174159354894780
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799756967070378526}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.02, y: 0.1, z: 0.65}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1178364446084128094
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +711,6 @@ GameObject:
   - component: {fileID: 2537838850432458975}
   - component: {fileID: 6555795416312945976}
   - component: {fileID: 826163756765549237}
-  - component: {fileID: 4702418080193221812}
   m_Layer: 9
   m_Name: Arrow
   m_TagString: Untagged
@@ -732,8 +745,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 657231d2949534642a52351057ba8af3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MOVE_DISTANCE: 0.03
-  LIFETIME_IN_EPOCHS: 500
+  MOVE_DISTANCE: 0.5
+  RANGE: 20
 --- !u!54 &826163756765549237
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -750,16 +763,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 52
   m_CollisionDetection: 0
---- !u!65 &4702418080193221812
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8571670606264958975}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.02, y: 0.1, z: 0.65}
-  m_Center: {x: 0, y: 0, z: 0}

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
+  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1197,7 +1197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f4ce2baf52c9504ab72676c58a872a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AGENT_AMOUNT: 8
   SPAWN_RADIUS: 25
   controllableAgent: {fileID: 4443185355672100926, guid: c5acb7fdc161e46478c12dc6737e24cb, type: 3}
   simpleAgent: {fileID: 2752867635762223344, guid: f9bb0e4d08cf3a14e87539eff49370cc, type: 3}
@@ -1244,7 +1243,6 @@ MonoBehaviour:
   cameraManager: {fileID: 944943062}
   agentController: {fileID: 1097084204}
   actions: 
-  DECISION_TIME: 0.03
 --- !u!114 &1097084208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1259,10 +1257,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RADIUS_HAZARD_SPAWN: 50
   DURATION: 10
-  fire: {fileID: 5124794901485178347, guid: c711b17d37ef545e4a1319128c87208c, type: 3}
-  fog: {fileID: 5233200580312417191, guid: 68858a445069c4ac2b56eb332358633d, type: 3}
-  rain: {fileID: 9074841265640801627, guid: dd1d2d57ddabd4246a574a208ac6c0e3, type: 3}
-  radiation: {fileID: 4696859284088416167, guid: fecd56c32f65c4782a9b74ce384058ec, type: 3}
+  fire: {fileID: 8832443666762641316, guid: 0133cd4b69d212740a2a0f98f34731a5, type: 3}
+  fog: {fileID: -7847486089554292585, guid: 22e7ecc9de59ee2489728f3dd8f907b8, type: 3}
+  rain: {fileID: -5181991973971186338, guid: 9926ad8a431acb2448f8a94d3094b16c, type: 3}
+  radiation: {fileID: 5608300435134954633, guid: c62f317e5a6f0144cb708e6ceb1c3701, type: 3}
 --- !u!1 &1218025264
 GameObject:
   m_ObjectHideFlags: 0

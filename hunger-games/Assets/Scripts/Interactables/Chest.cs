@@ -8,17 +8,6 @@ public class Chest : Entity, IInteractable
     {
         OPEN, CLOSED, OPENING, CLOSING
     }
-    public class ChestData : Data
-    {
-        public State state;
-        public Weapon.Type weaponType;
-        public int weaponAttack;
-
-        public ChestData()
-        {
-            type = Type.CHEST;
-        }
-    }
 
     public float WEAPON_MOVE_SPEED;
     public float SHOW_WEAPON_HEIGHT;
@@ -51,7 +40,7 @@ public class Chest : Entity, IInteractable
         interactionColliders = new List<InteractionCollider>();
         if (SPAWN_WEAPON)
         {
-            GameObject prefab = Random.Range(0, 2) == 0 ? bow : bow;
+            GameObject prefab = Random.Range(0, 2) == 0 ? sword : bow;
             GameObject newWeapon = Instantiate(prefab);
             SetWeapon(newWeapon.GetComponent<Weapon>(), HIDE_WEAPON_HEIGHT);
         }
@@ -202,7 +191,7 @@ public class Chest : Entity, IInteractable
             renderer.material = material;
     }
 
-    public override Data GetData()
+    public override EntityData GetData()
     {
         return new ChestData()
         {
@@ -211,5 +200,17 @@ public class Chest : Entity, IInteractable
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
             weaponAttack = weapon != null ? weapon.attack : 0
         };
+    }
+}
+
+public class ChestData : EntityData
+{
+    public Chest.State state;
+    public Weapon.Type weaponType;
+    public int weaponAttack;
+
+    public ChestData()
+    {
+        type = Entity.Type.CHEST;
     }
 }

@@ -1,30 +1,57 @@
-using System.Linq;
 using UnityEngine;
 
 public class SimpleDecider : Decider
 {
     private Agent.Action sideToRotate;
-    public override Agent.Action Decide(Agent.Perception perception)
-    {
-        Agent.AgentData myData = perception.myData;
+    public override void Decide(Agent.Perception perception)
+    { 
+        nextAction = Agent.Action.WALK; // If no other action is selected, walk
 
-        Chest.ChestData chestData = perception.nearestChestData;
+        AgentData myData = perception.myData;
+
+        CheckIfRotate(perception, myData);
+
+        CheckIfUseChest(perception, myData);
+
+        CheckIfTrain(perception);
+    }
+
+    private void CheckIfTrain(Agent.Perception perception)
+    {
+        foreach (EntityData data in perception.visionData)
+        {
+            if (data.type == Entity.Type.ARROW)
+            {
+                nextAction = Agent.Action.TRAIN;
+                return;
+            }
+        }
+    }
+
+    private void CheckIfUseChest(Agent.Perception perception, AgentData myData)
+    {
+        ChestData chestData = perception.nearestChestData;
         if (chestData != null &&
             chestData.weaponType != Weapon.Type.NONE &&
             (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack))
-            return Agent.Action.USE_CHEST;
-               
+        {
+            nextAction = Agent.Action.USE_CHEST;
+            return;
+        }
+    }
 
-        foreach (Entity.Data data in perception.visionData)
+    private void CheckIfRotate(Agent.Perception perception, AgentData myData)
+    {
+        foreach (EntityData data in perception.visionData)
             if ((new Vector2(data.position.x, data.position.z) -
                 new Vector2(myData.position.x, myData.position.z)
                 ).magnitude <= 1.5)
             {
-                return sideToRotate;
+                nextAction = sideToRotate;
+                return;
             }
 
         sideToRotate = Random.Range(0, 2) == 0 ? Agent.Action.ROTATE_RIGHT : Agent.Action.ROTATE_LEFT;
-        return Agent.Action.WALK;
     }
 
     public override string GetArchitectureName()

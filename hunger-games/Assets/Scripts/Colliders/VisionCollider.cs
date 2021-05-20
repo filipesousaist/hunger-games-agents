@@ -31,7 +31,7 @@ public class VisionCollider : MonoBehaviour
             collidingEntities.Remove(entity);
     }
 
-    public IEnumerable<Entity.Data> GetCollidingEntitiesData()
+    public IEnumerable<EntityData> GetCollidingEntitiesData()
     {
         for (int i = collidingEntities.Count - 1; i >= 0; i--)
             if (collidingEntities[i] == null)

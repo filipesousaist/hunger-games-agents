@@ -1,20 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 
 public static class Utils
 {
-    // Returns a shuffled array containing the integers from 0 to n-1  
-    public static int[] ShuffledArray(int n)
+    /// <returns>A shuffled array containing the integers from minInclusive to maxExclusive - 1.</returns>
+    public static int[] ShuffledArray(int minInclusive, int maxExclusive)
     {
-        Random rnd = new Random();
-        int[] seq = new int[n];
+        int size = maxExclusive - minInclusive;
+        int[] seq = new int[size];
 
-        for (int i = 0; i < n; i++)
-            seq[i] = i;
-        for (int i = 0; i < n - 1; i++)
+        for (int i = 0; i < size; i++)
+            seq[i] = minInclusive + i;
+        for (int i = 0; i < size - 1; i++)
         {
-            int rnd_i = rnd.Next(i, n);
+            int rnd_i = Random.Range(i, size);
             // Exchange element in position i with element in position rnd_i
             int tmp = seq[i];
             seq[i] = seq[rnd_i];
@@ -22,6 +20,12 @@ public static class Utils
         }
 
         return seq;
+    }
+
+    /// <returns>A shuffled array containing the integers from 0 to maxExclusive - 1.</returns>
+    public static int[] ShuffledArray(int maxExclusive)
+    {
+        return ShuffledArray(0, maxExclusive);
     }
 
     // Clamps a number between a and b (mod b-a)

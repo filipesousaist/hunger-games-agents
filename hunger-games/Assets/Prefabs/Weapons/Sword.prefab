@@ -341,7 +341,7 @@ MonoBehaviour:
   SWING_START_ROTATION: {x: 0, y: 45, z: 90}
   SWING_END_POSITION: {x: 1, y: 1.3, z: 1}
   SWING_END_ROTATION: {x: 0, y: 135, z: 90}
-  SWING_DURATION: 0.1
+  SWING_DURATION: 0.2
 --- !u!1 &8956110947899681170
 GameObject:
   m_ObjectHideFlags: 0

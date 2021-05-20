@@ -4,14 +4,14 @@ public abstract class Entity : MonoBehaviour
 {
     public enum Type
     {
-        AGENT, CHEST, BUSH, ROCK, TREE, ARROW, HAZARD
+        AGENT, CHEST, BUSH, ROCK, TREE, ARROW, HAZARD_EFFECT
     }
 
-    public abstract class Data
-    {
-        public Type type;
-        public Vector3 position;
-    }
+    public abstract EntityData GetData();
+}
 
-    public abstract Data GetData();
+public abstract class EntityData
+{
+    public Entity.Type type;
+    public Vector3 position;
 }

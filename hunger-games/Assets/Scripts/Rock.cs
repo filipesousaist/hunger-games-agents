@@ -1,17 +1,18 @@
 public class Rock : Entity
 {
-    public class RockData : Data
-    {
-        public RockData()
-        {
-            type = Type.ROCK;
-        }
-    }
-    public override Data GetData()
+    public override EntityData GetData()
     {
         return new RockData()
         {
             position = transform.position
         };
+    }
+}
+
+public class RockData : EntityData
+{
+    public RockData()
+    {
+        type = Entity.Type.ROCK;
     }
 }

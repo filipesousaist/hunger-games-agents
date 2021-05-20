@@ -13,24 +13,9 @@ public class Agent : Entity
     {
         // Agent's own data
         public AgentData myData;
-        public IEnumerable<Data> visionData;
-        public Chest.ChestData nearestChestData;
-        public Bush.BushData nearestBushData;
-    }
-
-    public class AgentData : Data
-    {
-        public int index;
-        public float rotation; // Degrees (rotation.y)
-        public int energy;
-        public int attack;
-        public Weapon.Type weaponType;
-        public int weaponAttack;
-
-        public AgentData()
-        {
-            type = Type.AGENT;
-        }
+        public IEnumerable<EntityData> visionData;
+        public ChestData nearestChestData;
+        public BushData nearestBushData;
     }
 
     public Camera cam;
@@ -40,14 +25,19 @@ public class Agent : Entity
     public MeleeCollider meleeCollider;
 
     [ReadOnly] public int index;
+    private int regionIndex;
 
     public int BASE_ATTACK;
     public int MAX_ATTACK;
+    public int MIN_ATTACK;
     public int MAX_ENERGY;
 
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
     private Weapon weapon;
+
+    public float ATTACK_WAIT_TIME;
+    private float attackWaitTimer = 0;
 
     private bool training = false;
     private int trainTimer; // Epochs
@@ -85,6 +75,7 @@ public class Agent : Entity
 
     private Environment environment;
     private AgentController agentController;
+    private HazardManager hazardManager;
     private UIManager uIManager;
 
     private void Awake()
@@ -93,16 +84,17 @@ public class Agent : Entity
         decider = GetComponent<Decider>();
         environment = FindObjectOfType<Environment>();
         agentController = FindObjectOfType<AgentController>();
+        hazardManager = FindObjectOfType<HazardManager>();
         uIManager = FindObjectOfType<UIManager>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        WALK_SPEED = WALK_DISTANCE / environment.DECISION_TIME;
-        ROTATE_SPEED = ROTATE_ANGLE / environment.DECISION_TIME;
+        WALK_SPEED = WALK_DISTANCE / Const.DECISION_TIME;
+        ROTATE_SPEED = ROTATE_ANGLE / Const.DECISION_TIME;
 
-        TRAIN_JUMP_DURATION = TRAIN_DURATION * environment.DECISION_TIME / TRAIN_NUM_JUMPS;
+        TRAIN_JUMP_DURATION = TRAIN_DURATION * Const.DECISION_TIME / TRAIN_NUM_JUMPS;
         TRAIN_JUMP_INITIAL_SPEED = 4 * TRAIN_JUMP_HEIGHT / TRAIN_JUMP_DURATION;
         TRAIN_GRAVITY_ACC = TRAIN_JUMP_INITIAL_SPEED / TRAIN_JUMP_DURATION;
 
@@ -113,21 +105,28 @@ public class Agent : Entity
         weapon = null;
 
         environment.AddAgent(this);
+
+        regionIndex = hazardManager.GetSection(transform.position);
     }
 
     void Update()
     {
         if (training)
-        {
-            trainAnimationTimer += Time.deltaTime;
+            TrainUpdate();
 
-            float t = trainAnimationTimer % TRAIN_JUMP_DURATION;
-            float y = TRAIN_JUMP_INITIAL_SPEED * t - TRAIN_GRAVITY_ACC * t * t;
+        regionIndex = hazardManager.GetSection(transform.position);
+    }
 
-            transform.position += transform.up * (y - transform.position.y);
+    private void TrainUpdate()
+    {
+        trainAnimationTimer += Time.deltaTime;
 
-            rope.transform.Rotate(new Vector3(0, 0, ROPE_ANGULAR_FREQ * Time.deltaTime), Space.Self);
-        }
+        float t = trainAnimationTimer % TRAIN_JUMP_DURATION;
+        float y = TRAIN_JUMP_INITIAL_SPEED * t - TRAIN_GRAVITY_ACC * t * t;
+
+        transform.position += transform.up * (y - transform.position.y);
+
+        rope.transform.Rotate(new Vector3(0, 0, ROPE_ANGULAR_FREQ * Time.deltaTime), Space.Self);
     }
 
     // TODO: Sensors
@@ -141,14 +140,18 @@ public class Agent : Entity
         {
             myData = (AgentData) GetData(),
             visionData = visionCollider.GetCollidingEntitiesData(),
-            nearestChestData = nearestChest != null ? (Chest.ChestData) nearestChest.GetData() : null,
-            nearestBushData = nearestBush != null ? (Bush.BushData) nearestBush.GetData() : null
+            nearestChestData = nearestChest != null ? (ChestData) nearestChest.GetData() : null,
+            nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null
         };
     }
 
     // Actions
     public void BeforeAction()
     {
+        attackWaitTimer = Mathf.Max(attackWaitTimer - 1, 0);
+        if (weapon != null && weapon.GetType() == Weapon.Type.BOW && attackWaitTimer == 0)
+            ((Bow) weapon).ShowFixedArrow();
+
         if (training)
         {
             trainTimer ++;
@@ -162,10 +165,10 @@ public class Agent : Entity
         }
     }
 
-    public void ExecuteAction(Action action)
+    public void ExecuteAction()
     {
         if (!training)
-            switch (action)
+            switch (decider.nextAction)
             {
                 case Action.IDLE:           Idle();         break;
                 case Action.WALK:           Walk();         break;
@@ -178,9 +181,9 @@ public class Agent : Entity
             }
     }
 
-    protected void ChooseAction(Action action)
+    public void ClearAction()
     {
-        environment.actions[index - 1] = action;
+        decider.nextAction = Action.IDLE;
     }
 
     private void Idle() { }
@@ -216,10 +219,14 @@ public class Agent : Entity
 
     private void Attack()
     {
-        if (weapon != null)
-            weapon.Attack(this);
-        else
-            Punch();
+        if (attackWaitTimer == 0)
+        {
+            if (weapon != null)
+                weapon.Attack(this);
+            else
+                Punch();
+            attackWaitTimer = ATTACK_WAIT_TIME;
+        }
     }
 
     private void Train()
@@ -231,7 +238,7 @@ public class Agent : Entity
 
     public IEnumerator Decide(Perception perception)
     {
-        ChooseAction(decider.Decide(perception));
+        decider.Decide(perception);
         yield return null;
     }
 
@@ -339,7 +346,7 @@ public class Agent : Entity
         );
     }
 
-    public override Data GetData()
+    public override EntityData GetData()
     {
         return new AgentData()
         {
@@ -351,5 +358,20 @@ public class Agent : Entity
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
             weaponAttack = weapon != null ? weapon.attack : 0
         };
+    }
+}
+
+public class AgentData : EntityData
+{
+    public int index;
+    public float rotation; // Degrees (rotation.y)
+    public int energy;
+    public int attack;
+    public Weapon.Type weaponType;
+    public int weaponAttack;
+
+    public AgentData()
+    {
+        type = Entity.Type.AGENT;
     }
 }

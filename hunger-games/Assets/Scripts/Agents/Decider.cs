@@ -1,10 +1,17 @@
 using UnityEngine;
 public abstract class Decider : MonoBehaviour
 {
-    // Decision algorithm to override
-    public abstract Agent.Action Decide(Agent.Perception perception);
+    /// <summary>
+    /// The agent should store in this variable the action to do next.
+    /// </summary>
+    public Agent.Action nextAction;
 
-    // Method to control agents
+    /// <summary>
+    /// Agent's decision algorithm.
+    /// </summary>
+    /// <param name="perception">The information the agent got from the environment.</param>
+    public abstract void Decide(Agent.Perception perception);
+
     public virtual void SetControllable(bool controllable) { }
 
     public abstract string GetArchitectureName();

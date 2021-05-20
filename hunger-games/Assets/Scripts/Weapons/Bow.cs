@@ -17,6 +17,11 @@ public class Bow : Weapon
         fixedArrow.SetActive(false);
     }
 
+    public void ShowFixedArrow()
+    {
+        fixedArrow.SetActive(true);
+    }
+
     public  override Type GetType()
     {
         return Type.BOW;

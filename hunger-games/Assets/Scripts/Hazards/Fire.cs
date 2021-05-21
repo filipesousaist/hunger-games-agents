@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-
-public class Fire : Hazard
+﻿public class Fire : Hazard
 {
-
+    public int ENERGY_LOSS;
+    protected override void Harm(Agent agent)
+    {
+        agent.LoseEnergy(ENERGY_LOSS);
+    }
 }
 

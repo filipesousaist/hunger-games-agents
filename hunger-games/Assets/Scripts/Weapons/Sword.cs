@@ -17,11 +17,10 @@ public class Sword : Weapon
     private Vector3 SWING_POSITION_DIFFERENCE;
     private Vector3 SWING_ROTATION_DIFFERENCE;
 
-    void Start()
+    private void Awake()
     {
         SWING_POSITION_DIFFERENCE = SWING_END_POSITION - SWING_START_POSITION;
         SWING_ROTATION_DIFFERENCE = SWING_END_ROTATION - SWING_START_ROTATION;
-        attack = Random.Range(2, 5);
     }
 
     public override void Attack(Agent owner)

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-
-public class Rain : Hazard
+﻿public class Rain : Hazard
 {
+    public int ATTACK_LOSS;
 
+    protected override void Harm(Agent agent)
+    {
+        agent.CorrodeWeapon(ATTACK_LOSS);
+    }
 }
 

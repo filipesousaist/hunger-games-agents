@@ -4,10 +4,6 @@ public class Bow : Weapon
 {
     public GameObject fixedArrow;
     public GameObject arrowPrefab;
-    void Start()
-    {
-        attack = Random.Range(1, 4);
-    }
 
     public override void Attack(Agent owner)
     {

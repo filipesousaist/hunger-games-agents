@@ -28,6 +28,8 @@ public class AgentSpawner : MonoBehaviour
 
             newAgent.index = i + 1;
             newAgent.name = "Agent " + newAgent.index;
+            SetAgentLayer(newAgent);
+            newAgent.InitInfoPanel();
 
             newAgent.transform.position = new Vector3(
                 (float) Math.Cos(angleRad * i) * SPAWN_RADIUS,
@@ -35,9 +37,17 @@ public class AgentSpawner : MonoBehaviour
                 (float) Math.Sin(angleRad * i) * SPAWN_RADIUS);
             newAgent.transform.Rotate(0, 270 - angleDeg * i, 0);
 
-            newAgent.transform.Find("Head").GetComponent<MeshRenderer>().material = headMaterials[rnd.Next(0, 3)];
-            newAgent.transform.Find("Body").GetComponent<MeshRenderer>().material = bodyMaterials[i];
+            newAgent.head.GetComponent<MeshRenderer>().material = headMaterials[rnd.Next(0, 3)];
+            newAgent.torso.GetComponent<MeshRenderer>().material = bodyMaterials[i];
             newAgent.bodyMaterial = bodyMaterials[i];
         }
+    }
+
+    private void SetAgentLayer(Agent agent)
+    {
+        int mask = LayerMask.NameToLayer("Agent " + agent.index);
+        agent.gameObject.layer = agent.body.layer = mask;
+        for (int i = 0; i < agent.body.transform.childCount; i++)
+            agent.body.transform.GetChild(i).gameObject.layer = mask;
     }
 }

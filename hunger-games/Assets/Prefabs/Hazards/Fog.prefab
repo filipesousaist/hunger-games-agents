@@ -44,4 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 5233200580312417191, guid: 68858a445069c4ac2b56eb332358633d, type: 3}
-  SPAWN_CHANCE: 0.01
+  SPAWN_CHANCE: 0.075
+  DURATION_IN_EPOCHS: 400
+  DURATION: 0
+  FREQUENCY: 400

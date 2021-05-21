@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Agent : Entity
 {
@@ -19,13 +20,20 @@ public class Agent : Entity
     }
 
     public Camera cam;
+    public Camera faceCam;
+
+    private TextMeshProUGUI energyText;
+    private TextMeshProUGUI attackText;
 
     public VisionCollider visionCollider;
     public InteractionCollider interactionCollider;
     public MeleeCollider meleeCollider;
 
+    public GameObject body;
+    public GameObject head;
+    public GameObject torso;
+
     [ReadOnly] public int index;
-    private int regionIndex;
 
     public int BASE_ATTACK;
     public int MAX_ATTACK;
@@ -75,7 +83,6 @@ public class Agent : Entity
 
     private Environment environment;
     private AgentController agentController;
-    private HazardManager hazardManager;
     private UIManager uIManager;
 
     private void Awake()
@@ -84,7 +91,6 @@ public class Agent : Entity
         decider = GetComponent<Decider>();
         environment = FindObjectOfType<Environment>();
         agentController = FindObjectOfType<AgentController>();
-        hazardManager = FindObjectOfType<HazardManager>();
         uIManager = FindObjectOfType<UIManager>();
     }
 
@@ -106,15 +112,37 @@ public class Agent : Entity
 
         environment.AddAgent(this);
 
-        regionIndex = hazardManager.GetSection(transform.position);
+        UpdateInfo();
+    }
+
+    public void InitInfoPanel()
+    {
+        faceCam.rect = new Rect(
+            faceCam.rect.x,
+            (index - 0.5f) / Const.NUM_AGENTS - faceCam.rect.height / 2,
+            faceCam.rect.width,
+            faceCam.rect.height);
+        faceCam.cullingMask = 1 << LayerMask.NameToLayer("Agent " + index);
+
+        Transform panelContainerTransform = FindObjectOfType<Canvas>().transform.Find("_AgentPanelContainer");
+        Transform newPanelTransform = Instantiate(panelContainerTransform.Find("_AgentPanel"));
+        newPanelTransform.gameObject.SetActive(true);
+        
+        newPanelTransform.SetParent(panelContainerTransform);
+        newPanelTransform.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1 - index / 8f);
+        newPanelTransform.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1 - (index - 1) / 8f);
+        newPanelTransform.GetComponent<RectTransform>().offsetMin =
+        newPanelTransform.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+
+        newPanelTransform.Find("_NamePanel").Find("_NameText").GetComponent<TextMeshProUGUI>().text = name;
+        energyText = newPanelTransform.Find("_EnergyPanel").Find("_EnergyText").GetComponent<TextMeshProUGUI>();
+        attackText = newPanelTransform.Find("_AttackPanel").Find("_AttackText").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
     {
         if (training)
             TrainUpdate();
-
-        regionIndex = hazardManager.GetSection(transform.position);
     }
 
     private void TrainUpdate()
@@ -247,8 +275,11 @@ public class Agent : Entity
         decider.SetControllable(controllable);
     }
 
-    private void UpdateInfoIfActive()
+    public void UpdateInfo()
     {
+        energyText.text = "" + energy;
+        attackText.text = "" + attack;
+
         if (agentController.IsActiveAgent(this))
             uIManager.UpdateAgentInfo(this);
     }
@@ -270,11 +301,12 @@ public class Agent : Entity
         if (weapon != null)
         {
             attack += weapon.attack;
-            UpdateInfoIfActive();
+            
 
             weapon.transform.parent = transform;
             ResetWeaponPosition();
         }
+        UpdateInfo();
     }
 
     public Weapon UnequipWeapon()
@@ -282,8 +314,8 @@ public class Agent : Entity
         if (weapon != null)
         {
             attack -= weapon.attack;
-            UpdateInfoIfActive();
         }
+        UpdateInfo();
 
         Weapon oldWeapon = weapon;
         weapon = null;
@@ -319,13 +351,13 @@ public class Agent : Entity
     public void GainEnergy(int amount)
     {
         energy = Mathf.Min(energy + amount, MAX_ENERGY);
-        UpdateInfoIfActive();
+        UpdateInfo();
     }
 
     public void LoseEnergy(int amount)
     {
         energy = Mathf.Max(energy - amount, 0);
-        UpdateInfoIfActive();
+        UpdateInfo();
     }
 
     public void DropChest()
@@ -344,6 +376,15 @@ public class Agent : Entity
             Mathf.RoundToInt(transform.rotation.eulerAngles.y / 90) * 90,
             0
         );
+    }
+
+    public void CorrodeWeapon(int attackLoss)
+    {
+        if (weapon != null)
+        {
+            weapon.Corrode(attackLoss);
+            UpdateInfo();
+        }
     }
 
     public override EntityData GetData()

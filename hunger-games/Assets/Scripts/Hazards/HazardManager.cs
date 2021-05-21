@@ -8,7 +8,6 @@ public class HazardManager : MonoBehaviour
 
     private int timeslot = 0;
     private float timer = 0;
-    public float DURATION;
 
     public Hazard fire;
     public Hazard fog;
@@ -30,7 +29,8 @@ public class HazardManager : MonoBehaviour
         for (int i = 0; i < NUM_REGIONS; i ++)
         {
             Hazard newHazard = hazards[indexes[i]] = Instantiate(unsorted_hazards[i]);
-            newHazard.SetRegion(regions[region_order[i]]);
+            int r = region_order[i];
+            newHazard.SetRegion(r, regions[r]);
         }
     }
 
@@ -38,13 +38,13 @@ public class HazardManager : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if (timer >= DURATION)
+        if (timer >= hazards[timeslot].DURATION)
         {
             timer = 0;
 
             hazards[timeslot].Stop();
             timeslot = (timeslot + 1) % NUM_REGIONS;
-            hazards[timeslot].Activate();
+            hazards[timeslot].Begin();
         }
     }
 

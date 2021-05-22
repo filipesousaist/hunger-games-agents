@@ -23,7 +23,7 @@ public class HazardManager : MonoBehaviour
 
         hazards = new Hazard[NUM_REGIONS];
         int[] indexes = Utils.ShuffledArray(NUM_REGIONS);
-        Hazard[] unsorted_hazards = { fire, fire, fire, fire, fire, fire, fire, fire };//{ fog, fire, rain, radiation, fog, fire, rain, radiation };
+        Hazard[] unsorted_hazards = { fog, fire, rain, radiation, fog, fire, rain, radiation };
         int[] region_order = Utils.ShuffledArray(1, NUM_REGIONS + 1);
 
         for (int i = 0; i < NUM_REGIONS; i ++)

@@ -70,6 +70,8 @@ public class Agent : Entity
     private float TRAIN_JUMP_INITIAL_SPEED;
     private float TRAIN_GRAVITY_ACC;
 
+    [ReadOnly] public bool inShieldBounds = true;
+
     public GameObject chestPrefab;
 
     [ReadOnly] public Material bodyMaterial; 
@@ -86,6 +88,8 @@ public class Agent : Entity
     private Environment environment;
     private AgentController agentController;
     private UIManager uIManager;
+
+    
 
     private void Awake()
     {

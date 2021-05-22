@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+using System.Linq;
 
 public class Environment : MonoBehaviour
 {
@@ -11,12 +11,9 @@ public class Environment : MonoBehaviour
     private Agent[] agents;
     private int[] randomIndexes;
 
-    public GameObject Shield;
-    public float shieldDecreaseFactor;
-    public float shieldDecreaseTimer;
+    public Shield shield;
 
     private Coroutine[] decisionCoroutines;
-
     private float decisionTimer = 0;
 
     private bool hasStarted = false;
@@ -74,6 +71,11 @@ public class Environment : MonoBehaviour
         return agents;
     }
 
+    private int GetNumAliveAgents()
+    {
+        return agents.Count((agent) => agent != null && agent.energy > 0);
+    }
+
     private bool AllAgentsSpawned()
     {
         foreach (Agent agent in agents)
@@ -114,31 +116,14 @@ public class Environment : MonoBehaviour
     {
         foreach (int r in randomIndexes)
             if (agents[r] != null && agents[r].energy == 0)
-            {
                 DestroyAgent(r);
-                StartCoroutine(Scale());
-            }
     }
     
     private void CheckAgentsPosition()
     {
-        float coordinate_x;
-        float coordinate_z;
-        
         foreach (int r in randomIndexes)
-        {
-            if (agents[r] != null)
-            {
-                var agentPosition = agents[r].transform.position;
-                coordinate_x = agentPosition.x;
-                coordinate_z = agentPosition.z;
-                
-                if (!(coordinate_x<=250*Shield.transform.localScale.x && coordinate_x>=-250*Shield.transform.localScale.x && coordinate_z<=250*Shield.transform.localScale.z && coordinate_z>=-250*Shield.transform.localScale.z))
-                {
-                    agents[r].LoseEnergy(1);
-                }
-            }
-        }
+            if (agents[r] != null && !agents[r].inShieldBounds) //shield.IsPositionOutside(agents[r].transform.position))
+                agents[r].LoseEnergy(1);
     }
 
     private void DestroyAgent(int index)
@@ -155,17 +140,7 @@ public class Environment : MonoBehaviour
         }
 
         Destroy(agent.gameObject);
-    }
-    
-    private IEnumerator Scale()
-    {
-        float timer = 0;
-    
-        while (timer < shieldDecreaseTimer) 
-        {
-            timer += Time.deltaTime;
-            Shield.transform.localScale -= new Vector3(1, 1, 1) * (Time.deltaTime * shieldDecreaseFactor);
-            yield return null;
-        }
+
+        shield.UpdateTargetScale(GetNumAliveAgents());
     }
 }

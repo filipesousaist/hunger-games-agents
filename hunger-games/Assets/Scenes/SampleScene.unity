@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
+  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1242,9 +1242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraManager: {fileID: 944943062}
   agentController: {fileID: 1097084204}
-  Shield: {fileID: 1293379295}
-  shieldDecreaseFactor: 0.1
-  shieldDecreaseTimer: 1
+  shield: {fileID: 1293379297}
 --- !u!114 &1097084208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1389,7 +1387,7 @@ BoxCollider:
   m_GameObject: {fileID: 1268685460}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1465,6 +1463,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1293379296}
+  - component: {fileID: 1293379297}
+  - component: {fileID: 1293379298}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -1491,6 +1491,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1293379297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293379295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2ecc1e50d3e314290941ffdd358280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SHIELD_DECREASE_FACTOR: 0.1
+  DECREASE_SHIELD_DURATION_EPOCHS: 200
+  EPOCHS_TO_START_AUTO_DECREASE_SHIELD: 12000
+--- !u!65 &1293379298
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293379295}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 500, y: 200, z: 500}
+  m_Center: {x: 0, y: 100, z: 0}
 --- !u!1 &1444797237
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,7 +1547,7 @@ BoxCollider:
   m_GameObject: {fileID: 1444797237}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1614,7 +1642,7 @@ BoxCollider:
   m_GameObject: {fileID: 1592424626}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1717,7 +1745,7 @@ RectTransform:
   m_AnchorMin: {x: 0.8, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1640958422
 MonoBehaviour:
@@ -2015,7 +2043,7 @@ BoxCollider:
   m_GameObject: {fileID: 1819387271}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}

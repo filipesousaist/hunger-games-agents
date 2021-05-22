@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
+  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -394,7 +394,7 @@ GameObject:
   - component: {fileID: 300001933}
   - component: {fileID: 300001932}
   m_Layer: 0
-  m_Name: Shield-Ceiling
+  m_Name: _Shield-Ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1242,6 +1242,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraManager: {fileID: 944943062}
   agentController: {fileID: 1097084204}
+  Shield: {fileID: 1293379295}
+  shieldDecreaseFactor: 0.1
+  shieldDecreaseTimer: 1
 --- !u!114 &1097084208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1371,7 +1374,7 @@ GameObject:
   - component: {fileID: 1268685462}
   - component: {fileID: 1268685461}
   m_Layer: 0
-  m_Name: Shield-Wall-Left
+  m_Name: _Shield-Wall-Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1501,7 +1504,7 @@ GameObject:
   - component: {fileID: 1444797239}
   - component: {fileID: 1444797238}
   m_Layer: 0
-  m_Name: Shield-Wall-Right
+  m_Name: _Shield-Wall-Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1596,7 +1599,7 @@ GameObject:
   - component: {fileID: 1592424628}
   - component: {fileID: 1592424627}
   m_Layer: 0
-  m_Name: Shield-Wall-Front
+  m_Name: _Shield-Wall-Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1997,7 +2000,7 @@ GameObject:
   - component: {fileID: 1819387273}
   - component: {fileID: 1819387272}
   m_Layer: 0
-  m_Name: Shield-Wall-Back
+  m_Name: _Shield-Wall-Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

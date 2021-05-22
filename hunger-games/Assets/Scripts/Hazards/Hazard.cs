@@ -12,18 +12,18 @@ public abstract class Hazard : MonoBehaviour
     public float DURATION_IN_EPOCHS;
     [ReadOnly] public float DURATION;
     public int FREQUENCY; // Max no. of times negative effect occurs during the duration of the hazard
-    private float PERIOD;
+    protected float PERIOD;
 
-    private bool active = false;
+    protected bool active = false;
     private float[] agentTimers = new float[Const.NUM_AGENTS];
 
-    private int index;
+    protected int index;
     private List<Vector3> region;
 
     private readonly List<GameObject> effects = new List<GameObject>();
 
     private Environment environment;
-    private HazardManager hazardManager;
+    protected HazardManager hazardManager;
 
     private void Awake()
     {
@@ -41,7 +41,7 @@ public abstract class Hazard : MonoBehaviour
             for (int i = 0; i < Const.NUM_AGENTS; i ++)
             {
                 Agent agent = agents.ElementAt(i);
-                if (agent != null && hazardManager.GetSection(agent.transform.position) == index)
+                if (agent != null && hazardManager.GetRegion(agent.transform.position) == index)
                 {
                     agentTimers[i] += Time.deltaTime;
                     if (agentTimers[i] >= PERIOD)
@@ -51,8 +51,11 @@ public abstract class Hazard : MonoBehaviour
                     }
                 }
             }    
-        }   
+        }
+        OnUpdate();
     }
+
+    protected virtual void OnUpdate() { }
 
     public void SetRegion(int index, List<Vector3> region)
     {

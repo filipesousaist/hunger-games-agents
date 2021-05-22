@@ -23,7 +23,7 @@ public class HazardManager : MonoBehaviour
 
         hazards = new Hazard[NUM_REGIONS];
         int[] indexes = Utils.ShuffledArray(NUM_REGIONS);
-        Hazard[] unsorted_hazards = { fog, fire, rain, radiation, fog, fire, rain, radiation };
+        Hazard[] unsorted_hazards = { fire, fire, fire, fire, fire, fire, fire, fire };//{ fog, fire, rain, radiation, fog, fire, rain, radiation };
         int[] region_order = Utils.ShuffledArray(1, NUM_REGIONS + 1);
 
         for (int i = 0; i < NUM_REGIONS; i ++)
@@ -58,12 +58,12 @@ public class HazardManager : MonoBehaviour
             for (int z = -249; z <= 249; z ++)
             {
                 Vector3 point = new Vector3(x, 1, z);
-                regions[GetSection(point)].Add(point);
+                regions[GetRegion(point)].Add(point);
             }
         return regions;
     }
 
-    public int GetSection(Vector3 coordinates)
+    public int GetRegion(Vector3 coordinates)
     {
         float x = coordinates.x;
         float z = coordinates.z;

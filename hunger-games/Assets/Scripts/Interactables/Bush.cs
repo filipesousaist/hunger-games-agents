@@ -6,7 +6,7 @@ public abstract class Bush : Entity, IInteractable
     public bool hasBerries;
 
     public float GROW_TIME;
-    private float timer;
+    [ReadOnly] public float timer;
 
     private Environment environment;
 
@@ -39,7 +39,7 @@ public abstract class Bush : Entity, IInteractable
         }
     }
 
-    private void ChangeBushType()
+    public void ChangeBushType()
     {
         GameObject newBush = Instantiate(otherPrefab);
         newBush.transform.position = transform.position;

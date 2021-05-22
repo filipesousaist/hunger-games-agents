@@ -1956,16 +1956,16 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.8
+    x: 0
     y: 0
-    width: 0.05
-    height: 0.1
+    width: 1
+    height: 1
   near clip plane: 0.3
   far clip plane: 6
   field of view: 30
   orthographic: 1
   orthographic size: 0.75
-  m_Depth: 0
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 1088
@@ -2257,7 +2257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 7048123919548747090}
   faceCam: {fileID: 3033534214314781114}
-  panel: {fileID: 4250497378553482298, guid: f9cb023c6270236438fa308d8bd0be11, type: 3}
+  faceCamTexturePrefab: {fileID: 8400000, guid: f831809fe19638c46af2b26919572c0b, type: 2}
   visionCollider: {fileID: 6910208461091688374}
   interactionCollider: {fileID: 4898740630418156930}
   meleeCollider: {fileID: 2396392916868855945}
@@ -2282,7 +2282,7 @@ MonoBehaviour:
   chestPrefab: {fileID: 5729306168524695043, guid: ca716a0490ad6f44296b8638bbe81ee5, type: 3}
   bodyMaterial: {fileID: 0}
   WALK_DISTANCE: 0.3
-  ROTATE_ANGLE: 3
+  ROTATE_ANGLE: 0.1
 --- !u!1 &7213335544604658796
 GameObject:
   m_ObjectHideFlags: 0

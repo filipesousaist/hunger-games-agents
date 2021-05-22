@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Agent : Entity
 {
@@ -21,6 +22,7 @@ public class Agent : Entity
 
     public Camera cam;
     public Camera faceCam;
+    public RenderTexture faceCamTexturePrefab;
 
     private TextMeshProUGUI energyText;
     private TextMeshProUGUI attackText;
@@ -117,11 +119,6 @@ public class Agent : Entity
 
     public void InitInfoPanel()
     {
-        faceCam.rect = new Rect(
-            faceCam.rect.x,
-            (index - 0.5f) / Const.NUM_AGENTS - faceCam.rect.height / 2,
-            faceCam.rect.width,
-            faceCam.rect.height);
         faceCam.cullingMask = 1 << LayerMask.NameToLayer("Agent " + index);
 
         Transform panelContainerTransform = FindObjectOfType<Canvas>().transform.Find("_AgentPanelContainer");
@@ -129,14 +126,19 @@ public class Agent : Entity
         newPanelTransform.gameObject.SetActive(true);
         
         newPanelTransform.SetParent(panelContainerTransform);
-        newPanelTransform.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1 - index / 8f);
+        newPanelTransform.GetComponent<RectTransform>().anchorMin = new Vector2(0.25f, 1 - index / 8f);
         newPanelTransform.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1 - (index - 1) / 8f);
         newPanelTransform.GetComponent<RectTransform>().offsetMin =
         newPanelTransform.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+        newPanelTransform.localScale = Vector3.one;
 
         newPanelTransform.Find("_NamePanel").Find("_NameText").GetComponent<TextMeshProUGUI>().text = name;
         energyText = newPanelTransform.Find("_EnergyPanel").Find("_EnergyText").GetComponent<TextMeshProUGUI>();
         attackText = newPanelTransform.Find("_AttackPanel").Find("_AttackText").GetComponent<TextMeshProUGUI>();
+
+        RenderTexture faceCamTexture = Instantiate(faceCamTexturePrefab);
+        faceCam.targetTexture = faceCamTexture;
+        newPanelTransform.Find("_PortraitImage").GetComponent<RawImage>().texture = faceCamTexture;
     }
 
     void Update()
@@ -150,14 +152,12 @@ public class Agent : Entity
         trainAnimationTimer += Time.deltaTime;
 
         float t = trainAnimationTimer % TRAIN_JUMP_DURATION;
-        float y = TRAIN_JUMP_INITIAL_SPEED * t - TRAIN_GRAVITY_ACC * t * t;
+        float y = (TRAIN_JUMP_INITIAL_SPEED - TRAIN_GRAVITY_ACC * t) * t;
 
         transform.position += transform.up * (y - transform.position.y);
 
         rope.transform.Rotate(new Vector3(0, 0, ROPE_ANGULAR_FREQ * Time.deltaTime), Space.Self);
     }
-
-    // TODO: Sensors
 
     public Perception See()
     {
@@ -277,8 +277,8 @@ public class Agent : Entity
 
     public void UpdateInfo()
     {
-        energyText.text = "" + energy;
-        attackText.text = "" + attack;
+        energyText.text = energy.ToString();
+        attackText.text = (attack + GetWeaponAttack()).ToString();
 
         if (agentController.IsActiveAgent(this))
             uIManager.UpdateAgentInfo(this);
@@ -300,9 +300,6 @@ public class Agent : Entity
         weapon = newWeapon;
         if (weapon != null)
         {
-            attack += weapon.attack;
-            
-
             weapon.transform.parent = transform;
             ResetWeaponPosition();
         }
@@ -311,14 +308,11 @@ public class Agent : Entity
 
     public Weapon UnequipWeapon()
     {
-        if (weapon != null)
-        {
-            attack -= weapon.attack;
-        }
-        UpdateInfo();
-
         Weapon oldWeapon = weapon;
         weapon = null;
+
+        UpdateInfo();
+
         return oldWeapon;
     }
 
@@ -340,6 +334,8 @@ public class Agent : Entity
         trainAnimationTimer = 0;
 
         Destroy(rope.gameObject);
+
+        transform.Translate(-transform.up * transform.position.y);
     }
 
     private void Punch()
@@ -378,6 +374,11 @@ public class Agent : Entity
         );
     }
 
+    public int GetWeaponAttack()
+    {
+        return weapon != null ? weapon.attack : 0;
+    }
+
     public void CorrodeWeapon(int attackLoss)
     {
         if (weapon != null)
@@ -397,7 +398,7 @@ public class Agent : Entity
             energy = energy,
             attack = attack,
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
-            weaponAttack = weapon != null ? weapon.attack : 0
+            weaponAttack = GetWeaponAttack()
         };
     }
 }

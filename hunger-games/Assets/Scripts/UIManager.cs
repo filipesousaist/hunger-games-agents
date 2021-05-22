@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
             nameText.text = agent.name;
             architectureText.text = agent.GetArchitectureName() + " agent";
             energyText.text = "Energy: " + agent.energy;
-            attackText.text = "Attack: " + agent.attack;
+            attackText.text = "Attack: " + (agent.attack + agent.GetWeaponAttack());
         }
     }
     public void RemoveAgentInfo()

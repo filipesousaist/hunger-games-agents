@@ -8,7 +8,7 @@ public class Bow : Weapon
     public override void Attack(Agent owner)
     {
         Arrow newArrow = Instantiate(arrowPrefab, transform.position, transform.parent.rotation).GetComponent<Arrow>();
-        newArrow.SetDamage(attack);
+        newArrow.SetDamage(owner.attack + attack);
         newArrow.SetOwner(owner);
         fixedArrow.SetActive(false);
     }

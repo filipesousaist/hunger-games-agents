@@ -27,7 +27,7 @@ public class Sword : Weapon
     {
         StartCoroutine(SwingCo());
         foreach (Agent agent in owner.meleeCollider.GetCollidingAgents())
-            agent.LoseEnergy(owner.attack);
+            agent.LoseEnergy(owner.attack + attack);
     }
 
     public IEnumerator SwingCo()

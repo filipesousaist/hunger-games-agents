@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
+  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 300001934}
   - component: {fileID: 300001933}
   - component: {fileID: 300001932}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _Shield-Ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1371,7 +1371,7 @@ GameObject:
   - component: {fileID: 1268685463}
   - component: {fileID: 1268685462}
   - component: {fileID: 1268685461}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _Shield-Wall-Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1465,7 +1465,7 @@ GameObject:
   - component: {fileID: 1293379296}
   - component: {fileID: 1293379297}
   - component: {fileID: 1293379298}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1531,7 +1531,7 @@ GameObject:
   - component: {fileID: 1444797240}
   - component: {fileID: 1444797239}
   - component: {fileID: 1444797238}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _Shield-Wall-Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1626,7 +1626,7 @@ GameObject:
   - component: {fileID: 1592424629}
   - component: {fileID: 1592424628}
   - component: {fileID: 1592424627}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _Shield-Wall-Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2027,7 +2027,7 @@ GameObject:
   - component: {fileID: 1819387274}
   - component: {fileID: 1819387273}
   - component: {fileID: 1819387272}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _Shield-Wall-Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}

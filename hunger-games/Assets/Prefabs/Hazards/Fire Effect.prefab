@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6657296091715521218}
   - component: {fileID: 4954882776364965221}
   - component: {fileID: 921410159734795754}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4828,7 +4828,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6547405138261665719}
   - component: {fileID: 8274867649258464858}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Fire Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

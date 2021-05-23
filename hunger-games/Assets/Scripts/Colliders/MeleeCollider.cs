@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class MeleeCollider : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class MeleeCollider : MonoBehaviour
 
     public IEnumerable<Agent> GetCollidingAgents()
     {
+        collidingAgents = collidingAgents.Where((entity) => entity != null).ToList();
         return collidingAgents;
     }
 }

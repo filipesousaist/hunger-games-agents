@@ -94,8 +94,6 @@ public class Agent : Entity
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
 
-    
-
     private void Awake()
     {
         myRigidbody = GetComponent<Rigidbody>();
@@ -121,6 +119,7 @@ public class Agent : Entity
         energy = MAX_ENERGY;
         weapon = null;
 
+        visionCollider.InitLayerMask();
         environment.AddAgent(this);
 
         UpdateInfo();
@@ -173,13 +172,12 @@ public class Agent : Entity
         Chest nearestChest = interactionCollider.GetNearestChest(transform.position);
         Bush nearestBush = interactionCollider.GetNearestBush(transform.position);
 
-
         return new Perception()
         {
             myData = (AgentData)GetData(),
             visionData = visionCollider.GetCollidingEntitiesData(),
-            nearestChestData = nearestChest != null ? (ChestData)nearestChest.GetData() : null,
-            nearestBushData = nearestBush != null ? (BushData)nearestBush.GetData() : null,
+            nearestChestData = nearestChest != null ? (ChestData) nearestChest.GetData() : null,
+            nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null,
             agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData())
         };
     }

@@ -120,8 +120,6 @@ public class Chest : Entity, IInteractable
         if (hideWeaponCo != null)
             StopCoroutine(hideWeaponCo);
 
-        Debug.Log(weapon);
-
         Transform weaponTransform = weapon.transform;
         while (weaponTransform.position.y < SHOW_WEAPON_HEIGHT)
         {

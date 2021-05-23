@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 832856410258879447}
   - component: {fileID: 1636102270445883908}
   - component: {fileID: 4676457305027958355}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4829,7 +4829,7 @@ GameObject:
   - component: {fileID: 1818484131586292844}
   - component: {fileID: 7172737814353845242}
   - component: {fileID: 1361222132498092522}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9631,7 +9631,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8147698900447060595}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Fog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9663,7 +9663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4505114887910343333}
   - component: {fileID: 1834638279279010702}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Rain Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

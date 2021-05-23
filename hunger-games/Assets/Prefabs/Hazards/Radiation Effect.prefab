@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1033382271744778568}
   - component: {fileID: 7263435521905652914}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Radiation Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 2717581254383576260}
   - component: {fileID: 5455167031029937964}
   - component: {fileID: 5392986178263986029}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -23,14 +23,14 @@ public abstract class Hazard : MonoBehaviour
     private readonly List<GameObject> effects = new List<GameObject>();
 
     private Environment environment;
-    protected HazardManager hazardManager;
+    protected HazardsManager hazardManager;
 
     private void Awake()
     {
         environment = FindObjectOfType<Environment>();
-        hazardManager = FindObjectOfType<HazardManager>();
+        hazardManager = FindObjectOfType<HazardsManager>();
         DURATION = DURATION_IN_EPOCHS * Const.DECISION_TIME;
-        PERIOD = DURATION / FREQUENCY;
+        PERIOD = FREQUENCY > 0 ? DURATION / FREQUENCY : float.MaxValue;
     }
 
     private void Update()

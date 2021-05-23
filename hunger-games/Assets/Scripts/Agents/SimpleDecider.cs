@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Linq;
+using static Entity;
+using static Agent;
 
 public class SimpleDecider : Decider
 {
-    private Agent.Action sideToRotate;
-    public override void Decide(Agent.Perception perception)
+    private Action sideToRotate;
+    public override void Decide(Perception perception)
     { 
-        nextAction = Agent.Action.WALK; // If no other action is selected, walk
+        nextAction = Action.WALK; // If no other action is selected, walk
 
         AgentData myData = perception.myData;
 
@@ -19,37 +21,45 @@ public class SimpleDecider : Decider
         CheckIfAttack(perception, myData);
     }
 
-    private void CheckIfAttack(Agent.Perception perception, AgentData agentData)
+    private void CheckIfAttack(Perception perception, AgentData agentData)
     {
-        if (perception.agentsInMeleeRange.Any() && agentData.weaponType == Weapon.Type.SWORD)
-            nextAction = Agent.Action.ATTACK;
+        if (agentData.weaponType == Weapon.Type.BOW && 
+            perception.visionData.Any( (entityData) => entityData.type == Type.AGENT )
+            ||
+            agentData.weaponType != Weapon.Type.BOW &&
+            perception.agentsInMeleeRange.Any())
+            
+            nextAction = Action.ATTACK;
     }
 
-    private void CheckIfTrain(Agent.Perception perception)
+    private void CheckIfTrain(Perception perception)
     {
-        foreach (EntityData data in perception.visionData)
-        {
-            if (data.type == Entity.Type.ARROW)
-            {
-                nextAction = Agent.Action.TRAIN;
-                return;
-            }
-        }
+        if (perception.visionData.Any((data) => data.type == Type.ARROW))
+            nextAction = Action.TRAIN;
     }
 
-    private void CheckIfUseChest(Agent.Perception perception, AgentData myData)
+    private void CheckIfUseChest(Perception perception, AgentData myData)
     {
         ChestData chestData = perception.nearestChestData;
         if (chestData != null &&
             chestData.weaponType != Weapon.Type.NONE &&
             (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack))
         {
-            nextAction = Agent.Action.USE_CHEST;
+            nextAction = Action.USE_CHEST;
+            return;
+        }
+    }
+    private void CheckIfEatBerries(Perception perception, AgentData myData)
+    {
+        BushData bushData = perception.nearestBushData;
+        if (bushData != null && perception.nearestBushData.hasBerries && !bushData.poisonous && myData.energy < 10)
+        {
+            nextAction = Action.EAT_BERRIES;
             return;
         }
     }
 
-    private void CheckIfRotate(Agent.Perception perception, AgentData myData)
+    private void CheckIfRotate(Perception perception, AgentData myData)
     {
         foreach (EntityData data in perception.visionData)
             if ((new Vector2(data.position.x, data.position.z) -
@@ -60,7 +70,7 @@ public class SimpleDecider : Decider
                 return;
             }
 
-        sideToRotate = Random.Range(0, 2) == 0 ? Agent.Action.ROTATE_RIGHT : Agent.Action.ROTATE_LEFT;
+        sideToRotate = Random.Range(0, 2) == 0 ? Action.ROTATE_RIGHT : Action.ROTATE_LEFT;
     }
 
     public override string GetArchitectureName()

@@ -1,10 +1,5 @@
-﻿using UnityEngine;
-
-public class Fog : Hazard
+﻿public class Fog : Hazard
 {
-    protected override void Harm(Agent agent)
-    {
-        Debug.Log("Fog activation");
-    }
+    protected override void Harm(Agent agent) { }
 }
 

@@ -89,6 +89,9 @@ public class Agent : Entity
     private AgentController agentController;
     private UIManager uIManager;
 
+    [ReadOnly] public int shieldTimer=0;
+    public int MAX_SHIELD_TIMER;
+
     
 
     private void Awake()

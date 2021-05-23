@@ -121,9 +121,16 @@ public class Environment : MonoBehaviour
     
     private void CheckAgentsPosition()
     {
-        foreach (int r in randomIndexes)
+        
+        foreach (int r in randomIndexes){
             if (agents[r] != null && !agents[r].inShieldBounds) //shield.IsPositionOutside(agents[r].transform.position))
+                agents[r].shieldTimer++;
+            if (agents[r] != null && agents[r].shieldTimer == agents[r].MAX_SHIELD_TIMER)
+            {
+                agents[r].shieldTimer = 0;
                 agents[r].LoseEnergy(1);
+            }
+        }
     }
 
     private void DestroyAgent(int index)

@@ -2279,10 +2279,13 @@ MonoBehaviour:
   TRAIN_NUM_JUMPS: 5
   ROPE_OFFSET_Y: 1.5
   ropePrefab: {fileID: 4435243925886159975, guid: 7037779a29b764631a4f48b19a654bf8, type: 3}
+  inShieldBounds: 1
   chestPrefab: {fileID: 5729306168524695043, guid: ca716a0490ad6f44296b8638bbe81ee5, type: 3}
   bodyMaterial: {fileID: 0}
   WALK_DISTANCE: 0.3
   ROTATE_ANGLE: 0.1
+  shieldTimer: 0
+  MAX_SHIELD_TIMER: 20
 --- !u!1 &7213335544604658796
 GameObject:
   m_ObjectHideFlags: 0

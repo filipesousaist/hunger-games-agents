@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 public class SimpleDecider : Decider
 {
@@ -14,6 +15,14 @@ public class SimpleDecider : Decider
         CheckIfUseChest(perception, myData);
 
         CheckIfTrain(perception);
+
+        CheckIfAttack(perception, myData);
+    }
+
+    private void CheckIfAttack(Agent.Perception perception, AgentData agentData)
+    {
+        if (perception.agentsInMeleeRange.Any() && agentData.weaponType == Weapon.Type.SWORD)
+            nextAction = Agent.Action.ATTACK;
     }
 
     private void CheckIfTrain(Agent.Perception perception)

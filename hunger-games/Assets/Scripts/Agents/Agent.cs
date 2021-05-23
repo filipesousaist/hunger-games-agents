@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Agent : Entity
 {
@@ -18,6 +19,7 @@ public class Agent : Entity
         public IEnumerable<EntityData> visionData;
         public ChestData nearestChestData;
         public BushData nearestBushData;
+        public IEnumerable<AgentData> agentsInMeleeRange;
     }
 
     public Camera cam;
@@ -168,12 +170,14 @@ public class Agent : Entity
         Chest nearestChest = interactionCollider.GetNearestChest(transform.position);
         Bush nearestBush = interactionCollider.GetNearestBush(transform.position);
 
+
         return new Perception()
         {
-            myData = (AgentData) GetData(),
+            myData = (AgentData)GetData(),
             visionData = visionCollider.GetCollidingEntitiesData(),
-            nearestChestData = nearestChest != null ? (ChestData) nearestChest.GetData() : null,
-            nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null
+            nearestChestData = nearestChest != null ? (ChestData)nearestChest.GetData() : null,
+            nearestBushData = nearestBush != null ? (BushData)nearestBush.GetData() : null,
+            agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData())
         };
     }
 

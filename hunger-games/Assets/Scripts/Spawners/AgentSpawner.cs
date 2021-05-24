@@ -4,11 +4,13 @@ using UnityEngine;
 public class AgentSpawner : MonoBehaviour
 {
     public int SPAWN_RADIUS;
+
+    private int controlableNumber = 1;
     
     // Prefabs
 
     public GameObject controllableAgent;
-    public GameObject simpleAgent;
+    public GameObject baselineAgent;
 
     public Material[] headMaterials;
 
@@ -23,7 +25,7 @@ public class AgentSpawner : MonoBehaviour
         int[] indexes = Utils.ShuffledArray(Const.NUM_AGENTS);
 
         foreach (int i in indexes) {
-            GameObject prefab = (i <= 4) ? controllableAgent : simpleAgent;
+            GameObject prefab = (i <= controlableNumber) ? controllableAgent :  baselineAgent;
             Agent newAgent = Instantiate(prefab).GetComponent<Agent>();
 
             newAgent.index = i + 1;

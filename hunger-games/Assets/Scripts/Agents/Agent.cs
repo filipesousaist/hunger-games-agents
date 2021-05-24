@@ -40,9 +40,8 @@ public class Agent : Entity
     [ReadOnly] public int index;
 
     public int BASE_ATTACK;
-    public int MAX_ATTACK;
     public int MIN_ATTACK;
-    public int MAX_ENERGY;
+   
 
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
@@ -119,7 +118,7 @@ public class Agent : Entity
         ROPE_ANGULAR_FREQ = 360 / TRAIN_JUMP_DURATION;
 
         attack = BASE_ATTACK;
-        energy = MAX_ENERGY;
+        energy = Const.MAX_ENERGY;
         weapon = null;
 
         visionCollider.InitLayerMask();
@@ -338,7 +337,7 @@ public class Agent : Entity
 
     private void FinishTraining()
     {
-        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, MAX_ATTACK);
+        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, Const.MAX_ATTACK);
         LoseEnergy(TRAIN_ENERGY_LOSS);
 
         training = false;
@@ -358,7 +357,7 @@ public class Agent : Entity
 
     public void GainEnergy(int amount)
     {
-        energy = Mathf.Min(energy + amount, MAX_ENERGY);
+        energy = Mathf.Min(energy + amount, Const.MAX_ENERGY);
         UpdateInfo();
     }
 

@@ -34,4 +34,9 @@ public static class Utils
     {
         return (n - a) % (b - a) + a;
     }
+
+    public static Vector3 GetForward(float rotation_y)
+    {
+        return Quaternion.AngleAxis(rotation_y, Vector3.up) * Vector3.forward;
+    }
 }

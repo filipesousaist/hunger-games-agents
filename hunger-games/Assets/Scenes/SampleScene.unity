@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44824845, g: 0.49827534, b: 0.57558256, a: 1}
+  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1199,7 +1199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SPAWN_RADIUS: 25
   controllableAgent: {fileID: 4443185355672100926, guid: c5acb7fdc161e46478c12dc6737e24cb, type: 3}
-  simpleAgent: {fileID: 2752867635762223344, guid: f9bb0e4d08cf3a14e87539eff49370cc, type: 3}
+  baselineAgent: {fileID: 486649624422066698, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
   headMaterials:
   - {fileID: 2100000, guid: 436950409a51f284f93dedf5176acba1, type: 2}
   - {fileID: 2100000, guid: 3fbb2208fa0d2594abbf54f545883ef8, type: 2}

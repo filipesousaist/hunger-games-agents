@@ -9,7 +9,7 @@ public class SimpleDecider : Decider
     public override void Decide(Perception perception)
     { 
         nextAction = Action.WALK; // If no other action is selected, walk
-
+        
         AgentData myData = perception.myData;
 
         CheckIfRotate(perception, myData);

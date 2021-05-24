@@ -48,8 +48,8 @@ public class Agent : Entity
     [ReadOnly] public int energy;
     private Weapon weapon;
 
-    public float ATTACK_WAIT_TIME;
-    private float attackWaitTimer = 0;
+    public int ATTACK_WAIT_TIME;
+    private int attackWaitTimer = 0;
 
     private bool training = false;
     private int trainTimer; // Epochs
@@ -90,9 +90,11 @@ public class Agent : Entity
     private Environment environment;
     private AgentController agentController;
     private UIManager uIManager;
+    private HazardsManager hazardsManager;
 
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
+    
 
     private void Awake()
     {
@@ -101,6 +103,7 @@ public class Agent : Entity
         environment = FindObjectOfType<Environment>();
         agentController = FindObjectOfType<AgentController>();
         uIManager = FindObjectOfType<UIManager>();
+        hazardsManager = FindObjectOfType<HazardsManager>();
     }
 
     // Start is called before the first frame update
@@ -399,15 +402,18 @@ public class Agent : Entity
 
     public override EntityData GetData()
     {
+        var position = transform.position;
         return new AgentData()
         {
-            position = transform.position,
+            position = position,
             index = index,
             rotation = transform.rotation.eulerAngles.y,
             energy = energy,
             attack = attack,
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
-            weaponAttack = GetWeaponAttack()
+            weaponAttack = GetWeaponAttack(),
+            attackWaitTimer = attackWaitTimer,
+            currentRegion = hazardsManager.GetRegion(position)
         };
     }
 }
@@ -420,6 +426,8 @@ public class AgentData : EntityData
     public int attack;
     public Weapon.Type weaponType;
     public int weaponAttack;
+    public int attackWaitTimer;
+    public int currentRegion;
 
     public AgentData()
     {

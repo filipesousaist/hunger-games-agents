@@ -173,8 +173,6 @@ public class Chest : Entity, IInteractable
         Weapon agentWeapon = agent.UnequipWeapon();
         agent.EquipWeapon(weapon);
         SetWeapon(agentWeapon, hide ? HIDE_WEAPON_HEIGHT : SHOW_WEAPON_HEIGHT);
-
-        Debug.Log(weapon);
     }
 
     public void RemoveWeapon()

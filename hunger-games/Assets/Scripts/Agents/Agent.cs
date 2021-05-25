@@ -20,6 +20,7 @@ public class Agent : Entity
         public ChestData nearestChestData;
         public BushData nearestBushData;
         public IEnumerable<AgentData> agentsInMeleeRange;
+        public List<HazardEffectData> hazardsOrder;
     }
 
     public Camera cam;
@@ -92,6 +93,8 @@ public class Agent : Entity
     private HazardsManager hazardsManager;
     private Shield shield;
 
+    private List<HazardEffectData> hazardsOrder;
+
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
     
@@ -105,6 +108,7 @@ public class Agent : Entity
         uIManager = FindObjectOfType<UIManager>();
         hazardsManager = FindObjectOfType<HazardsManager>();
         shield = FindObjectOfType<Shield>();
+        hazardsOrder = new List<HazardEffectData>(8);
     }
 
     // Start is called before the first frame update
@@ -175,15 +179,23 @@ public class Agent : Entity
     {
         Chest nearestChest = interactionCollider.GetNearestChest(transform.position);
         Bush nearestBush = interactionCollider.GetNearestBush(transform.position);
+        IEnumerable<EntityData> visionData = visionCollider.GetCollidingEntitiesData();
+
+        if (visionData.Any((entityData) => entityData.type == Type.HAZARD_EFFECT))
+            hazardsOrder[hazardsManager.GetTimeslot() % 8] =
+                (HazardEffectData) visionData.First((entityData) => entityData.type == Type.HAZARD_EFFECT);
 
         return new Perception()
         {
-            myData = (AgentData)GetData(),
-            visionData = visionCollider.GetCollidingEntitiesData(),
+            myData = (AgentData) GetData(),
+            visionData = visionData,
             nearestChestData = nearestChest != null ? (ChestData) nearestChest.GetData() : null,
             nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null,
-            agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData())
+            agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData()),
+            hazardsOrder = hazardsOrder
+
         };
+
     }
 
     // Actions

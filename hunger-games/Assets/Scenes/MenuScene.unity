@@ -341,7 +341,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.35
+  m_fontSize: 28.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -658,7 +658,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.2
+  m_fontSize: 35.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -970,7 +970,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22.55
+  m_fontSize: 25.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1036,7 +1036,6 @@ GameObject:
   - component: {fileID: 1026255583}
   - component: {fileID: 1026255586}
   - component: {fileID: 1026255585}
-  - component: {fileID: 1026255584}
   m_Layer: 0
   m_Name: Presets Container
   m_TagString: Untagged
@@ -1068,21 +1067,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1026255584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026255582}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9f7d887da35d02438d4b8be7c44cfc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deciders:
-  - {fileID: 4473503739505457634, guid: f9bb0e4d08cf3a14e87539eff49370cc, type: 3}
-  - {fileID: 3983110627658726246, guid: c5acb7fdc161e46478c12dc6737e24cb, type: 3}
 --- !u!114 &1026255585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1832,8 +1816,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deciders:
-  - {fileID: 4473503739505457634, guid: f9bb0e4d08cf3a14e87539eff49370cc, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
   - {fileID: 3983110627658726246, guid: c5acb7fdc161e46478c12dc6737e24cb, type: 3}
+  - {fileID: 4473503739505457634, guid: f9bb0e4d08cf3a14e87539eff49370cc, type: 3}
 --- !u!1 &1640571552
 GameObject:
   m_ObjectHideFlags: 0
@@ -2184,7 +2169,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92f3a08d485cd7c4da50964c61144447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectArchitecturesManager: {fileID: 1626854122}
 --- !u!1 &1696604513
 GameObject:
   m_ObjectHideFlags: 0

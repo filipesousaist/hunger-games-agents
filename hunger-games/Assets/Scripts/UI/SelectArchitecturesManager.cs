@@ -12,6 +12,8 @@ public class SelectArchitecturesManager : MonoBehaviour
     {
         foreach (Decider decider in deciders)
         {
+            Debug.Log(decider);
+            Debug.Log(decider.GetArchitectureName());
             namesToArchitectures.Add(decider.GetArchitectureName(), decider);
         }
     }

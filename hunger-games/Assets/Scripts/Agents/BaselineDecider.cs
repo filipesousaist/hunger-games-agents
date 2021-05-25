@@ -91,9 +91,9 @@ public class BaselineDecider : Decider
     {
         if (agentData.outsideShield && !isBlocked)
         {
-            if (!Utils.CheckIfAligned(-agentData.position, Utils.GetForward(agentData.rotation), 90))
+            if (!Utils.CheckIfAligned(-agentData.position, Utils.GetForward(agentData.rotation), 5))
             {
-                nextAction = Random.Range(0, 10) == 1 ? Action.WALK : sideToRotate;
+                nextAction = Random.Range(0, 5) == 1 ? Action.WALK : sideToRotate;
             } else
             {
                 nextAction = Action.WALK;

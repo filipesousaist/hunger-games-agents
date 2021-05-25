@@ -1,7 +1,15 @@
-﻿public class HazardEffect : Entity
+﻿using System;
+
+public class HazardEffect : Entity
 {
     public Hazard.Type type;
     private HazardsManager hazardsManager;
+
+    private void Awake()
+    {
+        hazardsManager = FindObjectOfType<HazardsManager>();
+    }
+
     public override EntityData GetData()
     {
         return new HazardEffectData()

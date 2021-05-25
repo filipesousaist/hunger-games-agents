@@ -11,7 +11,8 @@ public class ControllableDecider : Decider
         { KeyCode.E,        Agent.Action.EAT_BERRIES },
         { KeyCode.R,        Agent.Action.USE_CHEST },
         { KeyCode.T,        Agent.Action.TRAIN },
-        { KeyCode.Space,    Agent.Action.ATTACK }
+        { KeyCode.Space,    Agent.Action.ATTACK },
+        { KeyCode.Q, Agent.Action.TRADE }
     };
         
 

@@ -34,4 +34,9 @@ public static class Utils
     {
         return (n - a) % (b - a) + a;
     }
+
+    public static string GenerateAgentName(Decider decider, int index)
+    {
+        return decider.GetArchitectureName() + " " + index;
+    }
 }

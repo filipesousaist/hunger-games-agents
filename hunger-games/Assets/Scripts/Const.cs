@@ -6,4 +6,5 @@ public static class Const
     public const int NUM_AGENTS = 8;
     public const float DECISION_TIME = 0.025f;
     public const float SPAWN_RADIUS = 15;
+    public const int WORLD_SIZE = 250;
 }

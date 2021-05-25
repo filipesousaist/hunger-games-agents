@@ -149,7 +149,7 @@ public class Agent : Entity
 
         RenderTexture faceCamTexture = Instantiate(faceCamTexturePrefab);
         faceCam.targetTexture = faceCamTexture;
-        newPanelTransform.Find("_PortraitImage").GetComponent<RawImage>().texture = faceCamTexture;
+        newPanelTransform.Find("_PortraitContainer").Find("_PortraitImage").GetComponent<RawImage>().texture = faceCamTexture;
     }
 
     void Update()

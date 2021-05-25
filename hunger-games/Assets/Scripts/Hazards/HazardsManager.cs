@@ -96,4 +96,9 @@ public class HazardsManager : MonoBehaviour
         }
         return 0;
     }
+
+    public int GetTimeslot()
+    {
+        return timeslot;
+    }
 }

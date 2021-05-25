@@ -20,6 +20,7 @@ public class Agent : Entity
         public ChestData nearestChestData;
         public BushData nearestBushData;
         public IEnumerable<AgentData> agentsInMeleeRange;
+        public List<HazardEffectData> hazardsOrder;
     }
 
     public Camera cam;
@@ -40,9 +41,8 @@ public class Agent : Entity
     [ReadOnly] public int index;
 
     public int BASE_ATTACK;
-    public int MAX_ATTACK;
     public int MIN_ATTACK;
-    public int MAX_ENERGY;
+   
 
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
@@ -91,6 +91,9 @@ public class Agent : Entity
     private AgentController agentController;
     private UIManager uIManager;
     private HazardsManager hazardsManager;
+    private Shield shield;
+
+    private List<HazardEffectData> hazardsOrder;
 
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
@@ -104,6 +107,8 @@ public class Agent : Entity
         agentController = FindObjectOfType<AgentController>();
         uIManager = FindObjectOfType<UIManager>();
         hazardsManager = FindObjectOfType<HazardsManager>();
+        shield = FindObjectOfType<Shield>();
+        hazardsOrder = new List<HazardEffectData>(8);
     }
 
     // Start is called before the first frame update
@@ -119,7 +124,7 @@ public class Agent : Entity
         ROPE_ANGULAR_FREQ = 360 / TRAIN_JUMP_DURATION;
 
         attack = BASE_ATTACK;
-        energy = MAX_ENERGY;
+        energy = Const.MAX_ENERGY;
         weapon = null;
 
         visionCollider.InitLayerMask();
@@ -174,15 +179,23 @@ public class Agent : Entity
     {
         Chest nearestChest = interactionCollider.GetNearestChest(transform.position);
         Bush nearestBush = interactionCollider.GetNearestBush(transform.position);
+        IEnumerable<EntityData> visionData = visionCollider.GetCollidingEntitiesData();
+
+        if (visionData.Any((entityData) => entityData.type == Type.HAZARD_EFFECT))
+            hazardsOrder[hazardsManager.GetTimeslot() % 8] =
+                (HazardEffectData) visionData.First((entityData) => entityData.type == Type.HAZARD_EFFECT);
 
         return new Perception()
         {
-            myData = (AgentData)GetData(),
-            visionData = visionCollider.GetCollidingEntitiesData(),
+            myData = (AgentData) GetData(),
+            visionData = visionData,
             nearestChestData = nearestChest != null ? (ChestData) nearestChest.GetData() : null,
             nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null,
-            agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData())
+            agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData()),
+            hazardsOrder = hazardsOrder
+
         };
+
     }
 
     // Actions
@@ -338,7 +351,7 @@ public class Agent : Entity
 
     private void FinishTraining()
     {
-        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, MAX_ATTACK);
+        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, Const.MAX_ATTACK);
         LoseEnergy(TRAIN_ENERGY_LOSS);
 
         training = false;
@@ -358,7 +371,7 @@ public class Agent : Entity
 
     public void GainEnergy(int amount)
     {
-        energy = Mathf.Min(energy + amount, MAX_ENERGY);
+        energy = Mathf.Min(energy + amount, Const.MAX_ENERGY);
         UpdateInfo();
     }
 
@@ -413,7 +426,8 @@ public class Agent : Entity
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
             weaponAttack = GetWeaponAttack(),
             attackWaitTimer = attackWaitTimer,
-            currentRegion = hazardsManager.GetRegion(position)
+            currentRegion = hazardsManager.GetRegion(position),
+            outsideShield = shield.IsPositionOutside(position)
         };
     }
 }
@@ -428,6 +442,7 @@ public class AgentData : EntityData
     public int weaponAttack;
     public int attackWaitTimer;
     public int currentRegion;
+    public bool outsideShield;
 
     public AgentData()
     {

@@ -28,7 +28,7 @@ public static class Utils
         return ShuffledArray(0, maxExclusive);
     }
 
-    // Clamps a number between a and b (mod b-a)
+    ///<summary>Clamps a number n between a and b (mod b-a).</summary> 
 
     public static float ClampMod(float n, float a, float b)
     {
@@ -38,5 +38,15 @@ public static class Utils
     public static string GenerateAgentName(Decider decider, int index)
     {
         return decider.GetArchitectureName() + " " + index;
+    }
+
+    public static Vector3 GetForward(float rotation_y)
+    {
+        return Quaternion.AngleAxis(rotation_y, Vector3.up) * Vector3.forward;
+    }
+    
+    public static bool CheckIfAligned(Vector3 direction1, Vector3 direction2, float threshold)
+    {
+        return Mathf.Abs(Vector3.Angle(direction1, direction2)) <= threshold;
     }
 }

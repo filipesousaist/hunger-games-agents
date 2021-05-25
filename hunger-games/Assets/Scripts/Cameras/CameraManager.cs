@@ -50,6 +50,7 @@ public class CameraManager : MonoBehaviour
 
         agentController.DisableAllCameras();
         agentController.ToggleAgentControl(false);
+        agentController.Disable();
     }
 
     public void UpdateCameraInfo()

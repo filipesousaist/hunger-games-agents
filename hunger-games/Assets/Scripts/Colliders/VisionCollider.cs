@@ -59,7 +59,7 @@ public class VisionCollider : MonoBehaviour
 
         RaycastHit[] hits = Physics.RaycastAll(position, difference.normalized, difference.magnitude, LAYER_MASK);
 
-        DrawDebugRays(entity, hits, position, difference);
+        //DrawDebugRays(entity, hits, position, difference);
 
         return hits.All(
             (hit) =>

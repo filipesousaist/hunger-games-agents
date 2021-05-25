@@ -45,6 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 5124794901485178347, guid: c711b17d37ef545e4a1319128c87208c, type: 3}
   SPAWN_CHANCE: 0.01
+  NUM_FRAMES_TO_SPAWN: 100
   DURATION_IN_EPOCHS: 400
   DURATION: 0
   FREQUENCY: 10

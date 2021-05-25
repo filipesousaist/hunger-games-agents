@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4482491, g: 0.49827605, b: 0.5755831, a: 1}
+  m_IndirectSpecularColor: {r: 0.4482482, g: 0.49827528, b: 0.57558244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1505,7 +1505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SHIELD_DECREASE_FACTOR: 0.1
   DECREASE_SHIELD_DURATION_EPOCHS: 200
-  EPOCHS_TO_START_AUTO_DECREASE_SHIELD: 0
+  EPOCHS_TO_START_AUTO_DECREASE_SHIELD: 7200
 --- !u!65 &1293379298
 BoxCollider:
   m_ObjectHideFlags: 0

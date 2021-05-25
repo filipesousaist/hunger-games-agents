@@ -5,7 +5,7 @@ public class AgentSpawner : MonoBehaviour
 {
     public int SPAWN_RADIUS;
 
-    private int controlableNumber = 1;
+    private int controlableNumber = 2;
     
     // Prefabs
 

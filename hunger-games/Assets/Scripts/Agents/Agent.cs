@@ -1,15 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
+using Debug = UnityEngine.Debug;
 
 public class Agent : Entity
 {
     public enum Action
     {
-        IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT, USE_CHEST, EAT_BERRIES, ATTACK, TRAIN
+        IDLE, WALK, ROTATE_LEFT, ROTATE_RIGHT, USE_CHEST, EAT_BERRIES, ATTACK, TRAIN, TRADE
     }
 
     public struct Perception
@@ -20,7 +23,7 @@ public class Agent : Entity
         public ChestData nearestChestData;
         public BushData nearestBushData;
         public IEnumerable<AgentData> agentsInMeleeRange;
-        public List<HazardEffectData> hazardsOrder;
+        public HazardEffectData[] hazardsOrder;
     }
 
     public Camera cam;
@@ -93,7 +96,9 @@ public class Agent : Entity
     private HazardsManager hazardsManager;
     private Shield shield;
 
-    private List<HazardEffectData> hazardsOrder;
+    private HazardEffectData[] hazardsOrder;
+
+    private bool readyToTrade = false;
 
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
@@ -108,7 +113,7 @@ public class Agent : Entity
         uIManager = FindObjectOfType<UIManager>();
         hazardsManager = FindObjectOfType<HazardsManager>();
         shield = FindObjectOfType<Shield>();
-        hazardsOrder = new List<HazardEffectData>(8);
+        hazardsOrder = new HazardEffectData[8];
     }
 
     // Start is called before the first frame update
@@ -182,8 +187,10 @@ public class Agent : Entity
         IEnumerable<EntityData> visionData = visionCollider.GetCollidingEntitiesData();
 
         if (visionData.Any((entityData) => entityData.type == Type.HAZARD_EFFECT))
+        {
             hazardsOrder[hazardsManager.GetTimeslot() % 8] =
                 (HazardEffectData) visionData.First((entityData) => entityData.type == Type.HAZARD_EFFECT);
+        }
 
         return new Perception()
         {
@@ -231,6 +238,7 @@ public class Agent : Entity
                 case Action.EAT_BERRIES:    EatBerries();   break;
                 case Action.ATTACK:         Attack();       break;
                 case Action.TRAIN:          Train();        break;
+                case Action.TRADE:          TradeInfo();    break;
             }
     }
 
@@ -287,6 +295,29 @@ public class Agent : Entity
         training = true;
 
         CreateRope();
+    }
+
+    private void TradeInfo()
+    {
+        IEnumerable<EntityData> agentsInRange = visionCollider.GetCollidingEntitiesData().Where((entityData) => entityData.type == Type.AGENT && ((AgentData)entityData).readyToTrade);
+
+        if (agentsInRange.Any())
+        {
+            List<EntityData> agentsList = agentsInRange.ToList();
+            agentsList.Sort((agent1,agent2)=> Mathf.RoundToInt((agent1.position-transform.position).magnitude - (agent2.position-transform.position).magnitude));
+            int agentIndex = ((AgentData)agentsList.First()).index;
+            Agent agentToTrade = environment.GetAgent(agentIndex);
+            Debug.Log(agentToTrade.index);
+            TradeWithAgent(agentToTrade);
+            readyToTrade = false;
+
+        }
+
+        else
+        {
+            readyToTrade = true;
+        }
+        
     }
 
     public IEnumerator Decide(Perception perception)
@@ -413,6 +444,28 @@ public class Agent : Entity
         }
     }
 
+    private void TradeWithAgent(Agent agentToTrade)
+    {
+        agentToTrade.UpdateHazardData(hazardsOrder);
+        UpdateHazardData(agentToTrade.GetHazardsOrder());
+    }
+
+    public void UpdateHazardData(HazardEffectData[] otherHazardsOrder)
+    {
+        for (int i = 0; i < otherHazardsOrder.Length; i++)
+        {
+            Debug.Log("old: " + i + ":"+ hazardsOrder[i]);
+            hazardsOrder[i] = hazardsOrder[i] != null ? hazardsOrder[i] : otherHazardsOrder[i];
+            Debug.Log("new: " +i+ ":"+ hazardsOrder[i]);
+        }
+    }
+
+
+    public HazardEffectData[] GetHazardsOrder()
+    {
+        return hazardsOrder;
+    }
+    
     public override EntityData GetData()
     {
         var position = transform.position;
@@ -427,7 +480,8 @@ public class Agent : Entity
             weaponAttack = GetWeaponAttack(),
             attackWaitTimer = attackWaitTimer,
             currentRegion = hazardsManager.GetRegion(position),
-            outsideShield = shield.IsPositionOutside(position)
+            outsideShield = shield.IsPositionOutside(position),
+            readyToTrade = readyToTrade
         };
     }
 }
@@ -443,6 +497,7 @@ public class AgentData : EntityData
     public int attackWaitTimer;
     public int currentRegion;
     public bool outsideShield;
+    public bool readyToTrade;
 
     public AgentData()
     {

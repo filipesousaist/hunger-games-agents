@@ -39,4 +39,9 @@ public static class Utils
     {
         return Quaternion.AngleAxis(rotation_y, Vector3.up) * Vector3.forward;
     }
+    
+    public static bool CheckIfAligned(Vector3 direction1, Vector3 direction2, float threshold)
+    {
+        return Mathf.Abs(Vector3.Angle(direction1, direction2)) <= threshold ;
+    }
 }

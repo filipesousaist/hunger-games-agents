@@ -90,6 +90,7 @@ public class Agent : Entity
     private AgentController agentController;
     private UIManager uIManager;
     private HazardsManager hazardsManager;
+    private Shield shield;
 
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
@@ -103,6 +104,7 @@ public class Agent : Entity
         agentController = FindObjectOfType<AgentController>();
         uIManager = FindObjectOfType<UIManager>();
         hazardsManager = FindObjectOfType<HazardsManager>();
+        shield = FindObjectOfType<Shield>();
     }
 
     // Start is called before the first frame update
@@ -412,7 +414,8 @@ public class Agent : Entity
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
             weaponAttack = GetWeaponAttack(),
             attackWaitTimer = attackWaitTimer,
-            currentRegion = hazardsManager.GetRegion(position)
+            currentRegion = hazardsManager.GetRegion(position),
+            outsideShield = shield.IsPositionOutside(position)
         };
     }
 }
@@ -427,6 +430,7 @@ public class AgentData : EntityData
     public int weaponAttack;
     public int attackWaitTimer;
     public int currentRegion;
+    public bool outsideShield;
 
     public AgentData()
     {

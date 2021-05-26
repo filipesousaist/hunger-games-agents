@@ -60,4 +60,15 @@ public static class Utils
 
         return total.normalized;
     }
+
+    private static readonly Dictionary<int, string> DIFF_ORDINALS =
+        new Dictionary<int, string>()
+        {
+            { 1 , "1st" }, { 2 , "2nd" }, { 3 , "3rd" }
+        };
+
+    public static string Ordinal(int n)
+    {
+        return n <= 3 ? DIFF_ORDINALS[n] : n + "th";
+    }
 }

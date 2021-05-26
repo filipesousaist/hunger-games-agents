@@ -37,7 +37,6 @@ public class BaselineDecider : Decider
                 otherAgents.Any
                 (
                     (otherAgentData) => DeciderUtils.IsLookingToPosition(agentData, otherAgentData.position, 2)
-                    //Utils.CheckIfAligned(agentData.position - otherAgentData.position, Utils.GetForward(((AgentData) otherAgentData).rotation), 2)
                 )
                 ||
                 agentData.weaponType != Weapon.Type.BOW &&

@@ -10,4 +10,7 @@ public static class Const
 
     public const int MAX_ENERGY = 100;
     public const int MAX_ATTACK = 10;
+
+    public const int TRAIN_ATTACK_GAIN = 1;
+    public const int TRAIN_ENERGY_LOSS = 5;
 }

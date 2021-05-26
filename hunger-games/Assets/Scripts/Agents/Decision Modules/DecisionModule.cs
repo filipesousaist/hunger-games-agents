@@ -2,7 +2,7 @@
 
 public abstract class DecisionModule
 {
-    private Decider decider;
+    private readonly Decider decider;
     protected Action nextAction;
     public DecisionModule(Decider decider)
     {

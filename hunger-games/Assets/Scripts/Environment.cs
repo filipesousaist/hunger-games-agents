@@ -39,6 +39,9 @@ public class Environment : MonoBehaviour
                 CheckAgentsPosition(); 
                 StartDeciding(); // Action for next epoch
 
+                if (GetNumAliveAgents() == 0)
+                    FinishGame();
+
                 randomIndexes = Utils.ShuffledArray(Const.NUM_AGENTS);
 
                 decisionTimer -= Const.DECISION_TIME;
@@ -123,8 +126,8 @@ public class Environment : MonoBehaviour
     {
         
         foreach (int r in randomIndexes){
-            if (agents[r] != null && !agents[r].inShieldBounds) //shield.IsPositionOutside(agents[r].transform.position))
-                agents[r].shieldTimer++;
+            if (agents[r] != null && !agents[r].inShieldBounds)
+                agents[r].shieldTimer ++;
             if (agents[r] != null && agents[r].shieldTimer == agents[r].MAX_SHIELD_TIMER)
             {
                 agents[r].shieldTimer = 0;
@@ -138,6 +141,7 @@ public class Environment : MonoBehaviour
         Agent agent = agents[index];
         agents[index] = null;
 
+        agent.SetRanking(GetNumAliveAgents() - 1);
         agent.DropChest();
 
         if (agentController.IsActiveAgent(agent))
@@ -150,4 +154,6 @@ public class Environment : MonoBehaviour
 
         shield.UpdateTargetScale(GetNumAliveAgents());
     }
+
+    private void FinishGame() { }
 }

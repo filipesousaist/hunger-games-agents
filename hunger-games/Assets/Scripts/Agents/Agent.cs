@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using static Const;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -43,9 +43,10 @@ public class Agent : Entity
 
     [ReadOnly] public int index;
 
+    [ReadOnly] public int ranking;
+
     public int BASE_ATTACK;
     public int MIN_ATTACK;
-   
 
     [ReadOnly] public int attack;
     [ReadOnly] public int energy;
@@ -59,8 +60,6 @@ public class Agent : Entity
     private float trainAnimationTimer;
 
     public int TRAIN_DURATION; // Epochs
-    public int TRAIN_ATTACK_GAIN;
-    public int TRAIN_ENERGY_LOSS;
 
     public float TRAIN_JUMP_HEIGHT;
     public float TRAIN_NUM_JUMPS; // Number of jumps during train
@@ -119,17 +118,17 @@ public class Agent : Entity
     // Start is called before the first frame update
     void Start()
     {
-        WALK_SPEED = WALK_DISTANCE / Const.DECISION_TIME;
-        ROTATE_SPEED = ROTATE_ANGLE / Const.DECISION_TIME;
+        WALK_SPEED = WALK_DISTANCE / DECISION_TIME;
+        ROTATE_SPEED = ROTATE_ANGLE / DECISION_TIME;
 
-        TRAIN_JUMP_DURATION = TRAIN_DURATION * Const.DECISION_TIME / TRAIN_NUM_JUMPS;
+        TRAIN_JUMP_DURATION = TRAIN_DURATION * DECISION_TIME / TRAIN_NUM_JUMPS;
         TRAIN_JUMP_INITIAL_SPEED = 4 * TRAIN_JUMP_HEIGHT / TRAIN_JUMP_DURATION;
         TRAIN_GRAVITY_ACC = TRAIN_JUMP_INITIAL_SPEED / TRAIN_JUMP_DURATION;
 
         ROPE_ANGULAR_FREQ = 360 / TRAIN_JUMP_DURATION;
 
         attack = BASE_ATTACK;
-        energy = Const.MAX_ENERGY;
+        energy = MAX_ENERGY;
         weapon = null;
 
         visionCollider.InitLayerMask();
@@ -382,7 +381,7 @@ public class Agent : Entity
 
     private void FinishTraining()
     {
-        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, Const.MAX_ATTACK);
+        attack = Mathf.Min(attack + TRAIN_ATTACK_GAIN, MAX_ATTACK);
         LoseEnergy(TRAIN_ENERGY_LOSS);
 
         training = false;
@@ -402,7 +401,7 @@ public class Agent : Entity
 
     public void GainEnergy(int amount)
     {
-        energy = Mathf.Min(energy + amount, Const.MAX_ENERGY);
+        energy = Mathf.Min(energy + amount, MAX_ENERGY);
         UpdateInfo();
     }
 
@@ -455,7 +454,7 @@ public class Agent : Entity
         for (int i = 0; i < otherHazardsOrder.Length; i++)
         {
             Debug.Log("old: " + i + ":"+ hazardsOrder[i]);
-            hazardsOrder[i] = hazardsOrder[i] != null ? hazardsOrder[i] : otherHazardsOrder[i];
+            hazardsOrder[i] = hazardsOrder[i] ?? otherHazardsOrder[i];
             Debug.Log("new: " +i+ ":"+ hazardsOrder[i]);
         }
     }
@@ -484,9 +483,15 @@ public class Agent : Entity
             readyToTrade = readyToTrade
         };
     }
+
+    public void SetRanking(int ranking)
+    {
+        this.ranking = ranking;
+
+    }
 }
 
-public class AgentData : EntityData
+public class AgentData : EntityData, ICloneable
 {
     public int index;
     public float rotation; // Degrees (rotation.y)
@@ -502,5 +507,10 @@ public class AgentData : EntityData
     public AgentData()
     {
         type = Entity.Type.AGENT;
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
     }
 }

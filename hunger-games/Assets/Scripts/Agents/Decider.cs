@@ -5,7 +5,7 @@ public abstract class Decider : MonoBehaviour
     /// <summary>
     /// The agent should store in this variable the action to do next.
     /// </summary>
-    public Action nextAction;
+    [ReadOnly] public Action nextAction;
 
     protected Decider parentDecider;
 

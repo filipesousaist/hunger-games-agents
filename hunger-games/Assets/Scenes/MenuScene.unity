@@ -341,7 +341,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.15
+  m_fontSize: 28.2
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1816,6 +1816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deciders:
+  - {fileID: -8306351923855049688, guid: 699b482228d78724cb20e89957d8e06e, type: 3}
   - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
   - {fileID: 3983110627658726246, guid: c5acb7fdc161e46478c12dc6737e24cb, type: 3}
   - {fileID: 4473503739505457634, guid: f9bb0e4d08cf3a14e87539eff49370cc, type: 3}

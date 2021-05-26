@@ -1,7 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
+using System.Collections;
 
 public class Environment : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class Environment : MonoBehaviour
     private float decisionTimer = 0;
 
     private bool hasStarted = false;
+    private bool hasFinished = false;
+
+    public GameObject winPanel;
+    public TextMeshProUGUI winGameText;
 
     private void Awake()
     {
@@ -28,7 +33,9 @@ public class Environment : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (hasStarted)
+        if (Input.GetKeyDown(KeyCode.P))
+            Time.timeScale = 1.1f - Time.timeScale;
+        if (hasStarted && !hasFinished)
         {
             decisionTimer += Time.deltaTime;
             if (decisionTimer >= Const.DECISION_TIME)
@@ -38,9 +45,6 @@ public class Environment : MonoBehaviour
                 CheckAgentsEnergy(); // Check if any agent has died
                 CheckAgentsPosition(); 
                 StartDeciding(); // Action for next epoch
-
-                if (GetNumAliveAgents() == 0)
-                    FinishGame();
 
                 randomIndexes = Utils.ShuffledArray(Const.NUM_AGENTS);
 
@@ -76,7 +80,7 @@ public class Environment : MonoBehaviour
 
     private int GetNumAliveAgents()
     {
-        return agents.Count((agent) => agent != null && agent.energy > 0);
+        return agents.Count((agent) => agent != null);
     }
 
     private bool AllAgentsSpawned()
@@ -119,7 +123,16 @@ public class Environment : MonoBehaviour
     {
         foreach (int r in randomIndexes)
             if (agents[r] != null && agents[r].energy == 0)
+            {
                 DestroyAgent(r);
+                Debug.Log("Destroying agent " + r);
+                if (GetNumAliveAgents() == 1) // Winner found
+                {
+                    Debug.Log("Finished");
+                    FinishGame();
+                    return;
+                }
+            }
     }
     
     private void CheckAgentsPosition()
@@ -139,9 +152,8 @@ public class Environment : MonoBehaviour
     private void DestroyAgent(int index)
     {
         Agent agent = agents[index];
-        agents[index] = null;
-
-        agent.SetRanking(GetNumAliveAgents() - 1);
+        agent.SetRanking(GetNumAliveAgents());
+        
         agent.DropChest();
 
         if (agentController.IsActiveAgent(agent))
@@ -152,8 +164,26 @@ public class Environment : MonoBehaviour
 
         Destroy(agent.gameObject);
 
+        agents[index] = null;
         shield.UpdateTargetScale(GetNumAliveAgents());
+        
     }
 
-    private void FinishGame() { }
+    private void FinishGame()
+    {
+        foreach (Agent agent in agents)
+            if (agent != null)
+            {
+                agent.SetRanking(1);
+                winGameText.text = "Agent " + agent.index + " won the Hunger Games!";
+                winGameText.color = agent.bodyMaterial.color;
+                winGameText.gameObject.SetActive(true);
+
+                winPanel.SetActive(true);
+
+                agentController.SetAgent(agent);
+
+                hasFinished = true;
+            }
+    }
 }

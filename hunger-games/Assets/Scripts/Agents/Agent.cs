@@ -6,7 +6,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
-using Debug = UnityEngine.Debug;
 
 public class Agent : Entity
 {
@@ -23,6 +22,7 @@ public class Agent : Entity
         public ChestData nearestChestData;
         public BushData nearestBushData;
         public IEnumerable<AgentData> agentsInMeleeRange;
+        public int timeslot;
         public HazardEffectData[] hazardsOrder;
     }
 
@@ -33,6 +33,10 @@ public class Agent : Entity
     private TextMeshProUGUI energyText;
     private TextMeshProUGUI attackText;
 
+    [ReadOnly] public int ranking;
+
+    private TextMeshProUGUI rankingText;
+
     public VisionCollider visionCollider;
     public InteractionCollider interactionCollider;
     public MeleeCollider meleeCollider;
@@ -42,8 +46,6 @@ public class Agent : Entity
     public GameObject torso;
 
     [ReadOnly] public int index;
-
-    [ReadOnly] public int ranking;
 
     public int BASE_ATTACK;
     public int MIN_ATTACK;
@@ -159,6 +161,8 @@ public class Agent : Entity
         RenderTexture faceCamTexture = Instantiate(faceCamTexturePrefab);
         faceCam.targetTexture = faceCamTexture;
         newPanelTransform.Find("_PortraitContainer").Find("_PortraitImage").GetComponent<RawImage>().texture = faceCamTexture;
+
+        rankingText = newPanelTransform.Find("_RankingPanel").Find("_RankingText").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
@@ -183,11 +187,13 @@ public class Agent : Entity
     {
         Chest nearestChest = interactionCollider.GetNearestChest(transform.position);
         Bush nearestBush = interactionCollider.GetNearestBush(transform.position);
+
         IEnumerable<EntityData> visionData = visionCollider.GetCollidingEntitiesData();
+        int timeslot = hazardsManager.GetTimeslot();
 
         if (visionData.Any((entityData) => entityData.type == Type.HAZARD_EFFECT))
         {
-            hazardsOrder[hazardsManager.GetTimeslot() % 8] =
+            hazardsOrder[timeslot] =
                 (HazardEffectData) visionData.First((entityData) => entityData.type == Type.HAZARD_EFFECT);
         }
 
@@ -198,8 +204,8 @@ public class Agent : Entity
             nearestChestData = nearestChest != null ? (ChestData) nearestChest.GetData() : null,
             nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null,
             agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData()),
+            timeslot = timeslot,
             hazardsOrder = hazardsOrder
-
         };
 
     }
@@ -306,7 +312,6 @@ public class Agent : Entity
             agentsList.Sort((agent1,agent2)=> Mathf.RoundToInt((agent1.position-transform.position).magnitude - (agent2.position-transform.position).magnitude));
             int agentIndex = ((AgentData)agentsList.First()).index;
             Agent agentToTrade = environment.GetAgent(agentIndex);
-            Debug.Log(agentToTrade.index);
             TradeWithAgent(agentToTrade);
             readyToTrade = false;
 
@@ -453,9 +458,7 @@ public class Agent : Entity
     {
         for (int i = 0; i < otherHazardsOrder.Length; i++)
         {
-            Debug.Log("old: " + i + ":"+ hazardsOrder[i]);
             hazardsOrder[i] = hazardsOrder[i] ?? otherHazardsOrder[i];
-            Debug.Log("new: " +i+ ":"+ hazardsOrder[i]);
         }
     }
 
@@ -487,7 +490,9 @@ public class Agent : Entity
     public void SetRanking(int ranking)
     {
         this.ranking = ranking;
-
+        rankingText.text = Utils.Ordinal(ranking);
+        rankingText.color = bodyMaterial.color;
+        rankingText.transform.parent.gameObject.SetActive(true);
     }
 }
 

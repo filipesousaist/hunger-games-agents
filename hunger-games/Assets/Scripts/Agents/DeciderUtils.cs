@@ -26,7 +26,7 @@ public static class DeciderUtils
         if (Utils.CheckIfAligned(direction, agentDirection, minAngle))
             return Action.WALK;
 
-        if (Vector3.SignedAngle(direction, agentDirection, Vector3.up) < 0)
+        if (Vector3.SignedAngle(agentDirection, direction, Vector3.up) < 0)
             return Action.ROTATE_LEFT;
         return Action.ROTATE_RIGHT;
     }

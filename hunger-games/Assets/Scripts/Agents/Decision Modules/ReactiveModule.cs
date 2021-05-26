@@ -10,11 +10,14 @@ public class ReactiveModule : DecisionModule
 {
     public bool isUrgent;
 
-    private Action sideToRotate;
-    private bool isBlocked = false;
+    //private Action sideToRotate;
+    //private bool isBlocked = false;
+    private Vector3 directionToFlee;
 
     private const int DANGEROUS_BOW_ANGLE = 15;
     private const int DANGEROUS_MELEE_DISTANCE = 5;
+
+    private const float MIN_DISTANCE_TO_AVOID_OBSTACLE = 1.5f;
 
     private const int FLEE_ANGLE = 15;
     private const int BOW_MIN_ANGLE = 2;
@@ -30,6 +33,8 @@ public class ReactiveModule : DecisionModule
 
         AgentData myData = perception.myData;
 
+        directionToFlee = Vector3.zero;
+
         CheckIfRotate(perception, myData);
 
         CheckIfTrain(myData); //only trains if more than 25% of the MAX energy and didnt achieved the MAX_ATTACK
@@ -38,29 +43,28 @@ public class ReactiveModule : DecisionModule
 
         CheckOtherAgents(perception, myData);
 
+        CheckIfFleeFromHazard(perception, myData);
+
         CheckIfOutsideArea(myData);
 
         CheckIfEatBerries(perception, myData); //eats berries he believes aren't poisonous
+
+        if (directionToFlee != Vector3.zero)
+            ChooseAction(GetActionToMoveTo(myData, directionToFlee, FLEE_ANGLE));
     }
 
     private void CheckIfRotate(Perception perception, AgentData myData)
     {
         foreach (EntityData data in perception.visionData)
-            if ((new Vector2(data.position.x, data.position.z) -
-                new Vector2(myData.position.x, myData.position.z)
-                ).magnitude <= 1.5)
+        {
+            Vector3 difference = new Vector3(myData.position.x - data.position.x, 0, myData.position.z - data.position.z);
+
+            if (data.type != Type.HAZARD_EFFECT && 
+                difference.magnitude <= MIN_DISTANCE_TO_AVOID_OBSTACLE)
             {
-                if (!isBlocked)
-                {
-                    sideToRotate = GetRandomSide();
-                    isBlocked = true;
-                }
-
-                ChooseAction(sideToRotate);
-                return;
+                directionToFlee += difference.normalized;
             }
-
-        isBlocked = false;
+        }
     }
 
     private void CheckIfTrain(AgentData myData)
@@ -68,7 +72,7 @@ public class ReactiveModule : DecisionModule
         AgentData myDataAfterTrain = (AgentData) myData.Clone();
         myDataAfterTrain.energy = Mathf.Max(myData.energy - Const.TRAIN_ENERGY_LOSS, 0);
         myDataAfterTrain.attack = Mathf.Min(myData.attack + Const.TRAIN_ATTACK_GAIN, Const.MAX_ATTACK);
-        if (Strength(myDataAfterTrain) > Strength(myData))
+        if (Strength(myDataAfterTrain) > 3 * Strength(myData))
             ChooseAction(Action.TRAIN);
     }
 
@@ -116,31 +120,25 @@ public class ReactiveModule : DecisionModule
             foreach (AgentData otherData in otherDatas)
                 if (IsInPositionToAttack(perception, myData, otherData, BOW_MIN_ANGLE))
                 {
-                    Debug.Log(myData.index + " wants to attack " + otherData.index);
                     ChooseAction(myData.attackWaitTimer == 0 ? Action.ATTACK : Action.IDLE);
                     return;
                 }
 
             // Else, try to reposition
             ChooseAction(GetActionToPosition(myData, otherDatas.First(), MELEE_MIN_ANGLE));
-            RotateIfBlocked();
         }
     }
 
     private void FleeFromAgents(IEnumerable<AgentData> agentDatas, AgentData myData)
     {
-        IEnumerable<Vector3> dangerousAgentPositions = agentDatas.Select((otherData) => (myData.position - otherData.position).normalized);
-        Vector3 directionToFlee = NormalizedAverage(dangerousAgentPositions);
-        ChooseAction(GetActionToMoveTo(myData, directionToFlee, FLEE_ANGLE));
-        RotateIfBlocked();
+        IEnumerable<Vector3> dangerousAgentDirections = agentDatas.Select((otherData) => (myData.position - otherData.position).normalized);
+
+        foreach (Vector3 direction in dangerousAgentDirections)
+            directionToFlee += direction;
+
         isUrgent = true;
     }
 
-    private void RotateIfBlocked()
-    {
-        if (isBlocked && nextAction == Action.WALK)
-            ChooseAction(sideToRotate);
-    }
 
     private int Strength(AgentData agentData)
     {
@@ -150,24 +148,40 @@ public class ReactiveModule : DecisionModule
     private IEnumerable<AgentData> GetDangerousAgentDatas(IEnumerable<AgentData> otherDatas, AgentData myData)
     {
         return otherDatas.Where
-            (
-                (otherData) => 
-                    otherData.weaponType == Weapon.Type.BOW &&
-                    IsLookingToPosition(otherData, myData.position, DANGEROUS_BOW_ANGLE)
-                    ||
-                    otherData.weaponType != Weapon.Type.BOW &&
-                    (otherData.position - myData.position).magnitude <= DANGEROUS_MELEE_DISTANCE
-            );
+        (
+            (otherData) => 
+                otherData.weaponType == Weapon.Type.BOW &&
+                IsLookingToPosition(otherData, myData.position, DANGEROUS_BOW_ANGLE)
+                ||
+                otherData.weaponType != Weapon.Type.BOW &&
+                (otherData.position - myData.position).magnitude <= DANGEROUS_MELEE_DISTANCE
+        );
+    }
+
+    private void CheckIfFleeFromHazard(Perception perception, AgentData myData)
+    {
+        HazardEffectData hazardEffectData = perception.hazardsOrder[perception.timeslot];
+        if (hazardEffectData != null && myData.currentRegion != 0 && hazardEffectData.region == myData.currentRegion) // Inside region with hazard 
+        {
+            Vector3 regionVector = Quaternion.AngleAxis(360 / Const.NUM_REGIONS * (myData.currentRegion - 1.5f) , Vector3.up) * Vector3.forward;
+            Debug.Log("Region: " + myData.currentRegion + ", Vector: " + regionVector);
+            float angle = Vector3.SignedAngle(myData.position, regionVector, Vector3.up);
+            Vector3 desiredDirection = (angle < 0) ?
+                Quaternion.AngleAxis(90, Vector3.up) * myData.position :
+                Quaternion.AngleAxis(-90, Vector3.up) * myData.position;
+            directionToFlee += desiredDirection.normalized;
+
+            isUrgent = true;
+        }
+        
     }
 
     private void CheckIfOutsideArea(AgentData myData)
     {
-        if (myData.outsideShield && !isBlocked)
+        if (myData.outsideShield)
         {
-            if (IsLookingToPosition(myData, Vector3.zero, 5))
-                ChooseAction(Action.WALK);
-            else
-                ChooseAction(Random.Range(0, 5) == 1 ? Action.WALK : sideToRotate);
+            directionToFlee -= myData.position.normalized;
+            isUrgent = true;
         }
     }
 

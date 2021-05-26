@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using static Agent;
 
 public class ReactiveDecider : Decider

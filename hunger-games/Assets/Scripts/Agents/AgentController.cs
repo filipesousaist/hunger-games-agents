@@ -56,13 +56,7 @@ public class AgentController : MonoBehaviour
 
             agent = environment.GetAgent(agentIndex);
             if (agent != null)
-            {
-                cameraManager.DisableAll();
-                SetCameraView();
-
-                ToggleAgentControl(true);
-                uIManager.UpdateAgentInfo(agent);
-            }
+                SwitchToAgent(agent);
         }
     }
 
@@ -70,6 +64,23 @@ public class AgentController : MonoBehaviour
     {
         if (environment.GetAgent(index) != null)
             agentIndex = index;
+    }
+
+    public void SetAgent(Agent agent)
+    {
+        this.agent = agent;
+        agentIndex = agent.index - 1;
+
+        SwitchToAgent(agent);
+    }
+
+    private void SwitchToAgent(Agent agent)
+    {
+        cameraManager.DisableAll();
+        SetCameraView();
+
+        ToggleAgentControl(true);
+        uIManager.UpdateAgentInfo(agent);
     }
 
     public void Disable()

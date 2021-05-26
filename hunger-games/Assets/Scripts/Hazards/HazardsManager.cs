@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static Const;
 
 public class HazardsManager : MonoBehaviour
 {
-    private readonly int NUM_REGIONS = 8;
     public int RADIUS_HAZARD_SPAWN;
 
     private int timeslot = 0;

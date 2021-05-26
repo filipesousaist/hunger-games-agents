@@ -22,19 +22,24 @@ public class BaselineDecider : Decider
 
         CheckIfAttack(perception, myData);
 
-        CheckIfOutsideArea(perception, myData);
+        CheckIfOutsideArea(myData);
 
         CheckIfEatBerries(perception, myData); //eats berries he believes aren't poisonous
     }
 
     private void CheckIfAttack(Perception perception, AgentData agentData)
     {
-        if(agentData.attackWaitTimer==0)
+        if (agentData.attackWaitTimer == 0)
         {
             IEnumerable<EntityData> otherAgents =
                 perception.visionData.Where((entityData) => entityData.type == Type.AGENT );
             if (agentData.weaponType == Weapon.Type.BOW && 
-                otherAgents.Any((otherAgentData) => Utils.CheckIfAligned(agentData.position-otherAgentData.position, Utils.GetForward(((AgentData) otherAgentData).rotation), 2))||
+                otherAgents.Any
+                (
+                    (otherAgentData) => DeciderUtils.IsLookingToPosition(agentData, otherAgentData.position, 2)
+                    //Utils.CheckIfAligned(agentData.position - otherAgentData.position, Utils.GetForward(((AgentData) otherAgentData).rotation), 2)
+                )
+                ||
                 agentData.weaponType != Weapon.Type.BOW &&
                 perception.agentsInMeleeRange.Any())
 
@@ -61,7 +66,7 @@ public class BaselineDecider : Decider
     private void CheckIfEatBerries(Perception perception, AgentData myData)
     {
         BushData bushData = perception.nearestBushData;
-        if (bushData != null && perception.nearestBushData.hasBerries && !bushData.poisonous && myData.energy < 10)
+        if (bushData != null && perception.nearestBushData.hasBerries && !bushData.poisonous && myData.energy < Const.MAX_ENERGY)
         {
             nextAction = Action.EAT_BERRIES;
         }
@@ -76,7 +81,7 @@ public class BaselineDecider : Decider
             {
                 if (!isBlocked)
                 {
-                    sideToRotate = Random.Range(0, 2) == 0 ? Action.ROTATE_RIGHT : Action.ROTATE_LEFT;
+                    sideToRotate = DeciderUtils.GetRandomSide();
                     isBlocked = true;
                 }
                 
@@ -87,17 +92,14 @@ public class BaselineDecider : Decider
         isBlocked = false;
     }
 
-    private void CheckIfOutsideArea(Perception perception, AgentData agentData)
+    private void CheckIfOutsideArea(AgentData agentData)
     {
         if (agentData.outsideShield && !isBlocked)
         {
-            if (!Utils.CheckIfAligned(-agentData.position, Utils.GetForward(agentData.rotation), 5))
-            {
-                nextAction = Random.Range(0, 5) == 1 ? Action.WALK : sideToRotate;
-            } else
-            {
+            if (DeciderUtils.IsLookingToPosition(agentData, Vector3.zero, 5))
                 nextAction = Action.WALK;
-            }
+            else
+                nextAction = Random.Range(0, 5) == 1 ? Action.WALK : sideToRotate;
         }
     }
 

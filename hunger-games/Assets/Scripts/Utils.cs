@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public static class Utils
 {
@@ -48,5 +49,15 @@ public static class Utils
     public static bool CheckIfAligned(Vector3 direction1, Vector3 direction2, float threshold)
     {
         return Mathf.Abs(Vector3.Angle(direction1, direction2)) <= threshold;
+    }
+
+    public static Vector3 NormalizedAverage(IEnumerable<Vector3> vectors)
+    {
+        Vector3 total = Vector3.zero;
+
+        foreach (Vector3 vector in vectors)
+            total += vector;
+
+        return total.normalized;
     }
 }

@@ -36,6 +36,11 @@ public class Belief
         agentsData[agentData.Item1.index - 1] = agentData;
     }
 
+    public AgentData GetMyData()
+    {
+        return myData;
+    }
+
     public void UpdateMyData(AgentData agentData)
     {
         myData = agentData;
@@ -124,10 +129,115 @@ public class Belief
 
     }
 
+    public Vector3 GetNearestBushPosition()
+    {
+        Vector3 nearestBushPosition = bushes.First().Key;
+        foreach (KeyValuePair<Vector3, BushData> bush in bushes)
+        {
+            if ((bush.Key - myData.position).magnitude < (nearestBushPosition - myData.position).magnitude)
+            {
+                nearestBushPosition = bush.Key;
+            }
+        }
+        return nearestBushPosition;
+    }
+
+    public Vector3 GetNearestStrongerChestPosition()
+    {
+        KeyValuePair<Vector3, ChestData> nearestStrongerChest = chests.First();
+        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        {
+            if ((chest.Key - myData.position).magnitude <= (nearestStrongerChest.Key - myData.position).magnitude && chest.Value.weaponAttack > myData.weaponAttack )
+            {
+                nearestStrongerChest = chest;
+            }
+        }
+        return nearestStrongerChest.Key;
+        
+    }
+
+    public Vector3 GetNearestStrongerDifferentChestPosition()
+    {
+        KeyValuePair<Vector3, ChestData> nearestStrongerDifferentChest = chests.First();
+        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        {
+            if ((chest.Key - myData.position).magnitude <= (nearestStrongerDifferentChest.Key - myData.position).magnitude 
+                && chest.Value.weaponAttack > myData.weaponAttack 
+                && chest.Value.weaponType != myData.weaponType)
+            {
+                nearestStrongerDifferentChest = chest;
+            }
+        }
+        return nearestStrongerDifferentChest.Key;
+
+    }
+
+    public Vector3 GetNearestDifferentChestPosition()
+    {
+        KeyValuePair<Vector3, ChestData> nearestDifferentChest = chests.First();
+        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        {
+            if ((chest.Key - myData.position).magnitude <= (nearestDifferentChest.Key - myData.position).magnitude
+                && chest.Value.weaponType != myData.weaponType)
+            {
+                nearestDifferentChest = chest;
+            }
+        }
+        return nearestDifferentChest.Key;
+        
+    }
+    
+    public Vector3 GetStrongestStrongerChestPosition()
+    {
+        KeyValuePair<Vector3, ChestData> strongestStrongerChest = chests.First();
+        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        {
+            if (chest.Value.weaponAttack > strongestStrongerChest.Value.weaponAttack
+                && chest.Value.weaponAttack > myData.weaponAttack )
+            {
+                strongestStrongerChest = chest;
+            }
+        }
+        return strongestStrongerChest.Key;
+        
+    }
+
+    public Vector3 GetStrongestStrongerDifferentChestPosition()
+    {
+        KeyValuePair<Vector3, ChestData> strongestStrongerDifferentChest = chests.First();
+        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        {
+            if ( chest.Value.weaponAttack > strongestStrongerDifferentChest.Value.weaponAttack
+                && chest.Value.weaponAttack > myData.weaponAttack 
+                && chest.Value.weaponType != myData.weaponType)
+            {
+                strongestStrongerDifferentChest = chest;
+            }
+        }
+        return strongestStrongerDifferentChest.Key;
+
+    }
+
+    public Vector3 GetStrongestDifferentChestPosition()
+    {
+        KeyValuePair<Vector3, ChestData> strongestDifferentChest = chests.First();
+        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        {
+            if (chest.Value.weaponAttack > strongestDifferentChest.Value.weaponAttack
+                && chest.Value.weaponType != myData.weaponType)
+            {
+                strongestDifferentChest = chest;
+            }
+        }
+        return strongestDifferentChest.Key;
+        
+    }
+    
     private Vector3 GetMatrixPosition(Vector3 position)
     {
         return new Vector3(position.x + 250, 0, position.z + 250);
     }
+    
 
 }
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 
 public class Belief
@@ -12,10 +13,8 @@ public class Belief
     private Dictionary<Vector3, ChestData> chests;
     private Tuple<AgentData, int>[] agentsData;
     private HazardEffectData[] hazardsOrder;
-
     private AgentData myData;
-
-
+    
     public Belief()
     {
         map = new EntityData[501][];
@@ -171,73 +170,50 @@ public class Belief
         return nearestStrongerDifferentChest.Key;
 
     }
-
-    public Vector3 GetNearestDifferentChestPosition()
-    {
-        KeyValuePair<Vector3, ChestData> nearestDifferentChest = chests.First();
-        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
-        {
-            if ((chest.Key - myData.position).magnitude <= (nearestDifferentChest.Key - myData.position).magnitude
-                && chest.Value.weaponType != myData.weaponType)
-            {
-                nearestDifferentChest = chest;
-            }
-        }
-        return nearestDifferentChest.Key;
-        
-    }
     
-    public Vector3 GetStrongestStrongerChestPosition()
+    public Vector3 GetUnexploredPoint()
     {
-        KeyValuePair<Vector3, ChestData> strongestStrongerChest = chests.First();
-        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        int x_index;
+        int z_index;
+        while (true)
         {
-            if (chest.Value.weaponAttack > strongestStrongerChest.Value.weaponAttack
-                && chest.Value.weaponAttack > myData.weaponAttack )
+            Random random = new Random();
+            x_index = random.Next(0, map.Length);
+
+            if (map[x_index].Contains(null))
             {
-                strongestStrongerChest = chest;
+                z_index = random.Next(0, map.Length);
+
+                if (map[x_index][z_index] == null)
+                    return new Vector3(x_index, 0, z_index);
             }
         }
-        return strongestStrongerChest.Key;
-        
     }
 
-    public Vector3 GetStrongestStrongerDifferentChestPosition()
+    public Tuple<AgentData,int>[] GetAgentsData()
     {
-        KeyValuePair<Vector3, ChestData> strongestStrongerDifferentChest = chests.First();
-        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
-        {
-            if ( chest.Value.weaponAttack > strongestStrongerDifferentChest.Value.weaponAttack
-                && chest.Value.weaponAttack > myData.weaponAttack 
-                && chest.Value.weaponType != myData.weaponType)
-            {
-                strongestStrongerDifferentChest = chest;
-            }
-        }
-        return strongestStrongerDifferentChest.Key;
-
+        return agentsData;
     }
 
-    public Vector3 GetStrongestDifferentChestPosition()
+
+    public Vector3 GetRandomSafe(int radius,int clock)
     {
-        KeyValuePair<Vector3, ChestData> strongestDifferentChest = chests.First();
-        foreach (KeyValuePair<Vector3, ChestData> chest in chests)
+        int x_index;
+        int z_index;
+        Vector3 point;
+        while (true)
         {
-            if (chest.Value.weaponAttack > strongestDifferentChest.Value.weaponAttack
-                && chest.Value.weaponType != myData.weaponType)
-            {
-                strongestDifferentChest = chest;
-            }
+            Random random = new Random();
+            x_index = random.Next((int)myData.position.x-radius, (int)myData.position.x+radius+1);
+            z_index = random.Next((int)myData.position.x-radius, (int)myData.position.x+radius+1);
+            point = new Vector3(x_index, 0, z_index);
+            if (HazardsManager.GetRegion(point) != hazardsOrder[clock%8].region )//&& dangerousAgents.Where((agen)).Any()) //TODO 
+                return point;
         }
-        return strongestDifferentChest.Key;
-        
     }
-    
     private Vector3 GetMatrixPosition(Vector3 position)
     {
         return new Vector3(position.x + 250, 0, position.z + 250);
     }
-    
-
 }
 

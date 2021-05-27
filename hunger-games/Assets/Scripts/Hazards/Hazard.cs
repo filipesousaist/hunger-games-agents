@@ -43,7 +43,7 @@ public abstract class Hazard : MonoBehaviour
             for (int i = 0; i < Const.NUM_AGENTS; i ++)
             {
                 Agent agent = agents.ElementAt(i);
-                if (agent != null && hazardManager.GetRegion(agent.transform.position) == index)
+                if (agent != null && HazardsManager.GetRegion(agent.transform.position) == index)
                 {
                     agentTimers[i] += Time.deltaTime;
                     if (agentTimers[i] >= PERIOD)

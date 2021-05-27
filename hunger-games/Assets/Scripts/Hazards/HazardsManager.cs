@@ -4,7 +4,6 @@ using static Const;
 
 public class HazardsManager : MonoBehaviour
 {
-    public int RADIUS_HAZARD_SPAWN;
 
     private int timeslot = 0;
     private float timer = 0;
@@ -63,7 +62,7 @@ public class HazardsManager : MonoBehaviour
         return regions;
     }
 
-    public int GetRegion(Vector3 coordinates)
+    public static int GetRegion(Vector3 coordinates)
     {
         float x = coordinates.x;
         float z = coordinates.z;

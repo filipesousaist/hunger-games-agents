@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using static Agent;
 using static Const;
-using UnityEngine;
 using static DeciderUtils;
+using Vector3 = UnityEngine.Vector3;
 
 
 public class BDIModule : DecisionModule
@@ -17,14 +18,12 @@ public class BDIModule : DecisionModule
         TRADE_INFORMATION,
         TRAIN,
         FLEE,
-        NEAREST_STRONGER_WEAPON,
-        NEAREST_DIFFERENT_WEAPON,
-        NEAREST_STRONGER_DIFFERENT_WEAPON,
-        STRONGEST_STRONGER_WEAPON,
-        STRONGEST_DIFFERENT_WEAPON,
-        STRONGEST_STRONGER_DIFFERENT_WEAPON,
-        EXPLORE
+        STRONGER_WEAPON,
+        DIFFERENT_WEAPON,
+        EXPLORE,
     }
+
+    private const int EPOCHS_FOR_RECONSIDERATION = 100;
 
     private const float MAX_DIST_TO_BE_BLOCKED = 1.3f;
     private const float MIN_ANGLE_TO_BE_BLOCKED = 40;
@@ -128,30 +127,16 @@ public class BDIModule : DecisionModule
         if (myData.attack < MAX_ATTACK)
             desires.Add(Desire.TRAIN);
 
-        if ((myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < SWORD_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < BOW_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < SWORD_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < BOW_MAX_ATTACK))
+        if (( myData.weaponAttack < SWORD_MAX_ATTACK) ||
+            (myData.weaponAttack < BOW_MAX_ATTACK) )
         {
-            desires.Add(Desire.NEAREST_STRONGER_WEAPON);
-            desires.Add(Desire.STRONGEST_STRONGER_WEAPON);
-            
-        }
-        if ((myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < BOW_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < SWORD_MAX_ATTACK) ||
-            myData.weaponType == Weapon.Type.NONE)
-        {
-            desires.Add(Desire.NEAREST_STRONGER_DIFFERENT_WEAPON);
-            desires.Add(Desire.STRONGEST_STRONGER_DIFFERENT_WEAPON);
-            
+            desires.Add(Desire.STRONGER_WEAPON);
         }
         
-
         if (perception.hazardsOrder.Contains(null))
             desires.Add(Desire.TRADE_INFORMATION);
         
-        desires.Add(Desire.NEAREST_DIFFERENT_WEAPON); 
-        desires.Add(Desire.STRONGEST_DIFFERENT_WEAPON); 
+        desires.Add(Desire.DIFFERENT_WEAPON);
         desires.Add(Desire.EXPLORE);
         
     }
@@ -169,7 +154,7 @@ public class BDIModule : DecisionModule
         switch (intention.Desire)
         {
             case Desire.FLEE:
-                //TODO: intention.Position = GetFleeDirection(perception.visionData); 
+                intention.Position = GetFleePoint(perception.visionData); 
                 break;
             case Desire.ATTACK_CLOSEST:
                 intention.Position = GetClosestAgentPosition(perception.visionData,myData);
@@ -186,49 +171,65 @@ public class BDIModule : DecisionModule
             
             //assume that this desire isn't the one with more utility when
             //i don't believe there is a chest that satisfies my desires
-            case Desire.NEAREST_STRONGER_WEAPON:
-                intention.Position = beliefs.GetNearestStrongerChestPosition();
+            case Desire.STRONGER_WEAPON:
+                intention.Position = beliefs.GetNearestStrongerChestPosition(); //change to utilities using the chests from beliefs
                 break;
-            case Desire.NEAREST_STRONGER_DIFFERENT_WEAPON:
-                intention.Position = beliefs.GetNearestStrongerDifferentChestPosition();
+            case Desire.DIFFERENT_WEAPON:
+                intention.Position = beliefs.GetNearestStrongerDifferentChestPosition(); //change to use utilities using the chests from beliefs
                 break;
-                ;
-            case Desire.NEAREST_DIFFERENT_WEAPON:
-                intention.Position = beliefs.GetNearestDifferentChestPosition();
-                break;
-                ;
-            case Desire.STRONGEST_STRONGER_WEAPON:
-                intention.Position = beliefs.GetStrongestStrongerChestPosition();
-                break;
-            case Desire.STRONGEST_STRONGER_DIFFERENT_WEAPON:
-                intention.Position = beliefs.GetStrongestStrongerDifferentChestPosition();
-                break;
-                ;
-            case Desire.STRONGEST_DIFFERENT_WEAPON:
-                intention.Position = beliefs.GetStrongestDifferentChestPosition();
-                break;
-                ;
             case Desire.TRADE_INFORMATION:
+                intention.Position = GetBetterTradingAgent(beliefs.GetAgentsData(),myData);
                 break;
             case Desire.EXPLORE:
+                intention.Position = beliefs.GetUnexploredPoint();
                 break;
-                
         }
-
-
     }
 
-    private bool Reconsider()
-    {
-        //TODO
-        return true;
-    }
-    
     private void Plan()
     {
-        
-    }
+        switch (intention.Desire)
+        {
+            case Desire.EAT:
+                //walk until intention.Position and eat
+                //while{plan.Push();}
+                break;
+            case Desire.FLEE:
+            //flee through intention.Position direction
 
+            case Desire.TRAIN:
+                plan.Push(Agent.Action.TRAIN);
+                break;
+            
+            case Desire.EXPLORE:
+                //walk until intention.Position
+                break;
+            
+            case Desire.ATTACK_CLOSEST:
+                //walk until intention.Position and Attack
+                break;
+            case Desire.ATTACK_WEAKEST:
+                //walk until intention.Position and Attack
+                break;
+            
+            case Desire.TRADE_INFORMATION:
+                //put trade_information as true; walk until intention.Position and trade information;
+                break;
+            
+            case Desire.STRONGER_WEAPON:
+                //walk until intention.Position and equip it;
+                break;
+            case Desire.DIFFERENT_WEAPON:
+                //walk until intention.Position and equip it;
+                break;
+        }
+    }
+    private bool Reconsider()
+    {
+        if (clock%EPOCHS_FOR_RECONSIDERATION == 0)
+            return true;
+        return false;
+    }
     private bool Sound(Perception perception, AgentData myData)
     {
         return plan.Peek() switch
@@ -308,9 +309,36 @@ public class BDIModule : DecisionModule
         return weakestAgent.position;
     }
 
+    private Vector3 GetBetterTradingAgent(Tuple<AgentData, int>[] otherAgents, AgentData myData)
+    {
+        IEnumerable<Tuple<AgentData, int>> tradingAgents = otherAgents.Where((otherAgent) => otherAgent.Item1.readyToTrade);
+        Tuple<AgentData, int> betterTradingAgent = tradingAgents.First();
+        foreach (Tuple<AgentData, int> agent in tradingAgents)
+        {
+            if(TradingAgentUtility(agent, myData)>TradingAgentUtility(betterTradingAgent, myData))
+            {
+                betterTradingAgent = agent;
+            }
+        }
+
+        return betterTradingAgent.Item1.position;
+    }
+
+    private Vector3 GetFleePoint(IEnumerable<EntityData> obstaclesSeen)
+    {
+        const int RADIUS = 19;
+        //somar todos os vetores de fuga de obstáculos que estejam no meu vision data ou que eu
+        //acredite que vão ficar no meu caminho num certo raio
+        
+        return beliefs.GetRandomSafe(RADIUS, clock);
+        
+    }
+        
     private Desire GetMostUrgentDesire(IEnumerable<Desire> allDesires)
     {
-        //utility function
+        //TODO: utility function
+        //MAKE IT DEPEND IN ALL THE OTHER FACTORS SUCH AS CURRENT ENERGY, NUMBER OF AGENTS ALIVE, ETC
+        
         AgentData agentData = beliefs.GetMyData();
         if((agentData.weaponType == Weapon.Type.SWORD && agentData.weaponAttack < Const.BOW_MAX_ATTACK) ||
             (agentData.weaponType == Weapon.Type.BOW && agentData.weaponAttack < Const.SWORD_MAX_ATTACK))
@@ -322,11 +350,21 @@ public class BDIModule : DecisionModule
         return Desire.EAT;
 
     }
+    
     private int Strength(AgentData agentData)
     {
-        return (agentData.attack + agentData.weaponAttack) * agentData.energy;
+        return (agentData.attack + agentData.weaponAttack) * agentData.energy ;
     }
 
+    private int TradingAgentUtility(Tuple<AgentData, int> agentInfo, AgentData myData)
+    {  
+        int ATTACK_WEIGHT = 2;
+        int POSITION_WEIGHT = 4;
+        int CLOCK_WEIGHT = 4;
+        return  1/(POSITION_WEIGHT*(int)(agentInfo.Item1.position - myData.position).magnitude + CLOCK_WEIGHT*(clock-agentInfo.Item2+1)+ATTACK_WEIGHT*Strength(agentInfo.Item1));
+
+    }
+    
     public class Pair<T1, T2>
     {
         public T1 Desire { get; set; }

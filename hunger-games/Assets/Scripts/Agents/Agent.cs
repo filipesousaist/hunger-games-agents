@@ -24,6 +24,7 @@ public class Agent : Entity
         public IEnumerable<AgentData> agentsInMeleeRange;
         public int timeslot;
         public HazardEffectData[] hazardsOrder;
+        public int numberOfAliveAgents;
     }
 
     public Camera cam;
@@ -97,9 +98,13 @@ public class Agent : Entity
     private HazardEffectData[] hazardsOrder;
 
     private bool readyToTrade = false;
+    
+    private const int MAX_TRADE_TIME = 10;
+    private int tradeTimer;
 
     [ReadOnly] public int shieldTimer=0;
     public int MAX_SHIELD_TIMER;
+    
     
 
     private void Awake()
@@ -202,7 +207,8 @@ public class Agent : Entity
             nearestBushData = nearestBush != null ? (BushData) nearestBush.GetData() : null,
             agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData()),
             timeslot = timeslot,
-            hazardsOrder = hazardsOrder
+            hazardsOrder = hazardsOrder,
+            numberOfAliveAgents = environment.GetNumAliveAgents()
         };
 
     }
@@ -220,6 +226,10 @@ public class Agent : Entity
             if (trainTimer == TRAIN_DURATION)
                 FinishTraining();
         }
+        
+        if (readyToTrade)
+            TradeUpdate();
+        
         else
         {
             myRigidbody.velocity = Vector3.zero;
@@ -248,7 +258,7 @@ public class Agent : Entity
     {
         decider.nextAction = Action.IDLE;
     }
-
+    
     private void Idle() { }
 
     private void Walk()
@@ -311,14 +321,21 @@ public class Agent : Entity
             Agent agentToTrade = environment.GetAgent(agentIndex);
             TradeWithAgent(agentToTrade);
             readyToTrade = false;
-
         }
-
+        
         else
         {
+            tradeTimer = 0;
             readyToTrade = true;
         }
         
+    }
+    
+    private void TradeUpdate()
+    {
+        tradeTimer++;
+        if (tradeTimer > MAX_TRADE_TIME && readyToTrade)
+            readyToTrade = false;
     }
 
     public IEnumerator Decide(Perception perception)

@@ -78,7 +78,7 @@ public class Environment : MonoBehaviour
         return agents;
     }
 
-    private int GetNumAliveAgents()
+    public int GetNumAliveAgents()
     {
         return agents.Count((agent) => agent != null);
     }

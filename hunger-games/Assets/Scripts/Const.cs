@@ -25,5 +25,7 @@ public static class Const
     public const int DANGEROUS_MELEE_DISTANCE = 5;
     
     public const int BOW_MIN_ANGLE = 2;
+    
+    public const int RADIUS_HAZARD_SPAWN = 30 ;
         
 }

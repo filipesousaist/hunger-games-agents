@@ -31,7 +31,7 @@ public class Fire : Hazard
     {
         foreach (Bush bush in FindObjectsOfType<Bush>())
         {
-            if (hazardManager.GetRegion(bush.transform.position) == index && Random.Range(0f, 1f) <= BURN_BERRIES_CHANCE)
+            if (HazardsManager.GetRegion(bush.transform.position) == index && Random.Range(0f, 1f) <= BURN_BERRIES_CHANCE)
             {
                 if (bush.hasBerries)
                     bush.ChangeBushType();

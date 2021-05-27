@@ -481,7 +481,7 @@ public class Agent : Entity
             weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
             weaponAttack = GetWeaponAttack(),
             attackWaitTimer = attackWaitTimer,
-            currentRegion = hazardsManager.GetRegion(position),
+            currentRegion = HazardsManager.GetRegion(position),
             outsideShield = shield.IsPositionOutside(position),
             readyToTrade = readyToTrade
         };

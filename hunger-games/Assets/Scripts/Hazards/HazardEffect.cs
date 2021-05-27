@@ -15,7 +15,7 @@ public class HazardEffect : Entity
         return new HazardEffectData()
         {
             hazardType = type,
-            region = hazardsManager.GetRegion(transform.position)
+            region = HazardsManager.GetRegion(transform.position)
         };
     }
 }

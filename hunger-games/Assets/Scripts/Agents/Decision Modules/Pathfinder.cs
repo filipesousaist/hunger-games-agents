@@ -29,14 +29,12 @@ public class Pathfinder
         return JumpPointFinder.FindPath(jpParam);
     }
 
-    public Stack<Action> GetActions(Vector3 start, Vector3 end, float rotationY)
+    public void AddActionsToStack(Vector3 start, Vector3 end, float rotationY, Stack<Action> actions)
     {
-        Stack<Action> actions = new Stack<Action>();
-
         Vector2Int roundedStart = new Vector2Int(Mathf.RoundToInt(start.x), Mathf.RoundToInt(start.z));
         Vector2Int roundedEnd = new Vector2Int(Mathf.RoundToInt(end.x), Mathf.RoundToInt(end.z));
         if (roundedStart.x == roundedEnd.x && roundedStart.y == roundedEnd.y)
-            return actions;
+            return;
 
         List<GridPos> jumpPoints = FindPath(roundedStart, roundedEnd);
 
@@ -76,8 +74,6 @@ public class Pathfinder
             from = to;
             to = next;
         }
-
-        return actions;
     }
 }
 

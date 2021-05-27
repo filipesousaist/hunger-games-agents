@@ -137,7 +137,6 @@ public class Environment : MonoBehaviour
     
     private void CheckAgentsPosition()
     {
-        
         foreach (int r in randomIndexes){
             if (agents[r] != null && !agents[r].inShieldBounds)
                 agents[r].shieldTimer ++;

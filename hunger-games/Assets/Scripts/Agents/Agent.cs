@@ -47,6 +47,8 @@ public class Agent : Entity
 
     [ReadOnly] public int index;
 
+    [ReadOnly] public int lastAttackerIndex = 0;
+
     public int BASE_ATTACK;
     public int MIN_ATTACK;
 
@@ -81,8 +83,6 @@ public class Agent : Entity
     public GameObject chestPrefab;
 
     [ReadOnly] public Material bodyMaterial;
-    
-    public float ROTATE_ANGLE; // Angle to rotate in one epoch
 
     private float WALK_SPEED;
     private float ROTATE_SPEED;
@@ -409,8 +409,9 @@ public class Agent : Entity
         UpdateInfo();
     }
 
-    public void LoseEnergy(int amount)
+    public void LoseEnergy(int amount, int attackerIndex = 0)
     {
+        lastAttackerIndex = attackerIndex;
         energy = Mathf.Max(energy - amount, 0);
         UpdateInfo();
     }

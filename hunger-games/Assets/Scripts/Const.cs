@@ -16,6 +16,7 @@ public static class Const
     public const int TRAIN_ENERGY_LOSS = 5;
 
     public const float WALK_DISTANCE = 0.3f; // Distance to walk in one epoch
+    public const float ROTATE_ANGLE = 0.1f;
     
     public const int BOW_MAX_ATTACK = 5 ;
     public const int SWORD_MAX_ATTACK = 8;

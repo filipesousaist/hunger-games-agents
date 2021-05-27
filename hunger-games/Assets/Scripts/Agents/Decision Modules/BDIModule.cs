@@ -31,10 +31,9 @@ public class BDIModule : DecisionModule
 
     private int clock;
 
-    private readonly Belief beliefs;
-    private readonly List<Desire> desires;
+    private Belief beliefs;
+    private List<Desire> desires;
     private Pair<Desire, Vector3> intention;
-
 
     private readonly Stack<Agent.Action> plan;
 
@@ -55,15 +54,21 @@ public class BDIModule : DecisionModule
         ChooseAction(Agent.Action.WALK); // If no other action is selected, walk
         UpdateBeliefs(perception, myData);
 
+        if (!plan.Any())
+        {
+            Plan();
+        }
+
         if (Reconsider())
         {
             GenerateOptions(perception, myData);
             FilterIntentions(perception, myData);
         }
 
-        if (!plan.Any() || !Sound(perception, myData))
+        if (!Sound(perception, myData))
+        {
             Plan();
-
+        }
         ChooseAction(plan.Pop());
         clock++;
     }
@@ -114,31 +119,32 @@ public class BDIModule : DecisionModule
             (otherData) => IsStrongerThan(otherData, myData, Strength)
         );
 
-        if ((myData.energy < MAX_ENERGY / 5 && dangerousAgentDatas.Any()) || strongerAgents.Any())
+        if ((myData.energy < Const.MAX_ENERGY / 5 && dangerousAgentDatas.Any()) || strongerAgents.Any())
             desires.Add(Desire.FLEE);
         
-        if (allStrongerAgents.Count() != otherDatas.Count()){
+        if (allStrongerAgents.Count() != otherDatas.Count())
+        {
             desires.Add(Desire.ATTACK_WEAKEST);
             desires.Add(Desire.ATTACK_CLOSEST);
         }
         
-        if (myData.energy < MAX_ENERGY)
+        if (myData.energy < Const.MAX_ENERGY)
             desires.Add(Desire.EAT);
 
-        if (myData.attack < MAX_ATTACK)
+        if (myData.attack < Const.MAX_ATTACK)
             desires.Add(Desire.TRAIN);
 
-        if ((myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < SWORD_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < BOW_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < SWORD_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < BOW_MAX_ATTACK))
+        if ((myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < Const.SWORD_MAX_ATTACK) ||
+            (myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < Const.BOW_MAX_ATTACK) ||
+            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < Const.SWORD_MAX_ATTACK) ||
+            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < Const.BOW_MAX_ATTACK))
         {
             desires.Add(Desire.NEAREST_STRONGER_WEAPON);
             desires.Add(Desire.STRONGEST_STRONGER_WEAPON);
             
         }
-        if ((myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < BOW_MAX_ATTACK) ||
-            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < SWORD_MAX_ATTACK) ||
+        if ((myData.weaponType == Weapon.Type.SWORD && myData.weaponAttack < Const.BOW_MAX_ATTACK) ||
+            (myData.weaponType == Weapon.Type.BOW && myData.weaponAttack < Const.SWORD_MAX_ATTACK) ||
             myData.weaponType == Weapon.Type.NONE)
         {
             desires.Add(Desire.NEAREST_STRONGER_DIFFERENT_WEAPON);
@@ -158,13 +164,11 @@ public class BDIModule : DecisionModule
 
     private void FilterIntentions(Perception perception, AgentData myData)
     {
-
-        intention = new Pair<Desire, Vector3>
-        {
-            //TODO: remove desires that don't seem to make sense ? maybe it's not needed tho
-
-            Desire = GetMostUrgentDesire(desires) //highest priority desire
-        };
+        intention = new Pair<Desire, Vector3>();
+       
+        //TODO: remove desires that don't seem to make sense ? maybe it's not needed tho
+        
+        intention.Desire = GetMostUrgentDesire(desires); //highest priority desire
 
         switch (intention.Desire)
         {
@@ -226,7 +230,7 @@ public class BDIModule : DecisionModule
     
     private void Plan()
     {
-        
+        //TODO
     }
 
     private bool Sound(Perception perception, AgentData myData)
@@ -249,34 +253,22 @@ public class BDIModule : DecisionModule
         };
     }
 
-    private bool IsBlocked(Perception perception, AgentData myData)
-    {
-        foreach (EntityData data in perception.visionData)
-        {
-            Vector3 difference = new Vector3(data.position.x - myData.position.x, 0, data.position.z - myData.position.z);
-
-            if (data.type != Entity.Type.HAZARD_EFFECT &&
-                difference.magnitude <= MAX_DIST_TO_BE_BLOCKED &&
-                Vector3.Angle(difference, Utils.GetForward(myData.rotation)) >= MIN_ANGLE_TO_BE_BLOCKED)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private bool IsReasonableToAttack(Perception perception, AgentData myData)
-    {
-        return myData.weaponType == Weapon.Type.BOW || // TODO: check beliefs for other agents positions
-            (myData.weaponType != Weapon.Type.BOW && perception.agentsInMeleeRange.Any());
-    }
-
     private bool IsReasonableToUseChest(ChestData chestData,  AgentData myData)
     {
         return chestData.state == Chest.State.CLOSED || chestData.state == Chest.State.CLOSING ||
                (chestData.weaponAttack > myData.weaponAttack && chestData.weaponType == myData.weaponType) ||
                (chestData.weaponType != myData.weaponType && chestData.weaponType != Weapon.Type.NONE);
         
+    }
+
+    private bool IsReasonableToAttack(Perception perception, AgentData agentData)
+    {
+        return true;
+    }
+
+    private bool IsBlocked(Perception perception, AgentData agentData)
+    {
+        return true;
     }
 
     private Vector3 GetClosestAgentPosition(IEnumerable<EntityData> visionData, AgentData myData)

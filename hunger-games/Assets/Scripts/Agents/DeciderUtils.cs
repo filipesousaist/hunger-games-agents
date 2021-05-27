@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using static Agent;
 using static Entity;
 using System.Linq;
+using static Const;
 
 public static class DeciderUtils
 {
@@ -60,5 +62,18 @@ public static class DeciderUtils
 
         return GetActionToMoveTo(attacker, desiredDirection, meleeMinAngle);
     }
+    
+    public static IEnumerable<AgentData> GetDangerousAgentDatas(IEnumerable<AgentData> otherDatas, AgentData myData)
+        {
+            return otherDatas.Where
+            (
+                (otherData) => 
+                    otherData.weaponType == Weapon.Type.BOW &&
+                    IsLookingToPosition(otherData, myData.position, DANGEROUS_BOW_ANGLE)
+                    ||
+                    otherData.weaponType != Weapon.Type.BOW &&
+                    (otherData.position - myData.position).magnitude <= DANGEROUS_MELEE_DISTANCE
+            );
+        }
 }
 

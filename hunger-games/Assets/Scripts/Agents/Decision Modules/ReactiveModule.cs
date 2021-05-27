@@ -5,6 +5,7 @@ using static DeciderUtils;
 using static Utils;
 using UnityEngine;
 using System.Linq;
+using static Const;
 
 public class ReactiveModule : DecisionModule
 {
@@ -13,14 +14,11 @@ public class ReactiveModule : DecisionModule
     //private Action sideToRotate;
     //private bool isBlocked = false;
     private Vector3 directionToFlee;
-
-    private const int DANGEROUS_BOW_ANGLE = 15;
-    private const int DANGEROUS_MELEE_DISTANCE = 5;
+    
 
     private const float MIN_DISTANCE_TO_AVOID_OBSTACLE = 1.5f;
 
     private const int FLEE_ANGLE = 15;
-    private const int BOW_MIN_ANGLE = 2;
     private const int MELEE_MIN_ANGLE = 30;
     private const float URGENT_ENERGY_TO_EAT_BERRIES = 0.2f; // Fraction of max health
 
@@ -96,7 +94,7 @@ public class ReactiveModule : DecisionModule
         if (otherDatas.Any())
         {
             // If I have low energy, and others are able to attack me, flee
-            IEnumerable<AgentData> dangerousAgentDatas = GetDangerousAgentDatas(otherDatas, myData);
+            IEnumerable<AgentData> dangerousAgentDatas = DeciderUtils.GetDangerousAgentDatas(otherDatas, myData);
             if (myData.energy < Const.MAX_ENERGY / 5 && dangerousAgentDatas.Any())
             {
                 FleeFromAgents(dangerousAgentDatas, myData);
@@ -145,19 +143,6 @@ public class ReactiveModule : DecisionModule
     private int Strength(AgentData agentData)
     {
         return (agentData.attack + agentData.weaponAttack) * agentData.energy;
-    }
-
-    private IEnumerable<AgentData> GetDangerousAgentDatas(IEnumerable<AgentData> otherDatas, AgentData myData)
-    {
-        return otherDatas.Where
-        (
-            (otherData) => 
-                otherData.weaponType == Weapon.Type.BOW &&
-                IsLookingToPosition(otherData, myData.position, DANGEROUS_BOW_ANGLE)
-                ||
-                otherData.weaponType != Weapon.Type.BOW &&
-                (otherData.position - myData.position).magnitude <= DANGEROUS_MELEE_DISTANCE
-        );
     }
 
     private void CheckIfFleeFromHazard(Perception perception, AgentData myData)

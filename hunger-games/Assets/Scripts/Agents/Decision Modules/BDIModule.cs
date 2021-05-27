@@ -330,7 +330,7 @@ public class BDIModule : DecisionModule
         //somar todos os vetores de fuga de obstáculos que estejam no meu vision data ou que eu
         //acredite que vão ficar no meu caminho num certo raio
         
-        return beliefs.GetRandomSafe(RADIUS, clock);
+        return beliefs.GetRandomSafe(RADIUS, clock, obstaclesSeen);
         
     }
         

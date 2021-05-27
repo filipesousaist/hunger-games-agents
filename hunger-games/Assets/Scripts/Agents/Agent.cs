@@ -63,8 +63,6 @@ public class Agent : Entity
     private int trainTimer; // Epochs
     private float trainAnimationTimer;
 
-    public int TRAIN_DURATION; // Epochs
-
     public float TRAIN_JUMP_HEIGHT;
     public float TRAIN_NUM_JUMPS; // Number of jumps during train
 

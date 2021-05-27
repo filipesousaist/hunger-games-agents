@@ -190,28 +190,32 @@ public class BDIModule : DecisionModule
 
     private void Plan()
     {
+        AgentData myData = beliefs.GetMyData();
         switch (intention.Desire)
         {
             case Desire.EAT:
                 // walk until intention.Position and eat
-                plan.Push()
+                AddActionsToWalkTo(myData, intention.Position);
+                plan.Push(Agent.Action.EAT_BERRIES);
                 break;
+
             case Desire.FLEE:
-                //flee through intention.Position direction
+                //flee through intention.Position direction ??
+                AddActionsToWalkTo(myData, intention.Position);
+                break;
 
             case Desire.TRAIN:
                 plan.Push(Agent.Action.TRAIN);
+                PushActions(Agent.Action.IDLE, TRAIN_DURATION - 1);                
                 break;
             
             case Desire.EXPLORE:
-                //walk until intention.Position
+                AddActionsToWalkTo(myData, intention.Position);
                 break;
             
             case Desire.ATTACK_CLOSEST:
-                //walk until intention.Position and Attack
-                break;
             case Desire.ATTACK_WEAKEST:
-                //walk until intention.Position and Attack
+                AddActionsToWalkTo(myData, intention.Position);
                 break;
             
             case Desire.TRADE_INFORMATION:
@@ -219,13 +223,23 @@ public class BDIModule : DecisionModule
                 break;
             
             case Desire.STRONGER_WEAPON:
-                //walk until intention.Position and equip it;
-                break;
             case Desire.DIFFERENT_WEAPON:
-                //walk until intention.Position and equip it;
+                AddActionsToWalkTo(myData, intention.Position);
                 break;
         }
     }
+
+    private void PushActions(Agent.Action action, int n)
+    {
+        for (int i = 0; i < n; i++)
+            plan.Push(action);
+    }
+
+    private void AddActionsToWalkTo(AgentData myData, Vector3 destination)
+    {
+        pathfinder.AddActionsToStack(myData.position, destination, myData.rotation, plan);
+    }
+
     private bool Reconsider()
     {
         if (clock % EPOCHS_FOR_RECONSIDERATION == 0)

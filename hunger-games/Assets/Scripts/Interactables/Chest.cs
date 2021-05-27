@@ -13,7 +13,7 @@ public class Chest : Entity, IInteractable
     public float SHOW_WEAPON_HEIGHT;
     public float HIDE_WEAPON_HEIGHT;
 
-    public float ANGULAR_VELOCITY;
+    private float ANGULAR_VELOCITY;
 
     public bool SPAWN_WEAPON;
 
@@ -37,6 +37,7 @@ public class Chest : Entity, IInteractable
 
     private void Awake()
     {
+        ANGULAR_VELOCITY = 90 / (Const.EPOCHS_TO_OPEN_CHEST * Const.DECISION_TIME);
         interactionColliders = new List<InteractionCollider>();
         if (SPAWN_WEAPON)
         {

@@ -8,10 +8,10 @@ using Random = System.Random;
 
 public class Belief
 {
-    private EntityData[][] map;
-    private Dictionary<Vector3,BushData> bushes;
-    private Dictionary<Vector3, ChestData> chests;
-    private Tuple<AgentData, int>[] agentsData;
+    private readonly EntityData[][] map;
+    private readonly Dictionary<Vector3,BushData> bushes;
+    private readonly Dictionary<Vector3, ChestData> chests;
+    private readonly Tuple<AgentData, int>[] agentsData;
     private HazardEffectData[] hazardsOrder;
     private AgentData myData;
     

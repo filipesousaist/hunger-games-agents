@@ -12,6 +12,7 @@ public static class Const
     public const int MAX_ENERGY = 1;
     public const int MAX_ATTACK = 10;
 
+    public const int TRAIN_DURATION = 100; // Epochs
     public const int TRAIN_ATTACK_GAIN = 1;
     public const int TRAIN_ENERGY_LOSS = 5;
 
@@ -27,5 +28,7 @@ public static class Const
     public const int BOW_MIN_ANGLE = 2;
     
     public const int RADIUS_HAZARD_SPAWN = 30 ;
-        
+
+    public const int EPOCHS_TO_OPEN_CHEST = 40;
+
 }

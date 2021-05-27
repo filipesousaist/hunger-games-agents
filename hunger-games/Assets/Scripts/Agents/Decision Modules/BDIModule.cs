@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditorInternal;
 using static Agent;
+using static Const;
 using UnityEngine;
 using static DeciderUtils;
 
@@ -21,18 +22,20 @@ public class BDIModule : DecisionModule
         EXPLORE
     }
 
+    private const float MAX_DIST_TO_BE_BLOCKED = 1.3f;
+    private const float MIN_ANGLE_TO_BE_BLOCKED = 40;
+
     private int clock;
 
-    private Belief beliefs;
-    private List<Desire> desires;
-    private Tuple<Desire, Vector3> intention;
+    private readonly Belief beliefs;
+    private readonly List<Desire> desires;
+    private readonly Tuple<Desire, Vector3> intention;
 
-    private Stack<Agent.Action> plan;
+    private readonly Stack<Agent.Action> plan;
 
 
     public BDIModule(Decider decider) : base(decider)
     {
-
         beliefs = new Belief();
         desires = new List<Desire>();
         intention = null;
@@ -48,11 +51,6 @@ public class BDIModule : DecisionModule
 
         UpdateBeliefs(perception, myData);
 
-        if (!plan.Any())
-        {
-            Plan();
-        }
-
         if (Reconsider())
         {
             GenerateOptions(perception, myData);
@@ -60,7 +58,7 @@ public class BDIModule : DecisionModule
             FilterIntentions(perception, myData);
         }
 
-        if (!Sound(perception, myData))
+        if (!plan.Any() || !Sound(perception, myData))
         {
             Plan();
         }
@@ -156,43 +154,52 @@ public class BDIModule : DecisionModule
     {
     }
 
-    private bool Sound(Perception perception, AgentData mydata)
+    private bool Sound(Perception perception, AgentData myData)
     {
-
-        Agent.Action action = plan.First();
-        
-        switch(action)
+        return plan.Peek() switch
         {
-            case Agent.Action.TRAIN: 
-                return mydata.energy > Const.TRAIN_ENERGY_LOSS && mydata.attack < Const.MAX_ATTACK;
-
-            case Agent.Action.EAT_BERRIES:
-                return perception.nearestBushData.hasBerries;
-            
-            case Agent.Action.USE_CHEST:
-                return IsChestWeaponReasonable(perception.nearestChestData, perception.myData);
-            
-            case  Agent.Action.ATTACK:
-                return true; //redo
-            
-            case Agent.Action.TRADE:
-                return true; //redo
-            
-            case Agent.Action.WALK:
-                return Const.WALK_DISTANCE > 0; //redo
-            
-            case Agent.Action.ROTATE_LEFT:
-                return true; //redo
-            
-            case Agent.Action.ROTATE_RIGHT:
-                return true; //redo
-        }
-        return true;
+            Agent.Action.TRAIN => 
+                myData.energy > TRAIN_ENERGY_LOSS && myData.attack < MAX_ATTACK,
+            Agent.Action.EAT_BERRIES => 
+                perception.nearestBushData.hasBerries,
+            Agent.Action.USE_CHEST =>
+                IsReasonableToUseChest(perception.nearestChestData, myData),
+            Agent.Action.ATTACK =>
+                IsReasonableToAttack(perception, myData),
+            Agent.Action.TRADE => 
+                true, //redo
+            Agent.Action.WALK => 
+                !IsBlocked(perception, myData), //redo
+            _ => true
+        };
     }
 
-    private bool IsChestWeaponReasonable( ChestData chestData,  AgentData myData)
+    private bool IsBlocked(Perception perception, AgentData myData)
     {
-        return (chestData.weaponAttack > myData.weaponAttack && chestData.weaponType == myData.weaponType) ||
+        foreach (EntityData data in perception.visionData)
+        {
+            Vector3 difference = new Vector3(data.position.x - myData.position.x, 0, data.position.z - myData.position.z);
+
+            if (data.type != Entity.Type.HAZARD_EFFECT &&
+                difference.magnitude <= MAX_DIST_TO_BE_BLOCKED &&
+                Vector3.Angle(difference, Utils.GetForward(myData.rotation)) >= MIN_ANGLE_TO_BE_BLOCKED)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsReasonableToAttack(Perception perception, AgentData myData)
+    {
+        return myData.weaponType == Weapon.Type.BOW || // TODO: check beliefs for other agents positions
+            (myData.weaponType != Weapon.Type.BOW && perception.agentsInMeleeRange.Any());
+    }
+
+    private bool IsReasonableToUseChest(ChestData chestData,  AgentData myData)
+    {
+        return chestData.state == Chest.State.CLOSED || chestData.state == Chest.State.CLOSING ||
+               (chestData.weaponAttack > myData.weaponAttack && chestData.weaponType == myData.weaponType) ||
                (chestData.weaponType != myData.weaponType && chestData.weaponType != Weapon.Type.NONE);
         
     }

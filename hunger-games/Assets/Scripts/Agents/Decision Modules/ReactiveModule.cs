@@ -79,17 +79,14 @@ public class ReactiveModule : DecisionModule
     private void CheckIfUseChest(Perception perception, AgentData myData)
     {
         ChestData chestData = perception.nearestChestData;
-        if (chestData != null &&
-            (
-            chestData.state == Chest.State.CLOSED
-            || 
-            chestData.state == Chest.State.CLOSING
-            ||
-            chestData.weaponType != Weapon.Type.NONE &&
-                (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack)
-            )
-        )
-            ChooseAction(Action.USE_CHEST);
+        if (chestData != null) {
+            if (chestData.state == Chest.State.OPENING)
+                ChooseAction(Action.IDLE); // Wait for chest opening
+            else if (chestData.weaponType != Weapon.Type.NONE &&
+                    (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack) ||
+                     chestData.state == Chest.State.CLOSED)
+                ChooseAction(Action.USE_CHEST);
+        }
     }
 
     private void CheckOtherAgents(Perception perception, AgentData myData)

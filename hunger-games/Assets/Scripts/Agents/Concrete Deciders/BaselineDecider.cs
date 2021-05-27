@@ -55,13 +55,17 @@ public class BaselineDecider : Decider
     private void CheckIfUseChest(Perception perception, AgentData myData)
     {
         ChestData chestData = perception.nearestChestData;
-        if (chestData != null &&
-            chestData.weaponType != Weapon.Type.NONE &&
-            (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack))
+        if (chestData != null)
         {
-            nextAction = Action.USE_CHEST;
+            if (chestData.state == Chest.State.OPENING)
+                nextAction = Action.IDLE; // Wait for chest opening
+            else if (chestData.weaponType != Weapon.Type.NONE &&
+                    (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack) ||
+                     chestData.state == Chest.State.CLOSED)
+                nextAction = Action.USE_CHEST;
         }
     }
+
     private void CheckIfEatBerries(Perception perception, AgentData myData)
     {
         BushData bushData = perception.nearestBushData;

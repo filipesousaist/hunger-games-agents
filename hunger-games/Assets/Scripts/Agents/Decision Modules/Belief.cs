@@ -196,18 +196,20 @@ public class Belief
     }
 
 
-    public Vector3 GetRandomSafe(int radius,int clock)
+    public Vector3 GetRandomSafe(int radius,int clock, IEnumerable<EntityData> otherDatas)
     {
         int x_index;
         int z_index;
         Vector3 point;
+        IEnumerable<AgentData> otherAgents = otherDatas.Where(entityData => entityData.type == Entity.Type.AGENT).Cast<AgentData>();
+        IEnumerable<AgentData> dangerousAgents = DeciderUtils.GetDangerousAgentDatas(otherAgents, myData);
         while (true)
         {
             Random random = new Random();
             x_index = random.Next((int)myData.position.x-radius, (int)myData.position.x+radius+1);
             z_index = random.Next((int)myData.position.x-radius, (int)myData.position.x+radius+1);
             point = new Vector3(x_index, 0, z_index);
-            if (HazardsManager.GetRegion(point) != hazardsOrder[clock%8].region )//&& dangerousAgents.Where((agen)).Any()) //TODO 
+            if (HazardsManager.GetRegion(point) != hazardsOrder[clock%8].region  && dangerousAgents.Any(otherAgent => (otherAgent.position-myData.position).magnitude<=radius)) //TODO 
                 return point;
         }
     }

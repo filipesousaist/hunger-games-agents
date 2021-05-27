@@ -330,10 +330,8 @@ public class BDIModule : DecisionModule
     private Vector3 GetFleePoint(IEnumerable<EntityData> obstaclesSeen)
     {
         const int RADIUS = 19;
-        //somar todos os vetores de fuga de obstáculos que estejam no meu vision data ou que eu
-        //acredite que vão ficar no meu caminho num certo raio
-        
-        return beliefs.GetRandomSafe(RADIUS, clock);
+
+        return beliefs.GetRandomSafe(RADIUS, clock, obstaclesSeen);
         
     }
         

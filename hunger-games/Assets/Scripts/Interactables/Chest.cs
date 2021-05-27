@@ -189,12 +189,25 @@ public class Chest : Entity, IInteractable
 
     public override EntityData GetData()
     {
+        Weapon.Type weaponType;
+        int weaponAttack;
+        if (state == State.OPEN && weapon != null)
+        {
+            weaponType = weapon.GetType();
+            weaponAttack = weapon.attack;
+        }
+        else
+        {
+            weaponType = Weapon.Type.NONE;
+            weaponAttack = 0;
+        }
+
         return new ChestData()
         {
             position = transform.position,
             state = state,
-            weaponType = weapon != null ? weapon.GetType() : Weapon.Type.NONE,
-            weaponAttack = weapon != null ? weapon.attack : 0
+            weaponType = weaponType,
+            weaponAttack = weaponAttack
         };
     }
 }

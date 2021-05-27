@@ -80,11 +80,16 @@ public class ReactiveModule : DecisionModule
     {
         ChestData chestData = perception.nearestChestData;
         if (chestData != null &&
+            (
+            chestData.state == Chest.State.CLOSED
+            || 
+            chestData.state == Chest.State.CLOSING
+            ||
             chestData.weaponType != Weapon.Type.NONE &&
-            (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack))
-        {
+                (myData.weaponType == Weapon.Type.NONE || chestData.weaponAttack > myData.weaponAttack)
+            )
+        )
             ChooseAction(Action.USE_CHEST);
-        }
     }
 
     private void CheckOtherAgents(Perception perception, AgentData myData)
@@ -164,7 +169,6 @@ public class ReactiveModule : DecisionModule
         if (hazardEffectData != null && myData.currentRegion != 0 && hazardEffectData.region == myData.currentRegion) // Inside region with hazard 
         {
             Vector3 regionVector = Quaternion.AngleAxis(360 / Const.NUM_REGIONS * (myData.currentRegion - 1.5f) , Vector3.up) * Vector3.forward;
-            Debug.Log("Region: " + myData.currentRegion + ", Vector: " + regionVector);
             float angle = Vector3.SignedAngle(myData.position, regionVector, Vector3.up);
             Vector3 desiredDirection = (angle < 0) ?
                 Quaternion.AngleAxis(90, Vector3.up) * myData.position :

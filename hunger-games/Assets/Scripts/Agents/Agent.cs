@@ -80,9 +80,8 @@ public class Agent : Entity
 
     public GameObject chestPrefab;
 
-    [ReadOnly] public Material bodyMaterial; 
-
-    public float WALK_DISTANCE; // Distance to walk in one epoch
+    [ReadOnly] public Material bodyMaterial;
+    
     public float ROTATE_ANGLE; // Angle to rotate in one epoch
 
     private float WALK_SPEED;

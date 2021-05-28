@@ -47,17 +47,8 @@ public class HybridDecider : Decider
                 Random.Range(0, 1f) >= RANDOM_MODULE_CHANCE ? currentModule : other[currentModule];
 
             if (decisionModule.Equals(dTModule))
-            {
-                Debug.Log("Using DT with score:");
                 dTModule.Decide(perception);
-            }
-            else
-            {
-                Debug.Log("Using Reactive with score:");
-            }
-            Debug.Log(score[decisionModule] + " vs " + score[other[decisionModule]]);
         }
-        Debug.Log("Using urgent Reactive");
         lastEnergy = perception.myData.energy;
             
     }

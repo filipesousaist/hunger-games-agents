@@ -45,7 +45,7 @@ public class Arrow : Entity
         {
             if (agent == owner)
                 return;
-            agent.LoseEnergy(damage);
+            agent.LoseEnergy(damage, owner.index);
         }
 
         Destroy(gameObject);

@@ -440,7 +440,7 @@ public class Agent : Entity
     private void Punch()
     {
         foreach (Agent agent in meleeCollider.GetCollidingAgents())
-            agent.LoseEnergy(attack);
+            agent.LoseEnergy(attack, index);
     }
 
     public void GainEnergy(int amount)

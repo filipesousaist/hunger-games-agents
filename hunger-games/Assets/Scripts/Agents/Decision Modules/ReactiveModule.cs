@@ -27,6 +27,7 @@ public class ReactiveModule : DecisionModule
 
     public override void Decide(Perception perception)
     {
+        isUrgent = false;
         ChooseAction(Action.WALK); // If no other action is selected, walk
 
         AgentData myData = perception.myData;

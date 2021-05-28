@@ -32,6 +32,8 @@ public class Agent : Entity
     public Camera faceCam;
     public RenderTexture faceCamTexturePrefab;
 
+    public GameObject tradeText;
+
     private TextMeshProUGUI energyText;
     private TextMeshProUGUI attackText;
 
@@ -138,6 +140,8 @@ public class Agent : Entity
 
         visionCollider.InitLayerMask();
         environment.AddAgent(this);
+
+        tradeText.GetComponent<TextMeshPro>().color = bodyMaterial.color;
 
         UpdateInfo();
     }
@@ -335,13 +339,13 @@ public class Agent : Entity
             int agentIndex = ((AgentData)agentsList.First()).index;
             Agent agentToTrade = environment.GetAgent(agentIndex);
             TradeWithAgent(agentToTrade);
-            readyToTrade = false;
+            SetReadyToTrade(false);
         }
         
         else
         {
             tradeTimer = 0;
-            readyToTrade = true;
+            SetReadyToTrade(true);
         }
         
     }
@@ -350,7 +354,13 @@ public class Agent : Entity
     {
         tradeTimer++;
         if (tradeTimer > MAX_TRADE_TIME && readyToTrade)
-            readyToTrade = false;
+            SetReadyToTrade(false);
+    }
+
+    private void SetReadyToTrade(bool value)
+    {
+        readyToTrade = value;
+        tradeText.SetActive(value);
     }
 
     public IEnumerator Decide(Perception perception)

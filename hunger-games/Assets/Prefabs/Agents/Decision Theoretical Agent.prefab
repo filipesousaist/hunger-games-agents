@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-463543564712113438
+--- !u!114 &-3596759390488735437
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8524379427348271379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb5adaf655c9bed46ae41449d982b482, type: 3}
+  m_Script: {fileID: 11500000, guid: ec387444147d4a05b9cc10b6efa3b893, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nextAction: 0
@@ -86,7 +86,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5273391439425887440, guid: 7a5b46eaa37830b45afb52a0b4c72ccb, type: 3}
       propertyPath: m_Name
-      value: BDI Agent
+      value: Decision Theoretical Agent
       objectReference: {fileID: 0}
     - target: {fileID: 6939368744660052479, guid: 7a5b46eaa37830b45afb52a0b4c72ccb, type: 3}
       propertyPath: m_Mesh

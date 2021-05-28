@@ -50,9 +50,9 @@ public class DecisionTheoreticalModule : DecisionModule
         directionToFlee = Vector3.zero;
 
         
-        List<float> otherAgentsUtilities = CheckOtherAgents(perception, myData);
+        float[] otherAgentsUtilities = CheckOtherAgents(perception, myData);
 
-        float tradeUtility = perception.hazardsOrder.Count(data => data == null)/NUM_REGIONS;
+        float tradeUtility = (float)perception.hazardsOrder.Count(data => data == null)/NUM_REGIONS;
         float attackUtility = otherAgentsUtilities[2];
         float walkUtility = otherAgentsUtilities[3];
         walk_considerate += walkUtility > 0 ? 1 : 0;
@@ -153,10 +153,10 @@ public class DecisionTheoreticalModule : DecisionModule
         return new Tuple<float, float>(use_chest_utility, idle_utility);
     }
 
-    private List<float> CheckOtherAgents(Perception perception, AgentData myData)
+    private float[] CheckOtherAgents(Perception perception, AgentData myData)
     {
         IEnumerable<AgentData> otherDatas = perception.visionData.Where((data) => data.type == Entity.Type.AGENT).Select((data) => (AgentData) data);
-        List<float> utilities = new List<float>(6);
+        float[] utilities = new float[6];
         
         int fleeUtility = 0;
         utilities[0] = fleeUtility;

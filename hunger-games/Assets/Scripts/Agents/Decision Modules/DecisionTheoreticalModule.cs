@@ -35,7 +35,7 @@ public class DecisionTheoreticalModule : DecisionModule
 
         int IDLE_priority = 3;
         int WALK_priority = 4;
-        int TRADE_priority = 5;
+        int TRADE_priority = 3;
         int TRAIN_priority = 6;
         int ATTACK_priority = 9;
         int USE_CHEST_priority = 7;
@@ -52,7 +52,7 @@ public class DecisionTheoreticalModule : DecisionModule
         
         float[] otherAgentsUtilities = CheckOtherAgents(perception, myData);
 
-        float tradeUtility = (float)perception.hazardsOrder.Count(data => data == null)/NUM_REGIONS;
+        float tradeUtility = 0;//(float)perception.hazardsOrder.Count(data => data == null)/NUM_REGIONS;
         float attackUtility = otherAgentsUtilities[0];
         float walkUtility = otherAgentsUtilities[2];
         walk_considerate += walkUtility > 0 ? 1 : 0;
@@ -94,15 +94,15 @@ public class DecisionTheoreticalModule : DecisionModule
         }
 
         List<Tuple<Agent.Action,float>> actions = new List<Tuple<Agent.Action, float>>();
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.EAT_BERRIES,eatUtility*EAT_BERRIES_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.ATTACK,attackUtility*ATTACK_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.IDLE,idleUtility * IDLE_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.ROTATE_RIGHT,rotateRightUtility * ROTATE_RIGHT_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.ROTATE_LEFT,rotateLeftUtility * ROTATE_LEFT_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.WALK,walkUtility * WALK_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.TRAIN,trainUtility * TRAIN_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.USE_CHEST,useChestUtility * USE_CHEST_priority));
-        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.TRADE,tradeUtility * TRADE_priority));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.EAT_BERRIES,eatUtility));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.ATTACK,attackUtility));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.IDLE,idleUtility ));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.ROTATE_RIGHT,rotateRightUtility ));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.ROTATE_LEFT,rotateLeftUtility ));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.WALK,walkUtility ));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.TRAIN,trainUtility ));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.USE_CHEST,useChestUtility ));
+        actions.Add(new Tuple<Agent.Action,float> (Agent.Action.TRADE,tradeUtility ));
         
         IEnumerable<Tuple<Agent.Action,float>> orderedActions = actions.OrderBy(element => element.Item2);
         return orderedActions.Last().Item1;
@@ -199,7 +199,7 @@ public class DecisionTheoreticalModule : DecisionModule
                 if (IsInPositionToAttack(perception, myData, otherData, BOW_MIN_ANGLE))
                 {
                     utilities[0] = myData.attackWaitTimer == 0 ? 1 : 0;
-                    utilities[1] = utilities[0] == 0 ? 1 : 0;
+                    utilities[1] = myData.attackWaitTimer > 0 ? 1 : 0;
                     return utilities;
                 }
 

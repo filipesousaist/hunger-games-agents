@@ -22,7 +22,7 @@ public class BaselineDecider : Decider
 
         CheckIfAttack(perception, myData);
 
-        CheckIfOutsideArea(myData);
+        CheckIfOutsideArea(perception, myData);
 
         CheckIfEatBerries(perception, myData); //eats berries he believes aren't poisonous
     }
@@ -48,7 +48,7 @@ public class BaselineDecider : Decider
 
     private void CheckIfTrain(Perception perception)
     {
-        if (perception.myData.energy >= 0.25*Const.MAX_ENERGY && perception.myData.attack < Const.MAX_ATTACK)
+        if (perception.myData.energy >= 0.5 * Const.MAX_ENERGY && perception.myData.attack < Const.MAX_ATTACK)
             nextAction = Action.TRAIN;
     }
 
@@ -95,11 +95,13 @@ public class BaselineDecider : Decider
         isBlocked = false;
     }
 
-    private void CheckIfOutsideArea(AgentData agentData)
+    private void CheckIfOutsideArea(Perception perception, AgentData myData)
     {
-        if (agentData.outsideShield && !isBlocked)
+        if ((Mathf.Abs(myData.position.x) > perception.shieldRadius ||
+             Mathf.Abs(myData.position.z) > perception.shieldRadius)
+            && !isBlocked)
         {
-            if (DeciderUtils.IsLookingToPosition(agentData, Vector3.zero, 5))
+            if (DeciderUtils.IsLookingToPosition(myData, Vector3.zero, 5))
                 nextAction = Action.WALK;
             else
                 nextAction = Random.Range(0, 5) == 1 ? Action.WALK : sideToRotate;
@@ -108,6 +110,6 @@ public class BaselineDecider : Decider
 
     public override string GetArchitectureName()
     {
-        return "Baseline Reactive (Aggressive)";
+        return "Baseline";
     }
 }

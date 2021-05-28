@@ -25,6 +25,7 @@ public class Agent : Entity
         public int timeslot;
         public HazardEffectData[] hazardsOrder;
         public int numberOfAliveAgents;
+        public float shieldRadius;
     }
 
     public Camera cam;
@@ -100,12 +101,12 @@ public class Agent : Entity
     private bool readyToTrade = false;
     
     private const int MAX_TRADE_TIME = 10;
-    private int tradeTimer;
+    private int tradeTimer = 0;
 
-    [ReadOnly] public int shieldTimer=0;
+    private int hungerTimer = 0;
+
+    [ReadOnly] public int shieldTimer = 0;
     public int MAX_SHIELD_TIMER;
-    
-    
 
     private void Awake()
     {
@@ -123,7 +124,7 @@ public class Agent : Entity
     void Start()
     {
         WALK_SPEED = WALK_DISTANCE / DECISION_TIME;
-        ROTATE_SPEED = ROTATE_ANGLE / DECISION_TIME;
+        ROTATE_SPEED = ROTATE_ANGLE / DECISION_TIME * Mathf.Deg2Rad;
 
         TRAIN_JUMP_DURATION = TRAIN_DURATION * DECISION_TIME / TRAIN_NUM_JUMPS;
         TRAIN_JUMP_INITIAL_SPEED = 4 * TRAIN_JUMP_HEIGHT / TRAIN_JUMP_DURATION;
@@ -171,6 +172,8 @@ public class Agent : Entity
     {
         if (training)
             TrainUpdate();
+
+        Debug.DrawLine(transform.position, transform.position + Utils.GetForward(transform.rotation.eulerAngles.y), Color.red);
     }
 
     private void TrainUpdate()
@@ -208,7 +211,8 @@ public class Agent : Entity
             agentsInMeleeRange = meleeCollider.GetCollidingAgents().Select((agent) => (AgentData) agent.GetData()),
             timeslot = timeslot,
             hazardsOrder = hazardsOrder,
-            numberOfAliveAgents = environment.GetNumAliveAgents()
+            numberOfAliveAgents = environment.GetNumAliveAgents(),
+            shieldRadius = shield.GetRadius()
         };
 
     }
@@ -235,6 +239,15 @@ public class Agent : Entity
             myRigidbody.velocity = Vector3.zero;
             myRigidbody.angularVelocity = Vector3.zero;
         }
+
+        hungerTimer ++;
+        if (hungerTimer == HUNGER_PERIOD)
+        {
+            hungerTimer = 0;
+            LoseEnergy(1);
+        }
+
+        //Debug.Log(name + "'s next action: " + decider.nextAction);
     }
 
     public void ExecuteAction()
@@ -268,12 +281,14 @@ public class Agent : Entity
 
     private void RotateLeft()
     {
-        myRigidbody.angularVelocity = - transform.up * ROTATE_SPEED;
+        transform.Rotate(new Vector3(0, -ROTATE_ANGLE, 0), Space.World);
+        //myRigidbody.angularVelocity = - transform.up * ROTATE_SPEED;
     }
 
     private void RotateRight()
     {
-        myRigidbody.angularVelocity = transform.up * ROTATE_SPEED;
+        transform.Rotate(new Vector3(0, ROTATE_ANGLE, 0), Space.World);
+        //myRigidbody.angularVelocity = transform.up * ROTATE_SPEED;
     }
 
     private void UseChest()
@@ -497,7 +512,6 @@ public class Agent : Entity
             weaponAttack = GetWeaponAttack(),
             attackWaitTimer = attackWaitTimer,
             currentRegion = HazardsManager.GetRegion(position),
-            outsideShield = shield.IsPositionOutside(position),
             readyToTrade = readyToTrade
         };
     }
@@ -521,7 +535,6 @@ public class AgentData : EntityData, ICloneable
     public int weaponAttack;
     public int attackWaitTimer;
     public int currentRegion;
-    public bool outsideShield;
     public bool readyToTrade;
 
     public AgentData()

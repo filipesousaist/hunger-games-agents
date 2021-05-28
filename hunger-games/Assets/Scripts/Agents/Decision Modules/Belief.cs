@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = System.Random;
+using Random = UnityEngine.Random;
+using static Agent;
 
 
 public class Belief
@@ -14,25 +15,37 @@ public class Belief
     private readonly Tuple<AgentData, int>[] agentsData;
     private HazardEffectData[] hazardsOrder;
     private AgentData myData;
+    private readonly Pathfinder pathfinder;
     
-    public Belief()
+    public Belief(Pathfinder pathfinder)
     {
-        map = new EntityData[501][];
-        for (int i = 0; i < map.Length; i++)
+        // Create map
+        int size = Const.WORLD_SIZE * 2 + 1;
+        map = new EntityData[size][];
+        for (int x = 0; x < size; x++)
         {
-            map[i] = new EntityData[501];
+            map[x] = new EntityData[size];
+            for (int z = 0; z < size; z++)
+                map[x][z] = null;
         }
 
         bushes = new Dictionary<Vector3, BushData>();
         chests = new Dictionary<Vector3, ChestData>();
         agentsData = new Tuple<AgentData, int>[Const.NUM_AGENTS];
         hazardsOrder = new HazardEffectData[Const.NUM_REGIONS];
-
+        this.pathfinder = pathfinder;
     }
 
     public void UpdateAgentsData(Tuple<AgentData, int> agentData)
     {
+        /*Vector3 oldAgentPos = agentsData[agentData.Item1.index - 1].Item1.position;
+        Vector3 newAgentPos = agentData.Item1.position;
+
+        pathfinder.SetWalkable(oldAgentPos.x, oldAgentPos.z, true);
+        pathfinder.SetWalkable(newAgentPos.x, newAgentPos.z, false);*/
+
         agentsData[agentData.Item1.index - 1] = agentData;
+
     }
 
     public AgentData GetMyData()
@@ -43,6 +56,21 @@ public class Belief
     public void UpdateMyData(AgentData agentData)
     {
         myData = agentData;
+    }
+
+    public HazardEffectData[] GetHazardsOrder()
+    {
+        return hazardsOrder;
+    }
+
+    public Dictionary<Vector3, ChestData> GetChests()
+    {
+        return chests;
+    }
+
+    public Dictionary<Vector3, BushData> GetBushes()
+    {
+        return bushes;
     }
 
     public void UpdateHazardsOrder(HazardEffectData[] order)
@@ -95,7 +123,8 @@ public class Belief
         foreach (EntityData entity in entities)
         {
             Vector3 matrixPosition = GetMatrixPosition(entity.position); 
-            map[(int)matrixPosition.x][(int)matrixPosition.z] = entity; 
+            map[(int)matrixPosition.x][(int)matrixPosition.z] = entity;
+            pathfinder.SetWalkable(matrixPosition.x, matrixPosition.z, false);
         }
     }
 
@@ -171,23 +200,23 @@ public class Belief
 
     }
     
-    public Vector3 GetUnexploredPoint()
-    {
-        int x_index;
-        int z_index;
+    public Vector3 GetUnexploredPoint(int radius, Perception perception)
+    { 
+        int minX = Mathf.Max((int) myData.position.x - radius, -(int)perception.shieldRadius);
+        int maxX = Mathf.Min((int) myData.position.x + radius, (int)perception.shieldRadius);
+        int minZ = Mathf.Max((int) myData.position.z - radius, -(int)perception.shieldRadius);
+        int maxZ = Mathf.Min((int) myData.position.z + radius, (int)perception.shieldRadius);
+
         while (true)
         {
-            Random random = new Random();
-            x_index = random.Next(0, map.Length);
+            int x_index = Random.Range(minX, maxX + 1) + 250;
+            int z_index = Random.Range(minX, maxX + 1) + 250;
 
-            if (map[x_index].Contains(null))
-            {
-                z_index = random.Next(0, map.Length);
-
-                if (map[x_index][z_index] == null)
-                    return new Vector3(x_index, 0, z_index);
-            }
+            if (map[x_index][z_index] == null)
+                return new Vector3(x_index - Const.WORLD_SIZE, 0, z_index - Const.WORLD_SIZE);
         }
+        
+        //return new Vector3(30, 0, 30);
     }
 
     public Tuple<AgentData,int>[] GetAgentsData()
@@ -196,26 +225,32 @@ public class Belief
     }
 
 
-    public Vector3 GetRandomSafe(int radius,int clock, IEnumerable<EntityData> otherDatas)
+    public Vector3 GetRandomSafe(int radius, int clock, Perception perception)
     {
-        int x_index;
-        int z_index;
-        Vector3 point;
-        IEnumerable<AgentData> otherAgents = otherDatas.Where(entityData => entityData.type == Entity.Type.AGENT).Cast<AgentData>();
+        IEnumerable<EntityData> visionData = perception.visionData;
+        IEnumerable<AgentData> otherAgents = visionData.Where(entityData => entityData.type == Entity.Type.AGENT).Cast<AgentData>();
         IEnumerable<AgentData> dangerousAgents = DeciderUtils.GetDangerousAgentDatas(otherAgents, myData);
+
+        int minX = (int)Mathf.Max( myData.position.x - radius, -perception.shieldRadius);
+        int maxX = (int)Mathf.Min( myData.position.x + radius, perception.shieldRadius);
+        int minZ = (int)Mathf.Max( myData.position.z - radius, -perception.shieldRadius);
+        int maxZ = (int)Mathf.Min( myData.position.z + radius, perception.shieldRadius);
+
         while (true)
         {
-            Random random = new Random();
-            x_index = random.Next((int)myData.position.x-radius, (int)myData.position.x+radius+1);
-            z_index = random.Next((int)myData.position.x-radius, (int)myData.position.x+radius+1);
-            point = new Vector3(x_index, 0, z_index);
-            if (HazardsManager.GetRegion(point) != hazardsOrder[clock%8].region  && dangerousAgents.Any(otherAgent => (otherAgent.position-myData.position).magnitude<=radius)) //TODO 
+            int x_index = Random.Range(minX, maxX + 1);
+            int z_index = Random.Range(minZ, maxZ + 1);
+            Vector3 point = new Vector3(x_index, 0, z_index);
+            if (!(HazardsManager.GetRegion(point) == hazardsOrder[perception.timeslot].region && 
+                HazardsManager.GetRegion(perception.myData.position) == hazardsOrder[perception.timeslot].region)
+                && !dangerousAgents.Any(otherAgent => (otherAgent.position-myData.position).magnitude<=radius)) //TODO 
+
                 return point;
         }
     }
     private Vector3 GetMatrixPosition(Vector3 position)
     {
-        return new Vector3(position.x + 250, 0, position.z + 250);
+        return new Vector3(position.x + Const.WORLD_SIZE, 0, position.z + Const.WORLD_SIZE);
     }
 }
 

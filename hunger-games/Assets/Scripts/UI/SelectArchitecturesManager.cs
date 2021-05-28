@@ -7,12 +7,16 @@ public class SelectArchitecturesManager : MonoBehaviour
 
     [ReadOnly] public Dictionary<string, Decider> namesToArchitectures = new Dictionary<string, Decider>();
 
+    [ReadOnly] public Dictionary<string, int> namesToIndices = new Dictionary<string, int>();
+
     // Start is called before the first frame update
     void Awake()
     {
-        foreach (Decider decider in deciders)
+        for (int i = 0; i < deciders.Length; i ++)
         {
-            namesToArchitectures.Add(decider.GetArchitectureName(), decider);
+            string name = deciders[i].GetArchitectureName();
+            namesToArchitectures.Add(name, deciders[i]);
+            namesToIndices.Add(name, i);
         }
     }
 }

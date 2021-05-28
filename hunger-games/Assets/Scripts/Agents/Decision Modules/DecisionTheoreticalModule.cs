@@ -245,8 +245,7 @@ public class DecisionTheoreticalModule : DecisionModule
             directionToFlee += direction;
         
     }
-
-
+    
     private int Strength(AgentData agentData)
     {
         return (agentData.attack + agentData.weaponAttack) * agentData.energy;

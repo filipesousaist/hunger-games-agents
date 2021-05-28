@@ -25,6 +25,8 @@ public class Shield : MonoBehaviour
 
     private float targetScale;
 
+    private float timer;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -32,12 +34,14 @@ public class Shield : MonoBehaviour
         DECREASE_SHIELD_SPEED = SHIELD_DECREASE_FACTOR / (DECREASE_SHIELD_DURATION_EPOCHS * Const.DECISION_TIME);
         TIME_TO_START_AUTO_DECREASE_SHIELD = EPOCHS_TO_START_AUTO_DECREASE_SHIELD * Const.DECISION_TIME;
         MIN_SHIELD_SCALE = transform.localScale.y * (1 - SHIELD_DECREASE_FACTOR * Const.NUM_AGENTS);
+        timer = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time > TIME_TO_START_AUTO_DECREASE_SHIELD)
+        timer += Time.deltaTime;
+        if (timer > TIME_TO_START_AUTO_DECREASE_SHIELD)
             targetScale = MIN_SHIELD_SCALE;
 
         float scale = transform.localScale.y;

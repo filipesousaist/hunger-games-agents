@@ -170,7 +170,7 @@ public class Environment : MonoBehaviour
         if (agent.lastAttackerIndex != 0)
         {
             Debug.Log("Agent " + (index + 1) + " was killed by agent " + agent.lastAttackerIndex);
-            kills[agent.lastAttackerIndex] ++;        
+            kills[agent.lastAttackerIndex - 1] ++;        
         }
         else
             Debug.Log("Agent " + (index + 1) + " died");

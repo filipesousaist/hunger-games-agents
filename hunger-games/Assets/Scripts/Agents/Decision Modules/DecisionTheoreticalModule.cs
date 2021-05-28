@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Linq;
 using static Const;
 
-public class DecisionTheorecticalModule : DecisionModule
+public class DecisionTheoreticalModule : DecisionModule
 {
 
     //private Action sideToRotate;
@@ -22,7 +22,7 @@ public class DecisionTheorecticalModule : DecisionModule
     private const float URGENT_ENERGY_TO_EAT_BERRIES = 0.2f; // Fraction of max health
 
 
-    public DecisionTheorecticalModule(Decider decider) : base(decider) {}
+    public DecisionTheoreticalModule(Decider decider) : base(decider) {}
 
     public override void Decide(Perception perception)
     {

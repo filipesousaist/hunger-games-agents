@@ -1652,7 +1652,7 @@ MonoBehaviour:
   CHEST_AMOUNT: 30
   ROCK_AMOUNT: 1200
   TREE_AMOUNT: 1800
-  BUSH_AMOUNT: 100
+  BUSH_AMOUNT: 500
   HEALTHY_BUSH_RATIO: 0.8
   MIN_CHEST_DISTANCE: 1
   MIN_TREE_DISTANCE: 2.5
@@ -1772,7 +1772,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6777d31ca5dd44669a52aeea5e14dd41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RADIUS_HAZARD_SPAWN: 50
   fire: {fileID: 8832443666762641316, guid: 0133cd4b69d212740a2a0f98f34731a5, type: 3}
   fog: {fileID: -7847486089554292585, guid: 22e7ecc9de59ee2489728f3dd8f907b8, type: 3}
   rain: {fileID: -5181991973971186338, guid: 9926ad8a431acb2448f8a94d3094b16c, type: 3}

@@ -33,15 +33,15 @@ public class DecisionTheoreticalModule : DecisionModule
     {
         AgentData myData = perception.myData;
 
-        int IDLE_priority = 1;
-        int WALK_priority = 2;
-        int TRADE_priority = 1;
-        int TRAIN_priority = 1;
-        int ATTACK_priority = 3;
-        int USE_CHEST_priority = 3;
-        int EAT_BERRIES_priority = 3;
-        int ROTATE_RIGHT_priority = 2;
-        int ROTATE_LEFT_priority = 2;
+        int IDLE_priority = 3;
+        int WALK_priority = 4;
+        int TRADE_priority = 5;
+        int TRAIN_priority = 6;
+        int ATTACK_priority = 9;
+        int USE_CHEST_priority = 7;
+        int EAT_BERRIES_priority = 8;
+        int ROTATE_RIGHT_priority = 10;
+        int ROTATE_LEFT_priority = 10;
 
         int rotate_right_considerate = 0;
         int rotate_left_considerate = 0;
@@ -53,12 +53,12 @@ public class DecisionTheoreticalModule : DecisionModule
         float[] otherAgentsUtilities = CheckOtherAgents(perception, myData);
 
         float tradeUtility = (float)perception.hazardsOrder.Count(data => data == null)/NUM_REGIONS;
-        float attackUtility = otherAgentsUtilities[2];
-        float walkUtility = otherAgentsUtilities[3];
+        float attackUtility = otherAgentsUtilities[0];
+        float walkUtility = otherAgentsUtilities[2];
         walk_considerate += walkUtility > 0 ? 1 : 0;
-        float rotateRightUtility = otherAgentsUtilities[4];
+        float rotateRightUtility = otherAgentsUtilities[3];
         rotate_right_considerate += rotateRightUtility > 0 ? 1 : 0;
-        float rotateLeftUtility = otherAgentsUtilities[5];
+        float rotateLeftUtility = otherAgentsUtilities[4];
         rotate_left_considerate += rotateLeftUtility > 0 ? 1 : 0;
         
         CheckIfRotate(perception, myData);
@@ -77,19 +77,19 @@ public class DecisionTheoreticalModule : DecisionModule
         if (directionToFlee != Vector3.zero)
         {
             Agent.Action action = GetActionToMoveTo(myData, directionToFlee, FLEE_ANGLE);
-            int walk = action == Agent.Action.WALK ? 1 : 0;
-            int rotateRight = action == Agent.Action.ROTATE_RIGHT ? 1 : 0;
-            int rotateLeft = action == Agent.Action.ROTATE_LEFT ? 1 : 0;
+            float walk = action == Agent.Action.WALK ? (float)perception.numberOfAliveAgents/NUM_AGENTS : 0;
+            float rotateRight = action == Agent.Action.ROTATE_RIGHT ? (float)perception.numberOfAliveAgents/NUM_AGENTS : 0;
+            float rotateLeft = action == Agent.Action.ROTATE_LEFT ? (float)perception.numberOfAliveAgents/NUM_AGENTS : 0;
             
-            walkUtility = walk*(((walk_considerate) * walkUtility / walk_considerate+1) +
-                                    (1 / walk_considerate+1));
+            walkUtility = walk*((walk_considerate * walkUtility / (walk_considerate+1)) +
+                                    (1 / (walk_considerate+1)));
             
             walk_considerate += walkUtility > 0 ? 1 : 0;
-            rotateRightUtility = rotateRight*(((rotate_right_considerate) * rotateRightUtility / rotate_right_considerate+1) +
-                            (1 / rotate_right_considerate+1));
+            rotateRightUtility = rotateRight*(((rotate_right_considerate) * rotateRightUtility / (rotate_right_considerate+1)) +
+                            (1 / (rotate_right_considerate+1)));
             rotate_right_considerate += rotateRightUtility > 0 ? 1 : 0;
-            rotateLeftUtility = rotateLeft*(((rotate_left_considerate) * rotateLeftUtility / rotate_left_considerate+1) +
-                                                (1 / rotate_left_considerate+1));
+            rotateLeftUtility = rotateLeft*(((rotate_left_considerate) * rotateLeftUtility / (rotate_left_considerate+1)) +
+                                                (1 / (rotate_left_considerate+1)));
             rotate_left_considerate += rotateLeftUtility > 0 ? 1 : 0;
         }
 
@@ -129,15 +129,15 @@ public class DecisionTheoreticalModule : DecisionModule
         myDataAfterTrain.energy = Mathf.Max(myData.energy - Const.TRAIN_ENERGY_LOSS, 0);
         myDataAfterTrain.attack = Mathf.Min(myData.attack + Const.TRAIN_ATTACK_GAIN, Const.MAX_ATTACK);
         if (Strength(myDataAfterTrain) > 3 * Strength(myData))
-            return  (MAX_ATTACK - Strength(myDataAfterTrain))/MAX_ATTACK;
+            return  (float)(MAX_ATTACK - myData.attack)/MAX_ATTACK;
 
         return 0;
     }
 
     private Tuple<float,float> CheckIfUseChest(Perception perception, AgentData myData)
     {
-        float idle_utility = 0;
         float use_chest_utility = 0;
+        float idle_utility = 0;
         
         ChestData chestData = perception.nearestChestData;
         if (chestData != null)
@@ -156,20 +156,18 @@ public class DecisionTheoreticalModule : DecisionModule
     private float[] CheckOtherAgents(Perception perception, AgentData myData)
     {
         IEnumerable<AgentData> otherDatas = perception.visionData.Where((data) => data.type == Entity.Type.AGENT).Select((data) => (AgentData) data);
-        float[] utilities = new float[6];
+        float[] utilities = new float[5];
         
-        int fleeUtility = 0;
-        utilities[0] = fleeUtility;
         int attackUtility = 0;
-        utilities[1] = attackUtility;
+        utilities[0] = attackUtility;
         int idleUtility = 0;
-        utilities[2] = idleUtility;
+        utilities[1] = idleUtility;
         int walkUtility = 0;
-        utilities[3] = walkUtility;
+        utilities[2] = walkUtility;
         int rotateRightUtility = 0;
-        utilities[4] = rotateRightUtility;
+        utilities[3] = rotateRightUtility;
         int rotateLeftUtility = 0;
-        utilities[5] = rotateLeftUtility;
+        utilities[4] = rotateLeftUtility;
         
         if (otherDatas.Any())
         {
@@ -178,7 +176,6 @@ public class DecisionTheoreticalModule : DecisionModule
             if (myData.energy < Const.MAX_ENERGY / 5 && dangerousAgentDatas.Any())
             {
                 FleeFromAgents(dangerousAgentDatas, myData);
-                utilities[0] = ((MAX_ENERGY - myData.energy)/MAX_ENERGY) * dangerousAgentDatas.Count()/perception.numberOfAliveAgents;
                 return utilities;
             }
 
@@ -189,8 +186,7 @@ public class DecisionTheoreticalModule : DecisionModule
             );
             if (strongerAgents.Any())
             {
-                utilities[0] = ((MAX_ENERGY - myData.energy) / MAX_ENERGY) * strongerAgents.Count() /
-                               dangerousAgentDatas.Count();
+                FleeFromAgents(strongerAgents, myData);
                 return utilities;
             }
 
@@ -202,17 +198,16 @@ public class DecisionTheoreticalModule : DecisionModule
             foreach (AgentData otherData in otherDatas)
                 if (IsInPositionToAttack(perception, myData, otherData, BOW_MIN_ANGLE))
                 {
-                    ChooseAction(myData.attackWaitTimer == 0 ? Agent.Action.ATTACK : Agent.Action.IDLE);
-                    utilities[1] = myData.attackWaitTimer == 0 ? 1 : 0;
-                    utilities[2] = attackUtility == 0 ? 1 : 0;
+                    utilities[0] = myData.attackWaitTimer == 0 ? 1 : 0;
+                    utilities[1] = utilities[0] == 0 ? 1 : 0;
                     return utilities;
                 }
 
             // Else, try to reposition
             Agent.Action action = GetActionToPosition(myData, otherDatas.First(), MELEE_MIN_ANGLE);
-            utilities[3] = action==Agent.Action.WALK? 1 : 0;
-            utilities[4] = action==Agent.Action.ROTATE_RIGHT? 1 : 0;
-            utilities[5] = action==Agent.Action.ROTATE_LEFT? 1 : 0;
+            utilities[2] = action==Agent.Action.WALK? 1 : 0;
+            utilities[3] = action==Agent.Action.ROTATE_RIGHT? 1 : 0;
+            utilities[4] = action==Agent.Action.ROTATE_LEFT? 1 : 0;
             return utilities;
         }
         return utilities;

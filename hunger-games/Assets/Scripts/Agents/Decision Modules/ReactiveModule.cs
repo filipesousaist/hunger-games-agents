@@ -36,7 +36,7 @@ public class ReactiveModule : DecisionModule
 
         CheckIfRotate(perception, myData);
 
-        CheckIfTrain(myData); //only trains if more than 25% of the MAX energy and didnt achieved the MAX_ATTACK
+        CheckIfTrain(myData);
 
         CheckIfUseChest(perception, myData);
 

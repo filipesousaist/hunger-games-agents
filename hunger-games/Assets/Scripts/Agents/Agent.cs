@@ -338,8 +338,11 @@ public class Agent : Entity
             agentsList.Sort((agent1,agent2)=> Mathf.RoundToInt((agent1.position-transform.position).magnitude - (agent2.position-transform.position).magnitude));
             int agentIndex = ((AgentData)agentsList.First()).index;
             Agent agentToTrade = environment.GetAgent(agentIndex);
-            TradeWithAgent(agentToTrade);
-            SetReadyToTrade(false);
+            if (agentToTrade != null)
+            {
+                TradeWithAgent(agentToTrade);
+                SetReadyToTrade(false);
+            }
         }
         
         else

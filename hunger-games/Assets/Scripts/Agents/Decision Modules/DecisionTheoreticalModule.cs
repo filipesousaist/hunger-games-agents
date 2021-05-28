@@ -152,7 +152,7 @@ public class DecisionTheoreticalModule : DecisionModule
         AgentData myDataAfterTrain = (AgentData) myData.Clone();
         myDataAfterTrain.energy = Mathf.Max(myData.energy - Const.TRAIN_ENERGY_LOSS, 0);
         myDataAfterTrain.attack = Mathf.Min(myData.attack + Const.TRAIN_ATTACK_GAIN, Const.MAX_ATTACK);
-        if (Strength(myDataAfterTrain) > Strength(myData))
+        if (Strength(myDataAfterTrain) > 1.1f * Strength(myData))
             return  (float)(MAX_ATTACK - myData.attack)/MAX_ATTACK;
 
         return 0;

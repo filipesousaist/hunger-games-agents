@@ -262,9 +262,7 @@ public class DecisionTheoreticalModule : DecisionModule
                 Quaternion.AngleAxis(90, Vector3.up) * myData.position :
                 Quaternion.AngleAxis(-90, Vector3.up) * myData.position;
             directionToFlee += desiredDirection.normalized;
-            
         }
-        
     }
 
 

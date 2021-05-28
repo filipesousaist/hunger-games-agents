@@ -14,7 +14,7 @@ public class DecisionTheoreticalDecider : Decider
     public override void Decide(Perception perception)
     {
         decisionTheoreticalModule.Decide(perception);
-        Debug.Log(nextAction);
+        //Debug.Log(nextAction);
     }
 
     public override string GetArchitectureName()

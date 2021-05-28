@@ -29,8 +29,7 @@ public static class Const
     
     public const int BOW_MIN_ANGLE = 2;
     
-    public const int RADIUS_HAZARD_SPAWN = 30;
+    public const int RADIUS_HAZARD_SPAWN = 50;
 
     public const int EPOCHS_TO_OPEN_CHEST = 40;
-
 }

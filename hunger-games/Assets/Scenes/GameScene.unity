@@ -386,7 +386,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.3
+  m_fontSize: 31.25
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1652,7 +1652,7 @@ MonoBehaviour:
   CHEST_AMOUNT: 30
   ROCK_AMOUNT: 1200
   TREE_AMOUNT: 1800
-  BUSH_AMOUNT: 500
+  BUSH_AMOUNT: 400
   HEALTHY_BUSH_RATIO: 0.8
   MIN_CHEST_DISTANCE: 1
   MIN_TREE_DISTANCE: 2.5

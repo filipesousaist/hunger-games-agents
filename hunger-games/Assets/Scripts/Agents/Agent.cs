@@ -102,7 +102,7 @@ public class Agent : Entity
 
     private bool readyToTrade = false;
     
-    private const int MAX_TRADE_TIME = 10;
+    private const int MAX_TRADE_TIME = 30;
     private int tradeTimer = 0;
 
     private int hungerTimer = 0;

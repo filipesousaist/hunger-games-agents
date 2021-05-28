@@ -180,7 +180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Description of preset 3
+  m_text: 1 Hybrid + 7 Baseline
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
+  m_fontSize: 14.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -408,7 +408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_AnchorMax.x
@@ -496,11 +496,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 961488714247418121, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: index
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Name
-      value: Agent Panel 4
+      value: Agent Panel 6
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Layer
@@ -658,7 +658,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35.8
+  m_fontSize: 35.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -725,7 +725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_AnchorMax.x
@@ -813,11 +813,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 961488714247418121, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: index
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Name
-      value: Agent Panel 7
+      value: Agent Panel 4
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Layer
@@ -970,7 +970,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.05
+  m_fontSize: 25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1122,7 +1122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1210,11 +1210,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 961488714247418121, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: index
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Name
-      value: Agent Panel 2
+      value: Agent Panel 5
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Layer
@@ -1429,6 +1429,7 @@ GameObject:
   - component: {fileID: 1363683737}
   - component: {fileID: 1363683736}
   - component: {fileID: 1363683735}
+  - component: {fileID: 1363683738}
   m_Layer: 0
   m_Name: Preset Button 3
   m_TagString: Untagged
@@ -1499,7 +1500,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1363683736}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1363683738}
+        m_TargetAssemblyTypeName: Preset, Assembly-CSharp
+        m_MethodName: Apply
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1363683736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1538,6 +1551,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363683733}
   m_CullTransparentMesh: 1
+--- !u!114 &1363683738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363683733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8090fd00b088cc343af3610648d78e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deciders:
+  - {fileID: 6464861366516509533, guid: 415f927376abd5345942150056b9fcdb, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
 --- !u!850595691 &1378073989
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1811,12 +1845,12 @@ RectTransform:
   m_Children:
   - {fileID: 1014822517}
   - {fileID: 8949293783662163634}
-  - {fileID: 1246935220}
   - {fileID: 2010719970}
-  - {fileID: 1007925542}
   - {fileID: 1015521759}
-  - {fileID: 346285408}
   - {fileID: 2112706627}
+  - {fileID: 1246935220}
+  - {fileID: 1007925542}
+  - {fileID: 346285408}
   - {fileID: 250022077}
   m_Father: {fileID: 1611881054}
   m_RootOrder: 2
@@ -1880,6 +1914,7 @@ MonoBehaviour:
   - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
   - {fileID: -8306351923855049688, guid: 699b482228d78724cb20e89957d8e06e, type: 3}
   - {fileID: -3596759390488735437, guid: f67da73c350bee046a3356493c5f29e6, type: 3}
+  - {fileID: 6464861366516509533, guid: 415f927376abd5345942150056b9fcdb, type: 3}
   - {fileID: 3983110627658726246, guid: c5acb7fdc161e46478c12dc6737e24cb, type: 3}
 --- !u!1 &1640571552
 GameObject:
@@ -2277,6 +2312,7 @@ GameObject:
   - component: {fileID: 1696604517}
   - component: {fileID: 1696604516}
   - component: {fileID: 1696604515}
+  - component: {fileID: 1696604518}
   m_Layer: 0
   m_Name: Preset Button 4
   m_TagString: Untagged
@@ -2347,7 +2383,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1696604516}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1696604518}
+        m_TargetAssemblyTypeName: Preset, Assembly-CSharp
+        m_MethodName: Apply
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1696604516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2386,6 +2434,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1696604513}
   m_CullTransparentMesh: 1
+--- !u!114 &1696604518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696604513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8090fd00b088cc343af3610648d78e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deciders:
+  - {fileID: -8306351923855049688, guid: 699b482228d78724cb20e89957d8e06e, type: 3}
+  - {fileID: -3596759390488735437, guid: f67da73c350bee046a3356493c5f29e6, type: 3}
+  - {fileID: 6464861366516509533, guid: 415f927376abd5345942150056b9fcdb, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
+  - {fileID: -3256105323493745071, guid: dcd12a0962b2b45d5acf09c839bd11da, type: 3}
 --- !u!1001 &1739933678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2682,7 +2751,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Description of preset 4
+  m_text: 1 Reactive + 1 DT + 1 Hybrid + 5 Baseline
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2709,7 +2778,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
+  m_fontSize: 13.2
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2776,7 +2845,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2864,11 +2933,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 961488714247418121, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: index
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Name
-      value: Agent Panel 6
+      value: Agent Panel 7
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Layer
@@ -3083,7 +3152,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3171,11 +3240,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 961488714247418121, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: index
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Name
-      value: Agent Panel 3
+      value: Agent Panel 2
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Layer
@@ -3775,7 +3844,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 56310941241069709, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3863,11 +3932,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 961488714247418121, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: index
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Name
-      value: Agent Panel 5
+      value: Agent Panel 3
       objectReference: {fileID: 0}
     - target: {fileID: 1463827598314728142, guid: 2364702f23c91144187aac77261176a0, type: 3}
       propertyPath: m_Layer

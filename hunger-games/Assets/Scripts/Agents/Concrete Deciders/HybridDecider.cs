@@ -55,9 +55,10 @@ public class HybridDecider : Decider
             {
                 Debug.Log("Using Reactive with score:");
             }
-            Debug.Log(score[decisionModule] " vs " score[otherModule[decisionModule]]);
+            Debug.Log(score[decisionModule] + " vs " + score[other[decisionModule]]);
         }
         Debug.Log("Using urgent Reactive");
+        lastEnergy = perception.myData.energy;
             
     }
 

@@ -75,6 +75,7 @@ public class VisionCollider : MonoBehaviour
             hit.transform.IsChildOf(entity.transform) ||
             hit.transform == entity.transform
         ) ? Color.green : Color.red;
+
         Debug.DrawRay(position, difference, color);
         if (color == Color.green && agent.index == 1)
             Debug.Log(entity.name);

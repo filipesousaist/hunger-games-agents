@@ -53,6 +53,11 @@ public class Shield : MonoBehaviour
         targetScale = MIN_SHIELD_SCALE + SHIELD_DECREASE_FACTOR * numAliveAgents;
     }
 
+    public float GetRadius()
+    {
+        return Const.WORLD_SIZE * transform.localScale.y;
+    }
+
     public bool IsPositionOutside(Vector3 position)
     {
         float x = position.x;

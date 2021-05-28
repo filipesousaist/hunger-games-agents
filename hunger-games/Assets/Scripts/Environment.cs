@@ -12,6 +12,8 @@ public class Environment : MonoBehaviour
     private Agent[] agents;
     private int[] randomIndexes;
 
+    private int[] kills;
+
     public Shield shield;
 
     private Coroutine[] decisionCoroutines;
@@ -28,6 +30,9 @@ public class Environment : MonoBehaviour
         agents = new Agent[Const.NUM_AGENTS];
         decisionCoroutines = new Coroutine[Const.NUM_AGENTS];
         randomIndexes = Utils.ShuffledArray(Const.NUM_AGENTS);
+        kills = new int[Const.NUM_AGENTS];
+        for (int i = 0; i < Const.NUM_AGENTS; i++)
+            kills[i] = 0;
     }
 
     // Update is called once per frame
@@ -48,7 +53,7 @@ public class Environment : MonoBehaviour
 
                 randomIndexes = Utils.ShuffledArray(Const.NUM_AGENTS);
 
-                decisionTimer -= Const.DECISION_TIME;
+                decisionTimer = 0;// -= Const.DECISION_TIME;
             }
         }
         else if (AllAgentsSpawned()) // Finished spawning agents
@@ -125,7 +130,6 @@ public class Environment : MonoBehaviour
             if (agents[r] != null && agents[r].energy == 0)
             {
                 DestroyAgent(r);
-                Debug.Log("Destroying agent " + r);
                 if (GetNumAliveAgents() == 1) // Winner found
                 {
                     Debug.Log("Finished");
@@ -163,6 +167,14 @@ public class Environment : MonoBehaviour
 
         Destroy(agent.gameObject);
 
+        if (agent.lastAttackerIndex != 0)
+        {
+            Debug.Log("Agent " + (index + 1) + " was killed by agent " + agent.lastAttackerIndex);
+            kills[agent.lastAttackerIndex] ++;        
+        }
+        else
+            Debug.Log("Agent " + (index + 1) + " died");
+
         agents[index] = null;
         shield.UpdateTargetScale(GetNumAliveAgents());
         
@@ -183,6 +195,12 @@ public class Environment : MonoBehaviour
                 agentController.SetAgent(agent);
 
                 hasFinished = true;
+
+                Debug.Log("Kills:");
+                for (int i = 0; i < Const.NUM_AGENTS; i ++)
+                {
+                    Debug.Log("Agent " + (i + 1) + ": " + kills[i]);
+                }
             }
     }
 }

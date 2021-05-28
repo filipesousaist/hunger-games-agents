@@ -41,7 +41,7 @@ public class AgentSpawner : MonoBehaviour
                 0,
                 Mathf.Cos(angleRad * (i + 0.5f)) * Const.SPAWN_RADIUS);
             newAgent.transform.Rotate(0, 180 - angleDeg * (i + 0.5f), 0);
-
+            
             newAgent.head.GetComponent<MeshRenderer>().material = headMaterials[Random.Range(0, 3)];
             newAgent.torso.GetComponent<MeshRenderer>().material = bodyMaterials[r];
             newAgent.bodyMaterial = bodyMaterials[r];
